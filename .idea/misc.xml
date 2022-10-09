@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/detail_info_background.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_check_black.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_hearth_white.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/progressbar_background.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/red_circle.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_dog_detail.xml" value="0.16485507246376813" />
         <entry key="app/src/main/res/layout/activity_dog_list.xml" value="0.18385416666666668" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18443002780352177" />
