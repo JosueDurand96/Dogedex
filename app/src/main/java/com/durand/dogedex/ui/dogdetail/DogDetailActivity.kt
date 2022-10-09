@@ -22,9 +22,12 @@ class DogDetailActivity : AppCompatActivity() {
         val dog = intent?.extras?.getParcelable<Dog>(DOG_KEY)
 
         if (dog == null){
-            Toast.makeText(this, "Dog not found!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.error_showing_dog_not_found, Toast.LENGTH_SHORT).show()
             finish()
+            return
         }
+        binding.dogIndex.text = getString(R.string.dog_index_format, dog.index)
+        binding.lifeExpectancy.text = getString(R.string.dog_life_expectancy_format, dog.lifeExpectancy )
         binding.dog = dog
     }
 }
