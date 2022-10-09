@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.durand.dogedex" >
+    package="com.durand.dogedex">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,13 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Dogedex"
-        tools:targetApi="31" >
+        tools:targetApi="31">
         <activity
-            android:name=".doglist.DogListActivity"
+            android:name=".DogDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.durand.dogedex.ui.doglist.DogListActivity"
+            android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Dogedex.NoActionBar"
-            android:exported="true" >
-
+            android:theme="@style/Theme.Dogedex.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,9 +33,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Dogedex.NoActionBar" >
-
-        </activity>
+            android:theme="@style/Theme.Dogedex.NoActionBar"></activity>
     </application>
 
 </manifest>

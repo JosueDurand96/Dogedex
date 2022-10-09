@@ -1,10 +1,9 @@
-package com.durand.dogedex.doglist
+package com.durand.dogedex.ui.doglist
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.durand.dogedex.api.response.Dog
 import com.durand.dogedex.databinding.ActivityDogListBinding
 
 class DogListActivity : AppCompatActivity() {

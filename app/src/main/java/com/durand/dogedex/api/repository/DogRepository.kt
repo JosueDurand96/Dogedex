@@ -1,7 +1,8 @@
-package com.durand.dogedex.repository
+package com.durand.dogedex.api.repository
 
 import com.durand.dogedex.api.response.Dog
 import com.durand.dogedex.api.DogsApi.retrofitService
+import com.durand.dogedex.api.dto.DogDTOMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -10,7 +11,9 @@ class DogRepository {
         return withContext(Dispatchers.IO){
             //getFakeDogs()
             val dogListApiResponse = retrofitService.getAllDogs()
-            dogListApiResponse.data.dogs
+            val dogDTOList = dogListApiResponse.data.dogs
+            val dogDTOMapper = DogDTOMapper()
+            dogDTOMapper.fromDogDTOListToDogDomainList(dogDTOList)
         }
     }
 

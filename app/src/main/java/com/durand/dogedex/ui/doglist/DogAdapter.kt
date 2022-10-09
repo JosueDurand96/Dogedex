@@ -1,4 +1,4 @@
-package com.durand.dogedex.doglist
+package com.durand.dogedex.ui.doglist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
