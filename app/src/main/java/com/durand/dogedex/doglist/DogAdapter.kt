@@ -2,14 +2,11 @@ package com.durand.dogedex.doglist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.ViewParent
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.durand.dogedex.Dog
+import com.durand.dogedex.api.response.Dog
 import com.durand.dogedex.databinding.DogListItemBinding
-import java.lang.reflect.Type
-import java.text.FieldPosition
 
 class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
 
@@ -17,7 +14,7 @@ class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
         override fun areItemsTheSame(oldItem: Dog, newItem: Dog): Boolean {
             return oldItem == newItem
         }
-        override fun areContentsTheSame(oldItem: Dog, newItem:  Dog): Boolean {
+        override fun areContentsTheSame(oldItem: Dog, newItem: Dog): Boolean {
             return oldItem.id == newItem.id
         }
     }

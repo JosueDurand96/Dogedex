@@ -1,10 +1,9 @@
 package com.durand.dogedex.api
 
-import com.durand.dogedex.Dog
+import com.durand.dogedex.api.response.DogListApiResponse
 import com.durand.dogedex.util.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.create
 import retrofit2.http.GET
 
 private val retrofit = Retrofit.Builder()
@@ -14,7 +13,7 @@ private val retrofit = Retrofit.Builder()
 
 interface ApiService {
     @GET("dogs")
-    suspend fun getAllDogs():List<Dog>
+    suspend fun getAllDogs(): DogListApiResponse
 }
 
 object DogsApi {
