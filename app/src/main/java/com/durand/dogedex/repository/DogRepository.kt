@@ -1,13 +1,15 @@
-package com.durand.dogedex.doglist
+package com.durand.dogedex.repository
 
 import com.durand.dogedex.Dog
+import com.durand.dogedex.api.DogsApi.retrofitService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DogRepository {
     suspend fun downloadDogs():List<Dog>{
         return withContext(Dispatchers.IO){
-            getFakeDogs()
+            //getFakeDogs()
+            retrofitService.getAllDogs()
         }
     }
 
