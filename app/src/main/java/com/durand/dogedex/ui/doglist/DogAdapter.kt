@@ -20,6 +20,7 @@ class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
     }
 
     private var onItemClickListener:((Dog) -> Unit)? = null
+
     fun setOnClickListener(onItemClickListener: (Dog) -> Unit ){
         this.onItemClickListener = onItemClickListener
     }
