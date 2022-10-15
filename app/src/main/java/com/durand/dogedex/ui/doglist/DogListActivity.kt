@@ -1,12 +1,12 @@
 package com.durand.dogedex.ui.doglist
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.durand.dogedex.api.ApiResponseStatus
 import com.durand.dogedex.databinding.ActivityDogListBinding
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity
@@ -23,7 +23,7 @@ class DogListActivity : AppCompatActivity() {
 
         val loadingWheel = binding.loadingWheel
         val recycler = binding.dogRecycler
-        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.layoutManager = GridLayoutManager(this, 3)
         val adapter = DogAdapter()
         recycler.adapter = adapter
 

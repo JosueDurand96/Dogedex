@@ -20,4 +20,6 @@
     <string name="error_showing_dog_not_found">Error showing dog, dog not found</string>
     <string name="dog_index_format">#%d</string>
     <string name="dog_life_expectancy_format">%s years</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -16,13 +16,8 @@
         android:theme="@style/Theme.Dogedex"
         tools:targetApi="31">
         <activity
-            android:name=".ui.dogdetail.DogDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.durand.dogedex.ui.doglist.DogListActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Dogedex.NoActionBar">
+            android:name=".ui.auth.LoginActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,10 +25,20 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.dogdetail.DogDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.durand.dogedex.ui.doglist.DogListActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Dogedex.NoActionBar">
+
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Dogedex.NoActionBar"></activity>
+            android:theme="@style/Theme.Dogedex.NoActionBar" />
     </application>
 
 </manifest>

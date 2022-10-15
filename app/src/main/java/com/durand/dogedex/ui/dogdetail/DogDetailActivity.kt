@@ -1,12 +1,12 @@
 package com.durand.dogedex.ui.dogdetail
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import coil.load
 import com.durand.dogedex.R
 import com.durand.dogedex.api.response.Dog
 import com.durand.dogedex.databinding.ActivityDogDetailBinding
-import com.durand.dogedex.databinding.ActivityDogListBinding
 
 class DogDetailActivity : AppCompatActivity() {
 
@@ -29,5 +29,9 @@ class DogDetailActivity : AppCompatActivity() {
         binding.dogIndex.text = getString(R.string.dog_index_format, dog.index)
         binding.lifeExpectancy.text = getString(R.string.dog_life_expectancy_format, dog.lifeExpectancy )
         binding.dog = dog
+        binding.dogImage.load(dog.imageUrl)
+        binding.closeButton.setOnClickListener {
+            finish()
+        }
     }
 }
