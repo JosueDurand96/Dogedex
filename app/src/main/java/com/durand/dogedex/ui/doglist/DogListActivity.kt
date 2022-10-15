@@ -36,27 +36,21 @@ class DogListActivity : AppCompatActivity() {
             adapter.submitList(dogList)
         }
 
-        dogListViewModel.status.observe(this) {
-                status ->
-                when (status) {
-                    ApiResponseStatus.LOADING -> {
-                     binding.loadingWheel.visibility = View.VISIBLE
-                    }
-                    ApiResponseStatus.ERROR -> {
-                        binding.loadingWheel.visibility = View.GONE
-                        Toast.makeText(this,"Error al cargar los datos!", Toast.LENGTH_SHORT).show()
-                    }
-                    ApiResponseStatus.SUCCESS -> {
-                        binding.loadingWheel.visibility = View.GONE
-                        Toast.makeText(this,"Se cargaron los datos correctamente!", Toast.LENGTH_SHORT).show()
-                    }
-                    else -> {
-                        binding.loadingWheel.visibility = View.GONE
-                        Toast.makeText(this,"Ocurrio un error!", Toast.LENGTH_SHORT).show()
-                    }
+        dogListViewModel.status.observe(this) { status ->
 
-
+            when (status) {
+                is ApiResponseStatus.Error -> {
+                    binding.loadingWheel.visibility = View.GONE
+                    Toast.makeText(this, status.message, Toast.LENGTH_SHORT).show()
                 }
+                is ApiResponseStatus.Loading -> binding.loadingWheel.visibility = View.VISIBLE
+                is ApiResponseStatus.Success -> {
+                    binding.loadingWheel.visibility = View.GONE
+                    Toast.makeText(this, "Se cargaron los datos correctamente!", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+
 
         }
 
