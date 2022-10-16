@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.durand.dogedex.api.User
 import com.durand.dogedex.databinding.ActivityMainBinding
 import com.durand.dogedex.ui.auth.LoginActivity
+import com.durand.dogedex.ui.doglist.DogListActivity
 import com.durand.dogedex.ui.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
@@ -14,7 +15,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val user = User.getLoggedInUser(this)
         if (user == null) {
@@ -24,6 +26,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.settingsFab.setOnClickListener {
             openSettingsActivity()
+        }
+        binding.dogListFab.setOnClickListener {
+            startActivity(Intent(this,DogListActivity::class.java))
         }
     }
 

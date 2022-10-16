@@ -1,5 +1,6 @@
 package com.durand.dogedex.api
 
+import com.durand.dogedex.api.dto.AddDogToUserDTO
 import com.durand.dogedex.api.dto.LoginDTO
 import com.durand.dogedex.api.dto.SignUpDTO
 import com.durand.dogedex.api.response.DogListApiResponse
@@ -25,6 +26,9 @@ interface ApiService {
 
     @POST("sign_in")
     suspend fun login(@Body loginDTO: LoginDTO): SignUpApiResponse
+
+    @POST("add_dog_to_user")
+    suspend fun addDogToUser(@Body addDogToUserDTO: AddDogToUserDTO): SignUpApiResponse
 }
 
 object DogsApi {
