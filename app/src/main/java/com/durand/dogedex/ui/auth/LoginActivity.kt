@@ -42,7 +42,10 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
         viewModel.user.observe(this){
             user ->
             if(user != null){
+                Log.d("josue","user: startMainActivity" )
                 startMainActivity()
+            }else{
+                Log.d("josue","user: no" )
             }
         }
     }
@@ -62,6 +65,10 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
 
     override fun onRegisterButtonClick() {
         findNavController(R.id.nav_host_fragment).navigate(LoginFragmentDirections.actionLoginFragmentToSignUpFragment())
+    }
+
+    override fun onLoginFieldsValidated(email: String, password: String) {
+        viewModel.login(email,password)
     }
 
     override fun onSignUpFieldsValidated(
