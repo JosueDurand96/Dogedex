@@ -1,15 +1,11 @@
 package com.durand.dogedex
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
+import com.durand.dogedex.api.response.User
 import com.durand.dogedex.databinding.ActivityMainBinding
+import com.durand.dogedex.ui.auth.LoginActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,8 +14,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val user = User.getLoggedInUser(this)
+        if (user == null) {
+            openLoginActivity()
+            return
+        }
     }
 
+    private fun openLoginActivity() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+    }
 
 
 }

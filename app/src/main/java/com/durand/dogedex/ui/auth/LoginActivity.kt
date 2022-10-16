@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import com.durand.dogedex.MainActivity
 import com.durand.dogedex.R
 import com.durand.dogedex.api.ApiResponseStatus
+import com.durand.dogedex.api.response.User
 import com.durand.dogedex.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, SignUpFragment.SignUpFragmentActions{
@@ -43,6 +44,7 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
             user ->
             if(user != null){
                 Log.d("josue","user: startMainActivity" )
+                User.setLoggedInUser(this, user)
                 startMainActivity()
             }else{
                 Log.d("josue","user: no" )
@@ -52,6 +54,7 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
 
     private fun startMainActivity(){
         startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     private fun showErrorDialog(messageId: Int){
@@ -69,7 +72,6 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
 
     override fun onLoginFieldsValidated(email: String, password: String) {
         viewModel.login(email,password)
-        finish()
     }
 
     override fun onSignUpFieldsValidated(
