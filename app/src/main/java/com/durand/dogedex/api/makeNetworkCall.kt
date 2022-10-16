@@ -3,6 +3,7 @@ package com.durand.dogedex.api
 import com.durand.dogedex.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.net.UnknownHostException
 
 suspend fun <T> makeNetworkCall(
@@ -14,6 +15,13 @@ suspend fun <T> makeNetworkCall(
         ApiResponseStatus.Error(R.string.error)
     } catch (e: UnknownHostException) {
         ApiResponseStatus.Error(R.string.error_internet)
+    }catch (e: HttpException){
+        val errorMessage = if (e.code() == 401){
+            R.string.password_user_incorrect
+        }else{
+            R.string.error_know
+        }
+        ApiResponseStatus.Error(errorMessage)
     } catch (e: Exception) {
         val errorMessage = when (e.message) {
             "sign_up_error" -> R.string.sign_up_error

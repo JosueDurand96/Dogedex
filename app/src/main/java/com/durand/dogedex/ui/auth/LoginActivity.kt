@@ -69,6 +69,7 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
 
     override fun onLoginFieldsValidated(email: String, password: String) {
         viewModel.login(email,password)
+        finish()
     }
 
     override fun onSignUpFieldsValidated(

@@ -27,5 +27,6 @@
     <string name="sign_up_error">sign_up_error</string>
     <string name="sign_in_error">sign_in_error</string>
     <string name="user_already_exists">user_already_exists</string>
-    <string name="error_know">Error no encontrado</string>
+    <string name="error_know">Error!</string>
+    <string name="password_user_incorrect">Password or user incorrect</string>
 </resources>
