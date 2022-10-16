@@ -1,5 +1,6 @@
 package com.durand.dogedex
 
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -17,8 +18,10 @@ object ApiServiceInterceptor: Interceptor {
         val requestBuilder = request.newBuilder()
         if (request.header(NEEDS_AUTH_HEADER_KEY) != null) {
             if (sessionToken == null){
+                Log.d("josue", "sessionToken: $sessionToken")
                 throw RuntimeException("Need to be authenticated to performance")
             }else{
+                Log.d("josue", "sessionToken: $sessionToken")
                 requestBuilder.addHeader("AUTH_TOKEN",sessionToken!!)
             }
         }

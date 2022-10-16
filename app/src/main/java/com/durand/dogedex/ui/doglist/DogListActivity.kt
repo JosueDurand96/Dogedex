@@ -2,6 +2,7 @@ package com.durand.dogedex.ui.doglist
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -27,11 +28,20 @@ class DogListActivity : AppCompatActivity() {
         val adapter = DogAdapter()
         recycler.adapter = adapter
 
+
+        adapter.setLongItemOnClickListener {
+            Log.d("josue","setLongOnClickListener - DogListActivity")
+            dogListViewModel.addDogToUser(it.id)
+        }
+
+
         adapter.setOnClickListener {
             val intent = Intent(this, DogDetailActivity::class.java)
             intent.putExtra(DOG_KEY, it)
             startActivity(intent)
         }
+
+
         dogListViewModel.dogList.observe(this) { dogList ->
             adapter.submitList(dogList)
         }

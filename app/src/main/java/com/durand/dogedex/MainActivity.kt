@@ -2,6 +2,7 @@ package com.durand.dogedex
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.durand.dogedex.api.User
 import com.durand.dogedex.databinding.ActivityMainBinding
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
             openLoginActivity()
             return
         }else{
+            Log.d("josue","authenticationToken: "+user.authenticationToken)
             ApiServiceInterceptor.setSessionToken(user.authenticationToken)
         }
 

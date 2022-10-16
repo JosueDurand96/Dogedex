@@ -1,5 +1,6 @@
 package com.durand.dogedex.ui.doglist
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -21,13 +22,18 @@ class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
     }
 
     private var onItemClickListener:((Dog) -> Unit)? = null
-
     fun setOnClickListener(onItemClickListener: (Dog) -> Unit ){
         this.onItemClickListener = onItemClickListener
     }
 
+    private var onLongItemClickListener:((Dog) -> Unit)? = null
+    fun setLongItemOnClickListener(onLongItemClickListener: (Dog) -> Unit ){
+        this.onLongItemClickListener = onLongItemClickListener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogViewHolder {
         val binding = DogListItemBinding.inflate(LayoutInflater.from(parent.context))
+
         return DogViewHolder(binding)
     }
 
@@ -39,11 +45,20 @@ class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
     inner class DogViewHolder(private val binding: DogListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(dog: Dog) {
-            binding.dogName.text = dog.name
-            binding.dogNameImageView.load(dog.imageUrl)
+            binding.dogListItemLayout.setOnLongClickListener {
+                Log.d("josue","setOnLongClickListener")
+                onLongItemClickListener?.invoke(dog)
+                true
+            }
             binding.dogListItemLayout.setOnClickListener {
                 onItemClickListener?.invoke(dog)
             }
+
+
+
+            binding.dogName.text = dog.name
+            binding.dogNameImageView.load(dog.imageUrl)
+
         }
     }
 }
