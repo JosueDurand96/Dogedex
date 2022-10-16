@@ -1,10 +1,14 @@
 package com.durand.dogedex.api
 
+import com.durand.dogedex.api.dto.SignUpDTO
 import com.durand.dogedex.api.response.DogListApiResponse
+import com.durand.dogedex.api.response.SignUpApiResponse
 import com.durand.dogedex.util.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 
 private val retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
@@ -14,6 +18,9 @@ private val retrofit = Retrofit.Builder()
 interface ApiService {
     @GET("dogs")
     suspend fun getAllDogs(): DogListApiResponse
+
+    @POST("sign_up")
+    suspend fun signUp(@Body signUpDTO: SignUpDTO): SignUpApiResponse
 }
 
 object DogsApi {

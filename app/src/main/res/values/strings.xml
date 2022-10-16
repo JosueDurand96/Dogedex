@@ -22,4 +22,10 @@
     <string name="dog_life_expectancy_format">%s years</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error">Error al descargar los datos</string>
+    <string name="error_internet">No hay Internet</string>
+    <string name="sign_up_error">sign_up_error</string>
+    <string name="sign_in_error">sign_in_error</string>
+    <string name="user_already_exists">user_already_exists</string>
+    <string name="error_know">Error no encontrado</string>
 </resources>
