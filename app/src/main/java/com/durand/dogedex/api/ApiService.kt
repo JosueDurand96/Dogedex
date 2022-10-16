@@ -8,6 +8,7 @@ import com.durand.dogedex.api.response.DefaultResponse
 import com.durand.dogedex.api.response.DogListApiResponse
 import com.durand.dogedex.api.response.SignUpApiResponse
 import com.durand.dogedex.util.BASE_URL
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
@@ -15,7 +16,13 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
+private val okHttpClient = OkHttpClient
+    .Builder()
+    .addInterceptor(ApiServiceInterceptor)
+    .build()
+
 private val retrofit = Retrofit.Builder()
+    .client(okHttpClient)
     .baseUrl(BASE_URL)
     .addConverterFactory(MoshiConverterFactory.create())
     .build()

@@ -29,4 +29,5 @@
     <string name="user_already_exists">user_already_exists</string>
     <string name="error_know">Error!</string>
     <string name="password_user_incorrect">Password or user incorrect</string>
+    <string name="error_adding_dog">Tuvimos un problema al agregar un perrito!</string>
 </resources>
