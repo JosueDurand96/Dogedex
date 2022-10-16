@@ -1,6 +1,6 @@
 package com.durand.dogedex.api.dto
 
-import com.durand.dogedex.api.response.User
+import com.durand.dogedex.api.User
 
 class UserDTOMapper {
     fun fromUserDTOToUserDomain(userDTO: UserDTO): User =

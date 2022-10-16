@@ -3,9 +3,10 @@ package com.durand.dogedex
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.durand.dogedex.api.response.User
+import com.durand.dogedex.api.User
 import com.durand.dogedex.databinding.ActivityMainBinding
 import com.durand.dogedex.ui.auth.LoginActivity
+import com.durand.dogedex.ui.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +21,15 @@ class MainActivity : AppCompatActivity() {
             openLoginActivity()
             return
         }
+
+        binding.settingsFab.setOnClickListener {
+            openSettingsActivity()
+        }
+    }
+
+    private fun openSettingsActivity() {
+        startActivity(Intent(this, SettingsActivity::class.java))
+        finish()
     }
 
     private fun openLoginActivity() {

@@ -1,4 +1,4 @@
-package com.durand.dogedex.api.response
+package com.durand.dogedex.api
 
 import android.app.Activity
 import android.content.Context
@@ -28,19 +28,21 @@ class User(
         fun getLoggedInUser(activity: Activity): User? {
             val prefs =
                 activity.getSharedPreferences(AUTH_PREFS, Context.MODE_PRIVATE) ?: return null
-
             val userId = prefs.getLong(ID_KEY, 0)
             if (userId == 0L){
                 return null
             }
-
             val user = User(
                 userId,
                 prefs.getString(EMAIL_KEY, "") ?: "",
                 prefs.getString(AUTH_TOKEN_KEY, "") ?: ""
             )
-
             return user
+        }
+        fun logout(activity: Activity){
+            activity.getSharedPreferences(AUTH_PREFS, Context.MODE_PRIVATE).also {
+                it.edit().clear().apply()
+            }
         }
     }
 }

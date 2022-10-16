@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.api.ApiResponseStatus
 import com.durand.dogedex.api.repository.AuthRepository
-import com.durand.dogedex.api.response.User
+import com.durand.dogedex.api.User
 import kotlinx.coroutines.launch
 
 class AuthViewModel : ViewModel() {

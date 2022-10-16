@@ -12,7 +12,7 @@ import androidx.navigation.findNavController
 import com.durand.dogedex.MainActivity
 import com.durand.dogedex.R
 import com.durand.dogedex.api.ApiResponseStatus
-import com.durand.dogedex.api.response.User
+import com.durand.dogedex.api.User
 import com.durand.dogedex.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, SignUpFragment.SignUpFragmentActions{

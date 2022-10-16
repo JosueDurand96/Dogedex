@@ -6,7 +6,7 @@ import com.durand.dogedex.api.dto.LoginDTO
 import com.durand.dogedex.api.dto.SignUpDTO
 import com.durand.dogedex.api.dto.UserDTOMapper
 import com.durand.dogedex.api.makeNetworkCall
-import com.durand.dogedex.api.response.User
+import com.durand.dogedex.api.User
 
 class AuthRepository {
 
