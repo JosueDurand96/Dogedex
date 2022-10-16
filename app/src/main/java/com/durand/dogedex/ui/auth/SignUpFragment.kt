@@ -2,12 +2,12 @@ package com.durand.dogedex.ui.auth
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.durand.dogedex.databinding.FragmentSignUpBinding
+import com.durand.dogedex.util.isValidEmail
 
 class SignUpFragment : Fragment() {
 
@@ -72,9 +72,7 @@ class SignUpFragment : Fragment() {
 
     }
 
-    private fun isValidEmail(email: String?): Boolean{
-        return !email.isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
+
 
 
 }
