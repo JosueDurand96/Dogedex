@@ -2,11 +2,14 @@ package com.durand.dogedex.ui.doglist
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.durand.dogedex.R
 import com.durand.dogedex.api.response.Dog
 import com.durand.dogedex.databinding.DogListItemBinding
 
@@ -45,20 +48,30 @@ class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
     inner class DogViewHolder(private val binding: DogListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(dog: Dog) {
-            binding.dogListItemLayout.setOnLongClickListener {
-                Log.d("josue","setOnLongClickListener")
-                onLongItemClickListener?.invoke(dog)
-                true
+            if (dog.inCollection){
+                binding.dogListItemLayout.setOnLongClickListener {
+                    Log.d("josue","setOnLongClickListener")
+                    onLongItemClickListener?.invoke(dog)
+                    true
+                }
+                binding.dogListItemLayout.background = ContextCompat.getDrawable(
+                    binding.dogNameImageView.context,
+                    R.drawable.dog_list_item_background
+                )
+                binding.dogNameImageView.visibility = View.VISIBLE
+                binding.dogListItemLayout.setOnClickListener {
+                    onItemClickListener?.invoke(dog)
+                }
+
+                binding.dogName.text = dog.name
+                binding.dogNameImageView.load(dog.imageUrl)
+            }else{
+                binding.dogNameImageView.visibility = View.GONE
+                binding.dogListItemLayout.background = ContextCompat.getDrawable(
+                    binding.dogNameImageView.context,
+                    R.drawable.dog_list_item_null_background
+                )
             }
-            binding.dogListItemLayout.setOnClickListener {
-                onItemClickListener?.invoke(dog)
-            }
-
-
-
-            binding.dogName.text = dog.name
-            binding.dogNameImageView.load(dog.imageUrl)
-
         }
     }
 }

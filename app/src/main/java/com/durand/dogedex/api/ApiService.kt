@@ -44,6 +44,8 @@ interface ApiService {
     @Headers("${ApiServiceInterceptor.NEEDS_AUTH_HEADER_KEY}: true")
     @GET("get_user_dogs")
     suspend fun getUserDogs(): DogListApiResponse
+
+
 }
 
 object DogsApi {

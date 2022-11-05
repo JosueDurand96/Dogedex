@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
                     android:padding="16dp"
-                    android:text="@string/name_dog" />
+                    tools:text="@string/name_dog" />
             </LinearLayout>
         </RelativeLayout>
 

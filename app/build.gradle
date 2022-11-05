@@ -61,5 +61,6 @@ dependencies {
     //navigation fragment
     implementation "androidx.navigation:navigation-fragment:2.5.2"
     implementation "androidx.navigation:navigation-ui-ktx:2.5.2"
+    //tensorflow
 
 }
