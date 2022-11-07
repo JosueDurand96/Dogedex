@@ -79,4 +79,11 @@ class DogRepository {
         val dogDTOMapper = DogDTOMapper()
         dogDTOMapper.fromDogDTOListToDogDomainList(dogDTOList)
     }
+
+    suspend fun getDogByMlId(mlDogId: String){
+        val response = retrofitService.getDogByMlId(mlDogId)
+        if (!response.isSuccess) {
+            throw Exception(response.message)
+        }
+    }
 }

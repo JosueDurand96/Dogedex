@@ -133,6 +133,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private lateinit var classifier: Classifier
+
+    override fun onStart() {
+        super.onStart()
+        classifier = Classifier(
+            FileUtil.loadMappedFile(this@MainActivity, MODEL_PATH),
+            FileUtil.loadLabels(this@MainActivity, LABEL_PATH)
+        )
+    }
+
     private fun takePhoto() {
         val outputFileOptions = ImageCapture.OutputFileOptions.Builder(getOutputPhotoFile()).build()
         imageCapture.takePicture(outputFileOptions, cameraExecutor,
@@ -147,15 +157,10 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     val photoUri = outputFileResults.savedUri
-
-                    val classifier = Classifier(
-                        FileUtil.loadMappedFile(this@MainActivity, MODEL_PATH),
-                        FileUtil.loadLabels(this@MainActivity, LABEL_PATH)
-                    )
-
                     val bitmap = BitmapFactory.decodeFile(photoUri?.path)
-                    classifier.recognizeImage(bitmap)
-                    openWholeImageActivity(photoUri.toString())
+                    val dogRecognition = classifier.recognizeImage(bitmap).first()
+
+                   // openWholeImageActivity(photoUri.toString())
                 }
 
             })

@@ -5,16 +5,14 @@ import com.durand.dogedex.api.dto.AddDogToUserDTO
 import com.durand.dogedex.api.dto.LoginDTO
 import com.durand.dogedex.api.dto.SignUpDTO
 import com.durand.dogedex.api.response.DefaultResponse
+import com.durand.dogedex.api.response.DogApiResponse
 import com.durand.dogedex.api.response.DogListApiResponse
 import com.durand.dogedex.api.response.SignUpApiResponse
 import com.durand.dogedex.util.BASE_URL
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.POST
+import retrofit2.http.*
 
 private val okHttpClient = OkHttpClient
     .Builder()
@@ -45,7 +43,8 @@ interface ApiService {
     @GET("get_user_dogs")
     suspend fun getUserDogs(): DogListApiResponse
 
-
+    @GET("find_dog_by_ml_id")
+    suspend fun getDogByMlId(@Query("ml_id") mlId:String): DogApiResponse
 }
 
 object DogsApi {
