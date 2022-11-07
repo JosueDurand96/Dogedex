@@ -17,6 +17,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.durand.dogedex.api.User
 import com.durand.dogedex.databinding.ActivityMainBinding
+import com.durand.dogedex.ui.WholeImageActivity
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.doglist.DogListActivity
 import com.durand.dogedex.ui.settings.SettingsActivity
@@ -134,9 +135,6 @@ class MainActivity : AppCompatActivity() {
         val outputFileOptions = ImageCapture.OutputFileOptions.Builder(getOutputPhotoFile()).build()
         imageCapture.takePicture(outputFileOptions, cameraExecutor,
             object : ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                }
-
                 override fun onError(exception: ImageCaptureException) {
                     Toast.makeText(
                         this@MainActivity,
@@ -145,8 +143,18 @@ class MainActivity : AppCompatActivity() {
                     ).show()
 
                 }
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    val photoUri = outputFileResults.savedUri
+                    openWholeImageActivity(photoUri.toString())
+                }
 
             })
+    }
+
+    private fun openWholeImageActivity(photoUri: String){
+        val intent = Intent(this, WholeImageActivity::class.java)
+        intent.putExtra(WholeImageActivity.PHOTO_URI_KEY, photoUri)
+        startActivity(intent)
     }
 
     private fun getOutputPhotoFile(): File {
@@ -174,7 +182,7 @@ class MainActivity : AppCompatActivity() {
                 val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector,
-                    preview
+                    preview, imageCapture
                 )
             }, ContextCompat.getMainExecutor(this)
         )
