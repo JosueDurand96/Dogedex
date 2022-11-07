@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
@@ -33,6 +34,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imageCapture: ImageCapture
     private lateinit var cameraExecutor: ExecutorService
     private var isCameraReady = false
+    private val viewModel: MainViewModel by viewModels()
+    private lateinit var classifier: Classifier
+
+
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -133,8 +138,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private lateinit var classifier: Classifier
-
     override fun onStart() {
         super.onStart()
         classifier = Classifier(
@@ -160,6 +163,7 @@ class MainActivity : AppCompatActivity() {
                     val bitmap = BitmapFactory.decodeFile(photoUri?.path)
                     val dogRecognition = classifier.recognizeImage(bitmap).first()
 
+                    viewModel.getDogByMlId(dogRecognition.id)
                    // openWholeImageActivity(photoUri.toString())
                 }
 
