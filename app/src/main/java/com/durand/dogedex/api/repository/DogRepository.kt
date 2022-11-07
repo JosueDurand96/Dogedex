@@ -86,6 +86,6 @@ class DogRepository {
             throw Exception(response.message)
         }
         val dogDTOMapper = DogDTOMapper()
-        dogDTOMapper.fromDogDTOToDogDomain(response.data)
+        dogDTOMapper.fromDogDTOToDogDomain(response.data.dog)
     }
 }

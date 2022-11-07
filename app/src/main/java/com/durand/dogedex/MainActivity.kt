@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -14,11 +15,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.durand.dogedex.api.ApiResponseStatus
 import com.durand.dogedex.api.User
+import com.durand.dogedex.api.response.Dog
 import com.durand.dogedex.databinding.ActivityMainBinding
 import com.durand.dogedex.machinelearning.Classifier
 import com.durand.dogedex.ui.WholeImageActivity
 import com.durand.dogedex.ui.auth.LoginActivity
+import com.durand.dogedex.ui.dogdetail.DogDetailActivity
+import com.durand.dogedex.ui.dogdetail.DogDetailActivity.Companion.DOG_KEY
 import com.durand.dogedex.ui.doglist.DogListActivity
 import com.durand.dogedex.ui.settings.SettingsActivity
 import com.durand.dogedex.util.LABEL_PATH
@@ -75,7 +80,36 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.status.observe(this) { status ->
+
+            when (status) {
+                is ApiResponseStatus.Error -> {
+                    binding.loadingWheel.visibility = View.GONE
+                    Toast.makeText(this, status.message, Toast.LENGTH_SHORT).show()
+                }
+                is ApiResponseStatus.Loading -> binding.loadingWheel.visibility = View.VISIBLE
+                is ApiResponseStatus.Success -> {
+                    binding.loadingWheel.visibility = View.GONE
+                    Toast.makeText(this, "Se cargaron los datos correctamente!", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
+
+        viewModel.dog.observe(this){ dog ->
+            if (dog != null){
+                openDetailActivity(dog)
+            }
+
+        }
+
         requestCameraPermission()
+    }
+
+    private fun openDetailActivity(dog: Dog) {
+        val intent = Intent(this, DogDetailActivity::class.java)
+        intent.putExtra(DOG_KEY, dog)
+        startActivity(intent)
     }
 
     private fun openSettingsActivity() {
@@ -164,7 +198,7 @@ class MainActivity : AppCompatActivity() {
                     val dogRecognition = classifier.recognizeImage(bitmap).first()
 
                     viewModel.getDogByMlId(dogRecognition.id)
-                   // openWholeImageActivity(photoUri.toString())
+                    // openWholeImageActivity(photoUri.toString())
                 }
 
             })
