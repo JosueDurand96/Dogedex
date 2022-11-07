@@ -10,6 +10,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
@@ -18,17 +20,22 @@ import com.durand.dogedex.databinding.ActivityMainBinding
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.doglist.DogListActivity
 import com.durand.dogedex.ui.settings.SettingsActivity
+import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
+    private lateinit var imageCapture: ImageCapture
+    private lateinit var cameraExecutor: ExecutorService
+    private var isCameraReady = false
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                startCamera()
+                setupCamera()
             } else {
                 Toast.makeText(this, R.string.camera_permission, Toast.LENGTH_SHORT).show()
             }
@@ -54,6 +61,12 @@ class MainActivity : AppCompatActivity() {
         binding.dogListFab.setOnClickListener {
             startActivity(Intent(this, DogListActivity::class.java))
         }
+        binding.takePhotoFab.setOnClickListener {
+            if (isCameraReady) {
+                takePhoto()
+            }
+        }
+
         requestCameraPermission()
     }
 
@@ -74,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED -> {
                 // You can use the API that requires the permission.
-                startCamera()
+                setupCamera()
             }
             shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
                 AlertDialog.Builder(this)
@@ -95,6 +108,57 @@ class MainActivity : AppCompatActivity() {
                     Manifest.permission.CAMERA
                 )
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::cameraExecutor.isInitialized) {
+            cameraExecutor.shutdown()
+        }
+    }
+
+    private fun setupCamera() {
+        binding.cameraPreview.post {
+            imageCapture = ImageCapture.Builder()
+                .setTargetRotation(binding.cameraPreview.display.rotation)
+                .build()
+            cameraExecutor = Executors.newSingleThreadExecutor()
+            startCamera()
+            isCameraReady = true
+        }
+
+    }
+
+    private fun takePhoto() {
+        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(getOutputPhotoFile()).build()
+        imageCapture.takePicture(outputFileOptions, cameraExecutor,
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                }
+
+                override fun onError(exception: ImageCaptureException) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Error: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+
+            })
+    }
+
+    private fun getOutputPhotoFile(): File {
+        val mediaDir = externalMediaDirs.firstOrNull()?.let {
+            File(it, resources.getString(R.string.app_name) + ".jpg").apply {
+                mkdirs()
+            }
+        }
+        return if (mediaDir != null && mediaDir.exists()) {
+            mediaDir
+        } else {
+            filesDir
         }
     }
 
