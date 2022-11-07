@@ -22,10 +22,10 @@ import com.durand.dogedex.api.response.Dog
 import com.durand.dogedex.databinding.ActivityMainBinding
 import com.durand.dogedex.machinelearning.Classifier
 import com.durand.dogedex.machinelearning.DogRecognition
-import com.durand.dogedex.ui.WholeImageActivity
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity.Companion.DOG_KEY
+import com.durand.dogedex.ui.dogdetail.DogDetailActivity.Companion.IS_RECOGNITION_KEY
 import com.durand.dogedex.ui.doglist.DogListActivity
 import com.durand.dogedex.ui.settings.SettingsActivity
 import com.durand.dogedex.util.LABEL_PATH
@@ -112,6 +112,7 @@ class MainActivity : AppCompatActivity() {
     private fun openDetailActivity(dog: Dog) {
         val intent = Intent(this, DogDetailActivity::class.java)
         intent.putExtra(DOG_KEY, dog)
+        intent.putExtra(IS_RECOGNITION_KEY, true)
         startActivity(intent)
     }
 
@@ -231,11 +232,7 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
-    private fun openWholeImageActivity(photoUri: String) {
-        val intent = Intent(this, WholeImageActivity::class.java)
-        intent.putExtra(WholeImageActivity.PHOTO_URI_KEY, photoUri)
-        startActivity(intent)
-    }
+
 
     private fun getOutputPhotoFile(): File {
         val mediaDir = externalMediaDirs.firstOrNull()?.let {
