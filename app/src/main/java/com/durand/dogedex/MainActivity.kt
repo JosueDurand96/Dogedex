@@ -3,6 +3,7 @@ package com.durand.dogedex
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -14,10 +15,14 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.durand.dogedex.api.User
 import com.durand.dogedex.databinding.ActivityMainBinding
+import com.durand.dogedex.machinelearning.Classifier
 import com.durand.dogedex.ui.WholeImageActivity
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.doglist.DogListActivity
 import com.durand.dogedex.ui.settings.SettingsActivity
+import com.durand.dogedex.util.LABEL_PATH
+import com.durand.dogedex.util.MODEL_PATH
+import org.tensorflow.lite.support.common.FileUtil
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -138,17 +143,25 @@ class MainActivity : AppCompatActivity() {
                         "Error: ${exception.message}",
                         Toast.LENGTH_SHORT
                     ).show()
-
                 }
+
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     val photoUri = outputFileResults.savedUri
+
+                    val classifier = Classifier(
+                        FileUtil.loadMappedFile(this@MainActivity, MODEL_PATH),
+                        FileUtil.loadLabels(this@MainActivity, LABEL_PATH)
+                    )
+
+                    val bitmap = BitmapFactory.decodeFile(photoUri?.path)
+                    classifier.recognizeImage(bitmap)
                     openWholeImageActivity(photoUri.toString())
                 }
 
             })
     }
 
-    private fun openWholeImageActivity(photoUri: String){
+    private fun openWholeImageActivity(photoUri: String) {
         val intent = Intent(this, WholeImageActivity::class.java)
         intent.putExtra(WholeImageActivity.PHOTO_URI_KEY, photoUri)
         startActivity(intent)
@@ -182,7 +195,7 @@ class MainActivity : AppCompatActivity() {
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
                 imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
-                    val rotationDegress =  imageProxy.imageInfo.rotationDegrees
+                    val rotationDegress = imageProxy.imageInfo.rotationDegrees
 
                     imageProxy.close()
                 }
