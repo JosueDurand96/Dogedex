@@ -67,5 +67,6 @@ dependencies {
     implementation "androidx.camera:camera-view:1.1.0-beta02"
 
     //tensorflow
-
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly-SNAPSHOT'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
 }

@@ -30,7 +30,7 @@
             android:name=".ui.dogdetail.DogDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".doglist.DogListActivity"
+            android:name=".ui.doglist.DogListActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
         <activity
