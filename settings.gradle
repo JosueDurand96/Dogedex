@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Dogedex"
+rootProject.name = "Patitas Seguras UPC"
 include ':app'
