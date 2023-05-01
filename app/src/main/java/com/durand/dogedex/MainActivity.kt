@@ -286,12 +286,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
         if (dogRecognition.confidence > 70.0){
-            binding.takePhotoFab.alpha = 1f
+            //binding.takePhotoFab.alpha = 1f
             binding.takePhotoFab.setOnClickListener {
                 viewModel.getDogByMlId(dogRecognition.id)
             }
         }else{
-            binding.takePhotoFab.alpha = 0.2f
+           // binding.takePhotoFab.alpha = 0.2f
             binding.takePhotoFab.setOnClickListener(null)
         }
     }
