@@ -22,8 +22,16 @@ class DogListViewModel : ViewModel() {
     private val dogRepository = DogRepository()
 
     init {
-        getDogCollection()
+        downloadDogs()
     }
+
+    private fun downloadDogs() {
+        viewModelScope.launch {
+            _status.value = ApiResponseStatus.Loading()
+            handleResponseStatus(dogRepository.downloadDogs())
+        }
+    }
+
 
     fun addDogToUser(dogId: Long) {
         viewModelScope.launch {

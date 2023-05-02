@@ -1,42 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+        xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
-
-        <RelativeLayout
-            android:id="@+id/dog_list_item_layout"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/dog_list_item_background"
-            android:gravity="center">
+            android:padding="8dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+        <LinearLayout
+                android:id="@+id/dog_list_item_layout"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="@drawable/dog_list_item_background"
+                android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/dog_nameImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="16dp"
-                    tools:text="@string/name_dog" />
-
-                <TextView
+            <ImageView
                     android:id="@+id/dog_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
                     android:padding="16dp"
-                    android:gravity="center"
                     tools:text="@string/name_dog" />
-            </LinearLayout>
-        </RelativeLayout>
+
+            <TextView
+                    android:id="@+id/dogTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="16dp"
+                    android:text="@string/name_dog" />
+        </LinearLayout>
 
     </FrameLayout>
 
