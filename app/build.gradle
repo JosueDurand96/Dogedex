@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs'
@@ -11,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.durand.dogedex"
-        minSdk 23
+        minSdk 32
         targetSdk 33
         versionCode 1
         versionName "1.0"

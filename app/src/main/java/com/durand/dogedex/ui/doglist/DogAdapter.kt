@@ -65,12 +65,6 @@ class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
 
                 binding.dogName.text = dog.name
                 binding.dogNameImageView.load(dog.imageUrl)
-            }else{
-                binding.dogNameImageView.visibility = View.GONE
-                binding.dogListItemLayout.background = ContextCompat.getDrawable(
-                    binding.dogNameImageView.context,
-                    R.drawable.dog_list_item_null_background
-                )
             }
         }
     }
