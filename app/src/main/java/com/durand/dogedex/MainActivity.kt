@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var classifier: Classifier
 
-
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -84,7 +83,6 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         viewModel.status.observe(this) { status ->
-
             when (status) {
                 is ApiResponseStatus.Error -> {
                     binding.loadingWheel.visibility = View.GONE
@@ -103,9 +101,7 @@ class MainActivity : AppCompatActivity() {
             if (dog != null) {
                 openDetailActivity(dog)
             }
-
         }
-
         requestCameraPermission()
     }
 
@@ -139,9 +135,7 @@ class MainActivity : AppCompatActivity() {
         val yuvImage = YuvImage(nv21, ImageFormat.NV21, image.width, image.height, null)
         val out = ByteArrayOutputStream()
         yuvImage.compressToJpeg(
-            Rect(0, 0, yuvImage.width, yuvImage.height), 100,
-            out
-        )
+            Rect(0, 0, yuvImage.width, yuvImage.height), 100, out)
         val imageBytes = out.toByteArray()
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
     }
@@ -285,7 +279,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
-        if (dogRecognition.confidence > 70.0){
+        if (dogRecognition.confidence > 80.0){
             //binding.takePhotoFab.alpha = 1f
             binding.takePhotoFab.setOnClickListener {
                 viewModel.getDogByMlId(dogRecognition.id)

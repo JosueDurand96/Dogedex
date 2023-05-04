@@ -27,9 +27,17 @@ class DogDetailActivity : AppCompatActivity() {
 
         val dog = intent?.extras?.getParcelable<Dog>(DOG_KEY)
         val isRecognition = intent?.extras?.getBoolean(IS_RECOGNITION_KEY, false) ?: false
+        if (dog!!.name == "Doberman") {
+            binding.canDangerousTextView.visibility = View.VISIBLE
+            binding.canNoDangerousTextView.visibility = View.GONE
+        } else {
+            binding.canDangerousTextView.visibility = View.GONE
+            binding.canNoDangerousTextView.visibility = View.VISIBLE
+        }
 
         if (dog == null) {
-            Toast.makeText(this, R.string.error_showing_dog_not_found, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.error_showing_dog_not_found, Toast.LENGTH_SHORT)
+                .show()
             finish()
             return
         }
@@ -56,9 +64,9 @@ class DogDetailActivity : AppCompatActivity() {
         binding.dog = dog
         binding.dogImage.load(dog.imageUrl)
         binding.closeButton.setOnClickListener {
-            if (isRecognition){
+            if (isRecognition) {
                 viewModel.addDogToUser(dog.id)
-            }else{
+            } else {
                 finish()
             }
         }
