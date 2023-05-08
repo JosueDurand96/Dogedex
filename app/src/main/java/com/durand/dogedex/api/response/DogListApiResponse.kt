@@ -1,6 +1,5 @@
 package com.durand.dogedex.api.response
 
-import android.webkit.ConsoleMessage
 import com.squareup.moshi.Json
 
 class DogListApiResponse(
