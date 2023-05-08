@@ -1,11 +1,11 @@
 @file:Suppress("SpellCheckingInspection")
 
-package com.durand.dogedex.api.response
+package com.durand.dogedex.api.dto
 
 
 import com.squareup.moshi.Json
 
-data class AddDogResponse(
+data class AddPetDTO(
     @field:Json(name = "caracter")
     val character: String,
     @field:Json(name = "color")
@@ -15,13 +15,13 @@ data class AddDogResponse(
     @field:Json(name = "especie")
     val species: String,
     @field:Json(name = "estado")
-    val state: String,
+    val state: Int,
     @field:Json(name = "esterilizado")
     val sterilized: String,
     @field:Json(name = "fechaHoraCreacion")
-    val createdAt: String?,
+    val createdAt: String? = null,
     @field:Json(name = "fechaHoraModificacion")
-    val updatedAt: String?,
+    val updatedAt: String? = null,
     @field:Json(name = "fechaNacimiento")
     val dateOfBirth: String,
     @field:Json(name = "genero")
@@ -29,7 +29,7 @@ data class AddDogResponse(
     @field:Json(name = "idFoto")
     val photoId: Int,
     @field:Json(name = "idMascota")
-    val petId: Int?,
+    val petId: Int? = null,
     @field:Json(name = "idRaza")
     val idRaza: Int,
     @field:Json(name = "idUsuario")

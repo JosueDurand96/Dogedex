@@ -1,27 +1,29 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.durand.dogedex.api.response.lostpetslist
 
 
 import com.squareup.moshi.Json
 
 data class LostPetDetailResponse(
-    @Json(name = "descripcion")
+    @field:Json(name = "descripcion")
     val description: String,
-    @Json(name = "estado")
+    @field:Json(name = "estado")
     val state: String,
-    @Json(name = "fechaHoraCreacion")
+    @field:Json(name = "fechaHoraCreacion")
     val createdAt: String,
-    @Json(name = "fechaHoraModificacion")
+    @field:Json(name = "fechaHoraModificacion")
     val updatedAt: String,
-    @Json(name = "fechaPerdida")
+    @field:Json(name = "fechaPerdida")
     val lostDate: String,
-    @Json(name = "idMascota")
+    @field:Json(name = "idMascota")
     val petId: Int,
-    @Json(name = "idPerdido")
+    @field:Json(name = "idPerdido")
     val lostId: Int,
-    @Json(name = "idUsuario")
+    @field:Json(name = "idUsuario")
     val userId: Int,
-    @Json(name = "latitud")
+    @field:Json(name = "latitud")
     val latitude: String,
-    @Json(name = "longitud")
+    @field:Json(name = "longitud")
     val longitude: String
 )

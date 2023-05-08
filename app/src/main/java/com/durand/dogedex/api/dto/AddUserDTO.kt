@@ -1,39 +1,41 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.durand.dogedex.api.dto
 
 
 import com.squareup.moshi.Json
 
 data class AddUserDTO(
-    @Json(name = "apellidos")
+    @field:Json(name = "apellidos")
     val lastname: String,
-    @Json(name = "contrasena")
+    @field:Json(name = "contrasena")
     val password: String,
-    @Json(name = "correoElectronico")
+    @field:Json(name = "correoElectronico")
     val email: String,
-    @Json(name = "direccion")
+    @field:Json(name = "direccion")
     val address: String,
-    @Json(name = "distrito")
+    @field:Json(name = "distrito")
     val district: String,
-    @Json(name = "estadoUsuario")
+    @field:Json(name = "estadoUsuario")
     val userState: String,
-    @Json(name = "fechaHoraCreacion")
+    @field:Json(name = "fechaHoraCreacion")
     val createdAt: String? = null,
-    @Json(name = "fechaHoraModificacion")
+    @field:Json(name = "fechaHoraModificacion")
     val updatedAt: String? = null,
-    @Json(name = "idUsuario")
+    @field:Json(name = "idUsuario")
     val userId: Int? = null,
-    @Json(name = "nombre")
+    @field:Json(name = "nombre")
     val name: String,
-    @Json(name = "numeroDocumento")
-    val dni: Int,
-    @Json(name = "numeroMovil")
+    @field:Json(name = "numeroDocumento")
+    val dni: Long,
+    @field:Json(name = "numeroMovil")
     val phone: String,
-    @Json(name = "tipoVivienda")
+    @field:Json(name = "tipoVivienda")
     val typeHouse: String,
-    @Json(name = "tipodocumento")
+    @field:Json(name = "tipodocumento")
     val docType: String,
-    @Json(name = "tratamientoDatos")
+    @field:Json(name = "tratamientoDatos")
     val dataProcessing: String,
-    @Json(name = "usuario")
+    @field:Json(name = "usuario")
     val user: String
 )

@@ -1,27 +1,29 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.durand.dogedex.api.response
 
 
 import com.squareup.moshi.Json
 
 data class AddBreedResponse(
-    @Json(name = "caracter")
+    @field:Json(name = "caracter")
     val character: String,
-    @Json(name = "descripcion")
+    @field:Json(name = "descripcion")
     val description: String,
-    @Json(name = "esPeligrosa")
+    @field:Json(name = "esPeligrosa")
     val isDangerous: String,
-    @Json(name = "estado")
+    @field:Json(name = "estado")
     val state: String,
-    @Json(name = "fechaHoraCreacion")
+    @field:Json(name = "fechaHoraCreacion")
     val createdAt: String,
-    @Json(name = "fechaHoraModificacion")
+    @field:Json(name = "fechaHoraModificacion")
     val updatedAt: String,
-    @Json(name = "idRaza")
+    @field:Json(name = "idRaza")
     val idRaza: Any,
-    @Json(name = "nombre")
+    @field:Json(name = "nombre")
     val name: String,
-    @Json(name = "procedencia")
+    @field:Json(name = "procedencia")
     val origin: String,
-    @Json(name = "tamano")
+    @field:Json(name = "tamano")
     val size: String
 )

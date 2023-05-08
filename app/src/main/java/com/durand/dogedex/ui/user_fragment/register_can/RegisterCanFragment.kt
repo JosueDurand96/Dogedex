@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.durand.dogedex.databinding.FragmentRegisterCanBinding
 
 class RegisterCanFragment : Fragment() {
@@ -23,9 +22,6 @@ class RegisterCanFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(RegisterCanViewModel::class.java)
-
         _binding = FragmentRegisterCanBinding.inflate(inflater, container, false)
         val itemsEspecie = listOf("Perro", "Gato", "Otro")
         val adapterEspecie = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsEspecie)
