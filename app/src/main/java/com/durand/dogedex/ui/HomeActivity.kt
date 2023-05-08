@@ -1,4 +1,4 @@
-package com.durand.dogedex
+package com.durand.dogedex.ui
 
 import android.os.Bundle
 import android.view.Menu
@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.durand.dogedex.R
 import com.durand.dogedex.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
@@ -37,7 +38,7 @@ class HomeActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+                R.id.nav_register_can,R.id.nav_register_hocio, R.id.nav_my_can_lost, R.id.nav_my_can_register, R.id.nav_can_report_lost, R.id.nav_close
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

@@ -17,10 +17,10 @@
             android:theme="@style/Theme.Dogedex"
             tools:targetApi="31">
         <activity
-                android:name=".HomeActivity"
+                android:name=".ui.HomeActivity"
                 android:exported="true"
-                android:label="@string/title_activity_home"
-                android:theme="@style/Theme.Dogedex.NoActionBar" >
+                android:theme="@style/Theme.Onboarding" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,20 +31,22 @@
                 android:name=".ui.ForgetPasswordActivity"
                 android:exported="false" />
         <activity
-                android:name=".ui.OnboardingActivity"
+                android:name=".ui.auth.OnboardingActivity"
                 android:exported="false"
                 android:theme="@style/Theme.Onboarding" />
         <activity
                 android:name=".ui.SplahActivity"
                 android:exported="true"
-                android:theme="@style/Theme.App.Starting"></activity>
+                android:theme="@style/Theme.App.Starting">
+
+        </activity>
         <activity
                 android:name=".ui.WholeImageActivity"
                 android:exported="false" />
         <activity
                 android:name=".ui.settings.SettingsActivity"
                 android:exported="false"
-                android:parentActivityName=".MainActivity"
+                android:parentActivityName=".ui.MainActivity"
                 android:theme="@style/Theme.Onboarding" />
         <activity
                 android:name=".ui.auth.LoginActivity"
@@ -57,13 +59,12 @@
         <activity
                 android:name=".ui.doglist.DogListActivity"
                 android:exported="false"
-                android:parentActivityName=".MainActivity"
+                android:parentActivityName=".ui.MainActivity"
                 android:theme="@style/Theme.Onboarding" />
         <activity
-                android:name=".MainActivity"
+                android:name=".ui.MainActivity"
                 android:exported="true"
                 android:theme="@style/Theme.Onboarding">
-
         </activity>
     </application>
 

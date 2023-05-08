@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui
+package com.durand.dogedex.ui.auth
 
 import android.content.Context
 import androidx.fragment.app.Fragment

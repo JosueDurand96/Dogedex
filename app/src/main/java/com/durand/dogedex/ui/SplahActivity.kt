@@ -4,9 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.durand.dogedex.R
 import com.durand.dogedex.databinding.ActivitySplahBinding
-import com.durand.dogedex.databinding.ActivityWholeImageBinding
 
 class SplahActivity : AppCompatActivity() {
 
@@ -21,7 +19,7 @@ class SplahActivity : AppCompatActivity() {
         screenSplash.setKeepOnScreenCondition {
             true
         }
-        val intent = Intent(this, OnboardingActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }

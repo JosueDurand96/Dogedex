@@ -1,4 +1,4 @@
-package com.durand.dogedex
+package com.durand.dogedex.ui
 
 import android.util.Log
 import okhttp3.Interceptor
@@ -11,7 +11,7 @@ object ApiServiceInterceptor: Interceptor {
     private var sessionToken :String?=null
 
     fun setSessionToken(sessionToken :String){
-        this.sessionToken = sessionToken
+        ApiServiceInterceptor.sessionToken = sessionToken
     }
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
@@ -22,7 +22,7 @@ object ApiServiceInterceptor: Interceptor {
                 throw RuntimeException("Need to be authenticated to performance")
             }else{
                 Log.d("josue", "sessionToken: $sessionToken")
-                requestBuilder.addHeader("AUTH_TOKEN",sessionToken!!)
+                requestBuilder.addHeader("AUTH_TOKEN", sessionToken!!)
             }
         }
         return chain.proceed(requestBuilder.build())

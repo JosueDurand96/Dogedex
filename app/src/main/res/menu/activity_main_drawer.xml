@@ -5,16 +5,30 @@
 
     <group android:checkableBehavior="single">
         <item
-                android:id="@+id/nav_home"
-                android:icon="@drawable/ic_menu_camera"
-                android:title="@string/menu_home" />
+                android:id="@+id/nav_register_can"
+                android:icon="@drawable/baseline_app_registration_24"
+                android:title="Registrar Can" />
         <item
-                android:id="@+id/nav_gallery"
-                android:icon="@drawable/ic_menu_gallery"
-                android:title="@string/menu_gallery" />
+                android:id="@+id/nav_register_hocio"
+                android:icon="@drawable/baseline_cruelty_free_24"
+                android:title="Registrar Hocico (biometrico)" />
         <item
-                android:id="@+id/nav_slideshow"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="@string/menu_slideshow" />
+                android:id="@+id/nav_my_can_lost"
+                android:icon="@drawable/baseline_directions_run_24"
+                android:title="Mi can perdido" />
+        <item
+                android:id="@+id/nav_my_can_register"
+                android:icon="@drawable/baseline_dialer_sip_24"
+                android:title="Mis canes registrados" />
+
+        <item
+                android:id="@+id/nav_can_report_lost"
+                android:icon="@drawable/baseline_display_settings_24"
+                android:title="Canes reportados perdidos" />
+
+        <item
+                android:id="@+id/nav_close"
+                android:icon="@drawable/baseline_close_24"
+                android:title="Salir" />
     </group>
 </menu>

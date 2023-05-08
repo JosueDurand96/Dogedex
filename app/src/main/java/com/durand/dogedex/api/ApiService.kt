@@ -1,6 +1,6 @@
 package com.durand.dogedex.api
 
-import com.durand.dogedex.ApiServiceInterceptor
+import com.durand.dogedex.ui.ApiServiceInterceptor
 import com.durand.dogedex.api.dto.AddDogToUserDTO
 import com.durand.dogedex.api.dto.LoginDTO
 import com.durand.dogedex.api.dto.SignUpDTO

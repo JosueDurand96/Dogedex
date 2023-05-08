@@ -1,4 +1,4 @@
-package com.durand.dogedex
+package com.durand.dogedex.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.durand.dogedex.R
 import com.durand.dogedex.api.ApiResponseStatus
 import com.durand.dogedex.api.User
 import com.durand.dogedex.api.response.Dog

@@ -1,4 +1,4 @@
-package com.durand.dogedex
+package com.durand.dogedex.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

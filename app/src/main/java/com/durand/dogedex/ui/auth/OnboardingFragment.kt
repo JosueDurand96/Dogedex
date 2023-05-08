@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui
+package com.durand.dogedex.ui.auth
 
 import android.os.Bundle
 import android.view.LayoutInflater

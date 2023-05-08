@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui
+package com.durand.dogedex.ui.auth
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,8 +8,6 @@ import android.widget.Button
 import androidx.viewpager2.widget.ViewPager2
 import com.durand.dogedex.R
 import com.durand.dogedex.databinding.ActivityOnboardingBinding
-import com.durand.dogedex.databinding.ActivitySplahBinding
-import com.durand.dogedex.ui.auth.LoginActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
