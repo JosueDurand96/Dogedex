@@ -1,53 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.user_fragment.register_hocico.RegisterHocicoFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
 
-    <ProgressBar
-            android:id="@+id/loadingWheel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
-            android:indeterminate="true" />
+    <data>
 
-    <androidx.camera.view.PreviewView
-            android:id="@+id/cameraPreview"
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="340dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
-            android:visibility="gone"
-            android:background="@drawable/baseline_add_a_photo_24"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            tools:context=".ui.user_fragment.register_hocico.RegisterHocicoFragment">
 
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/take_photo_fab"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="45dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginBottom="25dp"
-            android:background="@drawable/btn_blue_selector"
-            android:elevation="15dp"
-            android:text="Next"
-            android:textAllCaps="false"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cameraPreview" />
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".ui.MainActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.camera.view.PreviewView
+                    android:id="@+id/camera_preview"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="250dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/take_photo_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Registrar hocico"
+                    android:textColor="@color/black"
+                    android:background="@color/color_primary"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_baseline_photo_camera_24"
+                    tools:ignore="ContentDescription,HardcodedText"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/dog_list_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="16dp"
+                    android:visibility="gone"
+                    android:layout_toStartOf="@id/take_photo_fab"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_baseline_list_24"
+                    tools:ignore="ContentDescription,HardcodedText" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/settings_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="16dp"
+                    android:visibility="gone"
+                    android:layout_toEndOf="@id/take_photo_fab"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/ic_baseline_settings_24"
+                    tools:ignore="ContentDescription,HardcodedText" />
+
+            <ProgressBar
+                    android:id="@+id/loadingWheel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:indeterminate="true" />
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
