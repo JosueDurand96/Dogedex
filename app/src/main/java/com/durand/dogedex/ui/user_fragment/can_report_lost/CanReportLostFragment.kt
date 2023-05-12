@@ -6,45 +6,55 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.durand.dogedex.R
 import com.durand.dogedex.databinding.FragmentCanReportLostBinding
+import com.durand.dogedex.util.createLoadingDialog
 
 class CanReportLostFragment : Fragment() {
 
 
     private var _binding: FragmentCanReportLostBinding? = null
 
-    private lateinit var viewModel: CanReportLostViewModel
+    private val vm: CanReportLostViewModel by viewModels()
     private val binding get() = _binding!!
+
+    private val adapter by lazy {
+        CanReportLostAdapter()
+    }
+
+    private val loading by lazy {
+        requireContext().createLoadingDialog()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val viewModel = ViewModelProvider(this).get(CanReportLostViewModel::class.java)
+    ): View {
 
 
         _binding = FragmentCanReportLostBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // this creates a vertical layout Manager
         _binding!!.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        _binding!!.canReportLostRecyclerView.adapter = adapter
+        initObservers()
+        return root
+    }
 
-        // ArrayList of class ItemsViewModel
-        val data = ArrayList<ItemsViewModel>()
-
-        // This loop will create 20 Views containing
-        // the image with the count of view
-        for (i in 1..20) {
-            data.add(ItemsViewModel(R.drawable.dog_logo, "Item " + i))
+    private fun initObservers() {
+        vm.list.observe(viewLifecycleOwner) {
+            if (it != null) {
+                adapter.add(it.map { pet -> ItemsViewModel(R.drawable.dog_logo, pet.petId.toString(), pet.description) })
+            }
         }
 
-        // This will pass the ArrayList to our Adapter
-        val adapter = CanReportLostAdapter(data)
-
-        // Setting the Adapter with the recyclerview
-        _binding!!.canReportLostRecyclerView.adapter = adapter
-
-        return root
+        vm.loading.observe(viewLifecycleOwner) {
+            if (it) {
+                loading.show()
+            } else loading.dismiss()
+        }
     }
 }

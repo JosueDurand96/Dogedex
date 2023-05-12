@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.durand.dogedex.R
 
 
-data class ItemsViewModel(val image: Int, val text: String) {
+data class ItemsViewModel(val image: Int, val text: String, val description: String = "") {
 }
 
-class CanReportLostAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adapter<CanReportLostAdapter.ViewHolder>() {
+class CanReportLostAdapter(private val mList: MutableList<ItemsViewModel> = mutableListOf()) :
+    RecyclerView.Adapter<CanReportLostAdapter.ViewHolder>() {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,6 +35,7 @@ class CanReportLostAdapter(private val mList: List<ItemsViewModel>) : RecyclerVi
 
         // sets the text to the textview from our itemHolder class
         holder.textView.text = ItemsViewModel.text
+        holder.description.text = ItemsViewModel.description
 
     }
 
@@ -42,9 +44,16 @@ class CanReportLostAdapter(private val mList: List<ItemsViewModel>) : RecyclerVi
         return mList.size
     }
 
+    fun add(new: List<ItemsViewModel>) {
+        mList.clear()
+        mList.addAll(new)
+        notifyDataSetChanged()
+    }
+
     // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val imageView: ImageView = itemView.findViewById(R.id.photoImageView)
         val textView: TextView = itemView.findViewById(R.id.titleTextView)
+        val description: TextView = itemView.findViewById(R.id.descriptionTextView)
     }
 }

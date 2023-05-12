@@ -10,7 +10,7 @@ import com.durand.dogedex.R
 import com.durand.dogedex.ui.user_fragment.can_report_lost.ItemsViewModel
 
 
-class MyCanRegisterAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adapter<MyCanRegisterAdapter.ViewHolder>() {
+class MyCanRegisterAdapter(private val mList: MutableList<ItemsViewModel> = mutableListOf()) : RecyclerView.Adapter<MyCanRegisterAdapter.ViewHolder>() {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,6 +38,12 @@ class MyCanRegisterAdapter(private val mList: List<ItemsViewModel>) : RecyclerVi
     // return the number of the items in the list
     override fun getItemCount(): Int {
         return mList.size
+    }
+
+    fun add(new: List<ItemsViewModel>) {
+        mList.clear()
+        mList.addAll(new)
+        notifyDataSetChanged()
     }
 
     // Holds the views for adding it to image and text

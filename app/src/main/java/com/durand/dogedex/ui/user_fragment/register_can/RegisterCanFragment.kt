@@ -6,12 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.durand.dogedex.api.User
 import com.durand.dogedex.databinding.FragmentRegisterCanBinding
+import com.durand.dogedex.util.createLoadingDialog
 
 class RegisterCanFragment : Fragment() {
 
     private var _binding: FragmentRegisterCanBinding? = null
+
+    private val vm: RegisterCanViewModel by viewModels()
+
+    private val loading by lazy {
+        requireContext().createLoadingDialog()
+    }
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -26,7 +36,6 @@ class RegisterCanFragment : Fragment() {
         val itemsEspecie = listOf("Perro", "Gato", "Otro")
         val adapterEspecie = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsEspecie)
         _binding!!.especieAutoCompleteTextView.setAdapter(adapterEspecie)
-
         val itemsGenero = listOf("Macho", "Hembra")
         val adapterGenero =
             ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsGenero)
@@ -106,14 +115,45 @@ class RegisterCanFragment : Fragment() {
             R.layout.simple_spinner_dropdown_item,
             itemsrazonDeTenencia
         )
+        binding.vm = vm
+        binding.lifecycleOwner = viewLifecycleOwner
         _binding!!.razonDeTenenciaAutoCompleteTextView.setAdapter(adapterrazonDeTenencia)
-        val root: View = binding.root
+        getUserProfile()
+        initObservers()
+        return binding.root
+    }
 
-        return root
+    private fun initObservers() {
+        vm.event.observe(viewLifecycleOwner) {
+            when (it) {
+                is RegisterCanEvent.ShowError -> {
+                    Toast.makeText(requireContext(), it.msg, Toast.LENGTH_SHORT).show()
+                }
+
+                RegisterCanEvent.Success -> {
+
+                }
+                RegisterCanEvent.Loading -> {
+                    loading.show()
+                }
+                RegisterCanEvent.DismissLoading -> {
+                    loading.dismiss()
+                }
+
+                else -> {}
+            }
+        }
+
+    }
+
+    private fun getUserProfile() {
+        val loggedInUser: User? = User.getLoggedInUser(requireActivity())
+        vm.setUserProfile(loggedInUser)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
 }

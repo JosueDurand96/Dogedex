@@ -4,21 +4,24 @@ import android.Manifest
 import android.R
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.durand.dogedex.api.User
+import com.durand.dogedex.api.response.consultarmascotas.DetalleMascota
 import com.durand.dogedex.databinding.FragmentCanPerdidoBinding
 import com.durand.dogedex.util.LocationsUtils
 import com.durand.dogedex.util.LocationsUtils.Companion.locationFlow
+import com.durand.dogedex.util.createLoadingDialog
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -35,7 +38,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentCanPerdidoBinding? = null
     private lateinit var mMap: GoogleMap
-    private lateinit var vm: FragmentCanPerdidoViewModel
+    private val vm: CanPerdidoViewModel by viewModels()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -45,20 +48,54 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
+    private val loading by lazy {
+        requireContext().createLoadingDialog()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        vm = ViewModelProvider(this)[FragmentCanPerdidoViewModel::class.java]
-
         _binding = FragmentCanPerdidoBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        binding.activoAutoCompleteTextView
         val itemsEspecie = listOf("Activo", "Inactivo")
         val adapterEspecie = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsEspecie)
         _binding!!.activoAutoCompleteTextView.setAdapter(adapterEspecie)
+        binding.vm = vm
+        binding.lifecycleOwner = viewLifecycleOwner
+        setupObservers()
+        getUserProfile()
         return root
+    }
+
+    private fun setupObservers() {
+        vm.list.observe(viewLifecycleOwner) {
+            setMyPetsAdapter(it)
+        }
+
+        vm.loading.observe(viewLifecycleOwner) {
+            if (it) loading.show() else loading.dismiss()
+        }
+
+        vm.viewState.observe(viewLifecycleOwner) {
+            when (it) {
+                is CanPerdidoViewModel.CanPerdidoEvent.Error -> {
+                    Toast.makeText(requireContext(), it.msg, Toast.LENGTH_SHORT).show()
+                }
+
+                is CanPerdidoViewModel.CanPerdidoEvent.SuccessAgregarMascotaPerdida -> {
+                    Toast.makeText(requireContext(), it.msg, Toast.LENGTH_SHORT).show()
+                }
+
+                CanPerdidoViewModel.CanPerdidoEvent.None -> {}
+            }
+        }
+    }
+
+    private fun setMyPetsAdapter(list: List<DetalleMascota>) {
+        val adapterEspecie = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, list)
+        binding.mascota.setAdapter(adapterEspecie)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -133,8 +170,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
             .firstOrNull { it != null }
 
         location?.let {
-            // LOCATION
-            Log.e("GAA", "${it.longitude} ${it.latitude}")
+            vm.setCoordinates(latitude = it.latitude.toString(), longitude = it.longitude.toString())
         }
     }
 
@@ -151,6 +187,11 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
             }
         )
         if (hasPermissions) getCurrentPosition()
+    }
+
+    private fun getUserProfile() {
+        val loggedInUser: User? = User.getLoggedInUser(requireActivity())
+        vm.setUserProfile(loggedInUser)
     }
 }
 

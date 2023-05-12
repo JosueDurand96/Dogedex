@@ -1,47 +1,51 @@
 @file:Suppress("SpellCheckingInspection")
 
-package com.durand.dogedex.api.dto
+package com.durand.dogedex.api.response.consultarmascotas
 
 
 import com.squareup.moshi.Json
 
-data class AddPetDTO(
+data class DetalleMascota(
     @field:Json(name = "caracter")
-    val character: String,
+    val caracter: String,
     @field:Json(name = "color")
     val color: String,
     @field:Json(name = "distrito")
-    val district: String,
+    val distrito: String,
     @field:Json(name = "especie")
-    val species: String,
+    val especie: String,
     @field:Json(name = "estado")
-    val state: Int = 1,
+    val estado: String,
     @field:Json(name = "esterilizado")
-    val sterilized: String,
+    val esterilizado: String,
     @field:Json(name = "fechaHoraCreacion")
-    val createdAt: String? = null,
+    val fechaHoraCreacion: String,
     @field:Json(name = "fechaHoraModificacion")
-    val updatedAt: String? = null,
+    val fechaHoraModificacion: String,
     @field:Json(name = "fechaNacimiento")
-    val dateOfBirth: String,
+    val fechaNacimiento: String,
     @field:Json(name = "genero")
-    val gender: String,
+    val genero: String,
     @field:Json(name = "idFoto")
-    val photoId: Int? = null,
+    val idFoto: Int,
     @field:Json(name = "idMascota")
-    val petId: Int? = null,
+    val idMascota: Long,
     @field:Json(name = "idRaza")
-    val idRaza: Int? = null,
+    val idRaza: Int,
     @field:Json(name = "idUsuario")
-    val userId: Long,
+    val idUsuario: Int,
     @field:Json(name = "modoObtencion")
-    val obtainMode: String,
+    val modoObtencion: String,
     @field:Json(name = "nombre")
-    val name: String,
+    val nombre: String,
     @field:Json(name = "pelaje")
-    val coat: String,
+    val pelaje: String,
     @field:Json(name = "razonTenencia")
-    val tenancyReason: String,
+    val razonTenencia: String,
     @field:Json(name = "tamano")
-    val size: String
-)
+    val tamano: String
+) {
+    override fun toString(): String {
+        return nombre
+    }
+}

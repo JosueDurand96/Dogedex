@@ -5,9 +5,13 @@ package com.durand.dogedex.api
 import com.durand.dogedex.api.dto.AddBreedDTO
 import com.durand.dogedex.api.dto.AddPetDTO
 import com.durand.dogedex.api.dto.AddUserDTO
+import com.durand.dogedex.api.dto.AgregarMascotaPerdidaDTO
+import com.durand.dogedex.api.dto.ConsultarMascotaDTO
 import com.durand.dogedex.api.response.AddBreedResponse
 import com.durand.dogedex.api.response.AddDogResponse
 import com.durand.dogedex.api.response.AddUserResponse
+import com.durand.dogedex.api.response.agregar_mascota_perdida.AgregarMascotaPerdidaResponse
+import com.durand.dogedex.api.response.consultarmascotas.ConsultarMascotasResponse
 import com.durand.dogedex.api.response.dangerousdogs.DangerousPetListResponse
 import com.durand.dogedex.api.response.lostpetslist.LostPetsListResponse
 import com.durand.dogedex.ui.ApiServiceInterceptor
@@ -16,6 +20,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
 
@@ -57,5 +63,11 @@ interface NewApiService {
 
     @POST("agregarRazaMascota")
     suspend fun addBreed(@Body addBreedDTO: AddBreedDTO): AddBreedResponse
+
+    @POST("consultarMascotas")
+    suspend fun consultarMascotas(@Body idUsuario: ConsultarMascotaDTO): ConsultarMascotasResponse
+
+    @POST("agregarMascotaPerdida")
+    suspend fun agregarMascotaPerdida(@Body agregarMascotaPerdidaDTO: AgregarMascotaPerdidaDTO): AgregarMascotaPerdidaResponse
 
 }

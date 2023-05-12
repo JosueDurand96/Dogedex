@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.durand.dogedex.ui.user_fragment.register_can.RegisterCanViewModel" />
+    </data>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.user_fragment.register_can.RegisterCanFragment">
 
-    <ScrollView
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <RelativeLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <LinearLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     tools:ignore="UselessParent">
 
-                <TextView
+                    <TextView
                         android:id="@+id/textView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -31,7 +39,7 @@
                         android:textSize="28.5sp"
                         android:textStyle="bold" />
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/namePetTextInputLayout"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
@@ -45,17 +53,18 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView2">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/namePetTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.name}"
                             android:inputType="textAutoComplete"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="normal" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/nameTextInputLayout"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
@@ -67,19 +76,21 @@
                         app:boxBackgroundColor="@color/white"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView2">
+                        app:layout_constraintTop_toBottomOf="@+id/textView2"
+                        app:placeholderText="ej. 2023/06/04">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/nameTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="date"
+                            android:text="@={vm.formState.date}"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="normal" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/especieTextInputLayout"
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
@@ -92,14 +103,15 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/especieAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.specie}"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -111,14 +123,15 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/generoAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.gender}"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -130,15 +143,16 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/razaCaninaAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.race}"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
-                =
+                    </com.google.android.material.textfield.TextInputLayout>
+                    =
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -150,14 +164,15 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/tamanoAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.size}"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -169,14 +184,15 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/caracterAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.character}"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -188,33 +204,35 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/colorCanAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.color}"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="25dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="25dp"
-                        android:hint="Color del can"
+                        android:hint="Pelaje del can"
                         app:boxBackgroundColor="@color/white"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/pelajeAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.coat}"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -226,14 +244,15 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/esterilizadoAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.sterilized}"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -245,14 +264,15 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/distritoDondeResideAutoCompleteTextView"
                             android:layout_width="match_parent"
+                            android:text="@={vm.formState.district}"
                             android:layout_height="wrap_content"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -264,14 +284,15 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/modoDeObtencionAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.obtainMode}"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -283,14 +304,15 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <AutoCompleteTextView
+                        <AutoCompleteTextView
                             android:id="@+id/razonDeTenenciaAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:text="@={vm.formState.tenancyReason}"
                             android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <androidx.appcompat.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/confirmAppCompatButton"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -300,6 +322,7 @@
                         android:layout_marginBottom="25dp"
                         android:background="@drawable/btn_blue_selector"
                         android:elevation="15dp"
+                        android:onClick="@{() -> vm.registerCan()}"
                         android:text="Confirmar"
                         android:textAllCaps="false"
                         android:textColor="@color/black"
@@ -308,7 +331,8 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/userTextInputLayout" />
-            </LinearLayout>
-        </RelativeLayout>
-    </ScrollView>
-</RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </ScrollView>
+    </RelativeLayout>
+</layout>
