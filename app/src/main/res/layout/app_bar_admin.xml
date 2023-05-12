@@ -14,8 +14,8 @@
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/Theme.Dogedex.PopupOverlay"
+                android:background="@color/color_primary"
+                app:popupTheme="@color/color_primary"
                 android:layout_height="?attr/actionBarSize" />
 
     </com.google.android.material.appbar.AppBarLayout>
