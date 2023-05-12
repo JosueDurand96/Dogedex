@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui
+package com.durand.dogedex.ui.user_fragment
 
 import android.os.Bundle
 import android.view.Menu
@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.durand.dogedex.R
 import com.durand.dogedex.databinding.ActivityHomeBinding
 
-class UserActivity : AppCompatActivity() {
+class UserHome : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityHomeBinding

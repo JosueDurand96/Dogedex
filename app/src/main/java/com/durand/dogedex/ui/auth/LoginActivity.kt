@@ -9,7 +9,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import com.durand.dogedex.ui.UserActivity
+import com.durand.dogedex.ui.user_fragment.UserHome
 import com.durand.dogedex.R
 import com.durand.dogedex.api.ApiResponseStatus
 import com.durand.dogedex.api.User
@@ -53,7 +53,7 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
     }
 
     private fun startMainActivity(){
-        startActivity(Intent(this, UserActivity::class.java))
+        startActivity(Intent(this, UserHome::class.java))
         finish()
     }
 
