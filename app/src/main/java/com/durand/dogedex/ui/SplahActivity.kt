@@ -19,7 +19,7 @@ class SplahActivity : AppCompatActivity() {
         screenSplash.setKeepOnScreenCondition {
             true
         }
-        val intent = Intent(this, OnboardingActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
         finish()
     }

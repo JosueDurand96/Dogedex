@@ -6,27 +6,45 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.durand.dogedex.R
+import com.durand.dogedex.databinding.FragmentCanReportLostBinding
 
 class CanReportLostFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = CanReportLostFragment()
-    }
+
+    private var _binding: FragmentCanReportLostBinding? = null
 
     private lateinit var viewModel: CanReportLostViewModel
-
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_can_report_lost, container, false)
-    }
+        val viewModel = ViewModelProvider(this).get(CanReportLostViewModel::class.java)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CanReportLostViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
+        _binding = FragmentCanReportLostBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+        // this creates a vertical layout Manager
+        _binding!!.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // ArrayList of class ItemsViewModel
+        val data = ArrayList<ItemsViewModel>()
+
+        // This loop will create 20 Views containing
+        // the image with the count of view
+        for (i in 1..20) {
+            data.add(ItemsViewModel(R.drawable.dog_logo, "Item " + i))
+        }
+
+        // This will pass the ArrayList to our Adapter
+        val adapter = CanReportLostAdapter(data)
+
+        // Setting the Adapter with the recyclerview
+        _binding!!.canReportLostRecyclerView.adapter = adapter
+
+        return root
+    }
 }
