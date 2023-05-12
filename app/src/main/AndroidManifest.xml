@@ -23,19 +23,7 @@
         <activity
                 android:name=".ui.admin_fragment.AdminHome"
                 android:exported="false"
-                android:label="@string/title_activity_admin"
-                android:theme="@style/Theme.Dogedex.NoActionBar" />
-        <!--
-             TODO: Before you run your application, you need a Google Maps API key.
-
-             To get one, follow the directions here:
-
-                https://developers.google.com/maps/documentation/android-sdk/get-api-key
-
-             Once you have your API key (it starts with "AIza"), define a new property in your
-             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
-             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
-        -->
+                android:theme="@style/Theme.Onboarding"  />
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="AIzaSyDZesMoYh0NX3Y036zG2fHif5uwGYwGNwo" />
@@ -47,7 +35,7 @@
         <activity
                 android:name=".ui.user_fragment.UserHome"
                 android:exported="true"
-                android:theme="@style/Theme.Onboarding"></activity>
+                android:theme="@style/Theme.Onboarding" />
         <activity
                 android:name=".ui.ForgetPasswordActivity"
                 android:exported="false" />

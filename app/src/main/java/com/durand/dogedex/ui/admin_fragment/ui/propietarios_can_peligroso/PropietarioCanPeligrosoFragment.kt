@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui.admin_fragment.ui.slideshow
+package com.durand.dogedex.ui.admin_fragment.ui.propietarios_can_peligroso
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,12 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.durand.dogedex.databinding.FragmentSlideshowBinding
+import com.durand.dogedex.databinding.FragmentPropietarioCanPeligrosoBinding
 
-class SlideshowFragment : Fragment() {
+class PropietarioCanPeligrosoFragment : Fragment() {
 
-    private var _binding: FragmentSlideshowBinding? = null
+    private var _binding: FragmentPropietarioCanPeligrosoBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,16 +21,12 @@ class SlideshowFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val slideshowViewModel =
-            ViewModelProvider(this).get(SlideshowViewModel::class.java)
+       // val galleryViewModel = ViewModelProvider(this).get(GalleryViewModel::class.java)
 
-        _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
+        _binding = FragmentPropietarioCanPeligrosoBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textSlideshow
-        slideshowViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        val textView: TextView = binding.textGallery
         return root
     }
 
