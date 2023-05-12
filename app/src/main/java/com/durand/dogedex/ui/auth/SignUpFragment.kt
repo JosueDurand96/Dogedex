@@ -69,7 +69,6 @@ class SignUpFragment : Fragment() {
         }
 
         signUpFragmentActions.onSignUpFieldsValidated(email, password, passwordConfirmation)
-
     }
 
 

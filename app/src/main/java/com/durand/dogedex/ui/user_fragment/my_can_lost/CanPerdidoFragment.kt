@@ -50,8 +50,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        vm =
-            ViewModelProvider(this)[FragmentCanPerdidoViewModel::class.java]
+        vm = ViewModelProvider(this)[FragmentCanPerdidoViewModel::class.java]
 
         _binding = FragmentCanPerdidoBinding.inflate(inflater, container, false)
         val root: View = binding.root

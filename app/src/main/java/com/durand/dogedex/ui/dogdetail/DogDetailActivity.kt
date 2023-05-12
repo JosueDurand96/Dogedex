@@ -1,6 +1,7 @@
 package com.durand.dogedex.ui.dogdetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -27,7 +28,24 @@ class DogDetailActivity : AppCompatActivity() {
 
         val dog = intent?.extras?.getParcelable<Dog>(DOG_KEY)
         val isRecognition = intent?.extras?.getBoolean(IS_RECOGNITION_KEY, false) ?: false
+
+        Log.d("josue","name: "+dog!!.name)
+        Log.d("josue","imageUrl: "+dog!!.imageUrl)
+
+
         if (dog!!.name == "Doberman") {
+            binding.canDangerousTextView.visibility = View.VISIBLE
+            binding.canNoDangerousTextView.visibility = View.GONE
+        } else if (dog!!.name == "Boxer") {
+            binding.canDangerousTextView.visibility = View.VISIBLE
+            binding.canNoDangerousTextView.visibility = View.GONE
+        } else if (dog!!.name == "Rottweiler") {
+            binding.canDangerousTextView.visibility = View.VISIBLE
+            binding.canNoDangerousTextView.visibility = View.GONE
+        } else if (dog!!.name == "staffordshire_bullterrier") {
+            binding.canDangerousTextView.visibility = View.VISIBLE
+            binding.canNoDangerousTextView.visibility = View.GONE
+        } else if (dog!!.name == "great_dane") {
             binding.canDangerousTextView.visibility = View.VISIBLE
             binding.canNoDangerousTextView.visibility = View.GONE
         } else {
