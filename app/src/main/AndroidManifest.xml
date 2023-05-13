@@ -24,11 +24,7 @@
                 android:name=".ui.admin_fragment.AdminHome"
                 android:exported="true"
                 android:theme="@style/Theme.Onboarding">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
@@ -42,7 +38,11 @@
                 android:name=".ui.user_fragment.UserHome"
                 android:exported="true"
                 android:theme="@style/Theme.Onboarding" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
                 android:name=".ui.ForgetPasswordActivity"

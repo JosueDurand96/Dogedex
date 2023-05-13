@@ -1,16 +1,22 @@
 package com.durand.dogedex.ui.admin_fragment.ui.reporte_canes_registrados
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.durand.dogedex.api.User
+import com.durand.dogedex.api.response.list_mascotas.ListaMascotas
 import com.durand.dogedex.databinding.FragmentReportRegisterCanBinding
+import com.durand.dogedex.ui.user_fragment.my_can_lost.FragmentCanPerdidoViewModel
 
 class ReporteCanesRegistradosFragment : Fragment() {
 
     private var _binding: FragmentReportRegisterCanBinding? = null
+    private lateinit var viewModel: ReporteCanesRegistradosViewModel
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -21,30 +27,23 @@ class ReporteCanesRegistradosFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-       // val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ReporteCanesRegistradosViewModel::class.java)
 
         _binding = FragmentReportRegisterCanBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // this creates a vertical layout Manager
-        _binding!!.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        // ArrayList of class ItemsViewModel
-        val data = ArrayList<ItemsViewModelReporte>()
-
-        // This loop will create 20 Views containing
-        // the image with the count of view
-        for (i in 1..20) {
-            data.add(ItemsViewModelReporte("ss", "Item " + i))
+        viewModel.startReportCanesRegistrados()
+        viewModel.listCanes.observe(requireActivity()) {
+            listCan(it)
         }
 
-        // This will pass the ArrayList to our Adapter
-        val adapter = ReporteCanesRegistradosAdapter(data)
-
-        // Setting the Adapter with the recyclerview
-        _binding!!.canReportLostRecyclerView.adapter = adapter
-
         return root
+    }
+
+    private fun listCan(list: List<ListaMascotas>) {
+        _binding!!.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = ReporteCanesRegistradosAdapter(list)
+        _binding!!.canReportLostRecyclerView.adapter = adapter
     }
 
     override fun onDestroyView() {

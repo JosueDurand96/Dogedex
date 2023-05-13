@@ -7,12 +7,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.durand.dogedex.R
+import com.durand.dogedex.api.response.list_mascotas.ListaMascotas
 
 
-data class ItemsViewModelReporte(val image: String, val text: String) {
-}
+//data class ItemsViewModelReporte(val image: String, val text: String) {
+//}
 
-class ReporteCanesRegistradosAdapter(private val mList: List<ItemsViewModelReporte>) : RecyclerView.Adapter<ReporteCanesRegistradosAdapter.ViewHolder>() {
+class ReporteCanesRegistradosAdapter(private val mList: List<ListaMascotas>) : RecyclerView.Adapter<ReporteCanesRegistradosAdapter.ViewHolder>() {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,7 +34,12 @@ class ReporteCanesRegistradosAdapter(private val mList: List<ItemsViewModelRepor
         //holder.imageView.setImageResource(ItemsViewModel.image)
 
         // sets the text to the textview from our itemHolder class
-        holder.nameTextView.text = ItemsViewModel.text
+        holder.nameTextView.text = ItemsViewModel.nombre
+        holder.fechaNacimientoTextView.text = ItemsViewModel.fechaNacimiento
+        holder.razaTextView.text = ItemsViewModel.pelaje
+        holder.caracterTextView.text = ItemsViewModel.caracter
+        holder.colorTextView.text = ItemsViewModel.color
+        holder.distritoTextView.text = ItemsViewModel.distrito
 
     }
 
@@ -45,5 +51,13 @@ class ReporteCanesRegistradosAdapter(private val mList: List<ItemsViewModelRepor
     // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
+        val fechaNacimientoTextView: TextView = itemView.findViewById(R.id.fechaNacimientoTextView)
+        val razaTextView: TextView = itemView.findViewById(R.id.razaTextView)
+        val caracterTextView: TextView = itemView.findViewById(R.id.caracterTextView)
+        val colorTextView: TextView = itemView.findViewById(R.id.colorTextView)
+        val distritoTextView: TextView = itemView.findViewById(R.id.distritoTextView)
+
+
+
     }
 }

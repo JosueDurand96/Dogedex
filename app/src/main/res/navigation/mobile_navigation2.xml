@@ -12,8 +12,8 @@
 
     <fragment
             android:id="@+id/nav_propietario_can_peligroso"
-            android:name="com.durand.dogedex.ui.admin_fragment.ui.propietarios_can_peligroso.PropietarioCanPeligrosoFragment"
-            tools:layout="@layout/fragment_propietario_can_peligroso" />
+            android:name="com.durand.dogedex.ui.admin_fragment.ui.propietarios_can_peligroso.CanPeligrosoGeoFragment"
+            tools:layout="@layout/fragment_can_perdidos_geo" />
 
     <fragment
             android:id="@+id/nav_report_can_agresor"

@@ -4,7 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.admin_fragment.ui.propietarios_can_peligroso.PropietarioCanPeligrosoFragment">
+        tools:context=".ui.admin_fragment.ui.propietarios_can_peligroso.CanPeligrosoGeoFragment">
 
     <TextView
             android:id="@+id/text_gallery"
