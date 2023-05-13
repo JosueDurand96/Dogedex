@@ -16,9 +16,15 @@ import com.durand.dogedex.api.response.AddUserResponse
 import com.durand.dogedex.api.response.agregar_mascota_perdida.AgregarMascotaPerdidaResponse
 import com.durand.dogedex.api.response.consultarmascotas.DetalleMascota
 import com.durand.dogedex.api.response.dangerousdogs.PetProfileResponse
+import com.durand.dogedex.api.response.list_mascotas.ListaMascotas
 import com.durand.dogedex.api.response.lostpetslist.LostPetDetailResponse
 
 class NewRepository {
+
+
+    suspend fun getConsultarListaMascotas(): ApiResponseStatus<List<ListaMascotas>> = makeNetworkCall {
+        newApiService.getConsultarListaMascotas().listaMascotas
+    }
 
     suspend fun getDangerousDogs(): ApiResponseStatus<List<PetProfileResponse>> = makeNetworkCall {
         newApiService.getDangerousPets().list

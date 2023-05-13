@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mobile_navigation2"
+        app:startDestination="@+id/nav_report_register_can">
+
+    <fragment
+            android:id="@+id/nav_report_register_can"
+            android:name="com.durand.dogedex.ui.admin_fragment.ui.reporte_canes_registrados.ReporteCanesRegistradosFragment"
+            tools:layout="@layout/fragment_report_register_can" />
+
+    <fragment
+            android:id="@+id/nav_propietario_can_peligroso"
+            android:name="com.durand.dogedex.ui.admin_fragment.ui.propietarios_can_peligroso.CanPeligrosoGeoFragment"
+            tools:layout="@layout/fragment_can_perdidos_geo" />
+
+    <fragment
+            android:id="@+id/nav_report_can_agresor"
+            android:name="com.durand.dogedex.ui.admin_fragment.ui.reportar_can_agresor.ReportarCanAgresorFragment"
+            tools:layout="@layout/fragment_report_can_agresor" />
+
+    <fragment
+            android:id="@+id/nav_consult_incidencias_can"
+            android:name="com.durand.dogedex.ui.admin_fragment.ui.consultar_incidencias_can.ConsultarIncidenciasCanFragment"
+            tools:layout="@layout/fragment_consultar_incidencias_can" />
+    <fragment
+            android:id="@+id/nav_edit_roles_sistema"
+            android:name="com.durand.dogedex.ui.admin_fragment.ui.editar_roles_sistema.EditarRolesSistemaFragment"
+            tools:layout="@layout/fragment_editar_roles_sistema" />
+</navigation>

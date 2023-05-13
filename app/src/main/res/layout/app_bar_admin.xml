@@ -4,7 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.user_fragment.UserHome">
+        tools:context=".ui.admin_fragment.AdminHome">
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_height="wrap_content"
@@ -15,11 +15,11 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:background="@color/color_primary"
-                app:popupTheme="@style/Theme.Dogedex.PopupOverlay"
+                app:popupTheme="@color/color_primary"
                 android:layout_height="?attr/actionBarSize" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_home" />
+    <include layout="@layout/content_admin" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

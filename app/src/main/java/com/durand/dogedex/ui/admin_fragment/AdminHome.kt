@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui
+package com.durand.dogedex.ui.admin_fragment
 
 import android.os.Bundle
 import android.view.Menu
@@ -12,43 +12,39 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.durand.dogedex.R
-import com.durand.dogedex.databinding.ActivityHomeBinding
+import com.durand.dogedex.databinding.ActivityAdminBinding
 
-class HomeActivity : AppCompatActivity() {
+class AdminHome : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityHomeBinding
+    private lateinit var binding: ActivityAdminBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityHomeBinding.inflate(layoutInflater)
+        binding = ActivityAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.appBarHome.toolbar)
+        setSupportActionBar(binding.appBarAdmin.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_content_home)
+        val navController = findNavController(R.id.nav_host_fragment_content_admin)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_register_can,R.id.nav_register_hocio, R.id.nav_my_can_lost, R.id.nav_my_can_register, R.id.nav_can_report_lost, R.id.nav_close
+                R.id.nav_report_register_can, R.id.nav_propietario_can_peligroso, R.id.nav_report_can_agresor,
+                R.id.nav_consult_incidencias_can, R.id.nav_edit_roles_sistema, R.id.nav_close
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.home, menu)
-        return true
-    }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_home)
+        val navController = findNavController(R.id.nav_host_fragment_content_admin)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }

@@ -60,4 +60,5 @@
     <string name="password_user_incorrect">Password or user incorrect</string>
     <string name="error_adding_dog">Tuvimos un problema al agregar un perrito!</string>
     <string name="camera_permission">permisso</string>
+    <string name="title_activity_admin">AdminActivity</string>
 </resources>

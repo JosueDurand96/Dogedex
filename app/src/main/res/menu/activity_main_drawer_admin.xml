@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_report_register_can"
+                android:icon="@drawable/baseline_report_24"
+                android:title="Reporte canes registrados" />
+        <item
+                android:id="@+id/nav_propietario_can_peligroso"
+                android:icon="@drawable/baseline_add_location_alt_24"
+                android:title="Canes perdidos (Geo)" />
+        <item
+                android:id="@+id/nav_report_can_agresor"
+                android:icon="@drawable/baseline_app_blocking_24"
+                android:title="Reportar can agresor" />
+        <item
+                android:id="@+id/nav_consult_incidencias_can"
+                android:icon="@drawable/baseline_dialer_sip_24"
+                android:title="Consultar incidencias de can " />
+
+        <item
+                android:id="@+id/nav_edit_roles_sistema"
+                android:icon="@drawable/baseline_display_settings_24"
+                android:title="Editar Roles del sistema" />
+
+        <item
+                android:id="@+id/nav_close"
+                android:icon="@drawable/baseline_close_24"
+                android:title="Salir" />
+    </group>
+</menu>

@@ -13,6 +13,7 @@ import com.durand.dogedex.api.response.AddUserResponse
 import com.durand.dogedex.api.response.agregar_mascota_perdida.AgregarMascotaPerdidaResponse
 import com.durand.dogedex.api.response.consultarmascotas.ConsultarMascotasResponse
 import com.durand.dogedex.api.response.dangerousdogs.DangerousPetListResponse
+import com.durand.dogedex.api.response.list_mascotas.ListMascotasMasterResponse
 import com.durand.dogedex.api.response.lostpetslist.LostPetsListResponse
 import com.durand.dogedex.ui.ApiServiceInterceptor
 import okhttp3.OkHttpClient
@@ -48,6 +49,9 @@ val newApiService: NewApiService by lazy {
 }
 
 interface NewApiService {
+
+    @POST("consultarListaMascotas")
+    suspend fun getConsultarListaMascotas(): ListMascotasMasterResponse
 
     @POST("consultarListaRazasMascotasPeligrosas")
     suspend fun getDangerousPets(): DangerousPetListResponse
