@@ -100,7 +100,7 @@
                             android:id="@+id/password_edit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="number"
+                            android:inputType="textAutoComplete"
                             android:maxLength="8"
                             android:textColor="@color/black"
                             android:textSize="16sp"

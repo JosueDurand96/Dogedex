@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.durand.dogedex.databinding.FragmentSignUpBinding
-import com.durand.dogedex.util.isValidEmail
 
 class SignUpFragment : Fragment() {
 
@@ -47,10 +46,10 @@ class SignUpFragment : Fragment() {
         binding.passwordInput.error = ""
         binding.confirmPasswordInput.error = ""
         val email = binding.emailEdit.text.toString()
-        if (!isValidEmail(email)){
+  /*      if (!isValidEmail(email)){
             binding.emailInput.error = "Email is not valid!"
             return
-        }
+        }*/
 
         val password = binding.passwordEdit.text.toString()
         if (password.isEmpty()){

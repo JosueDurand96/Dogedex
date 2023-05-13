@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui
+package com.durand.dogedex.ui.forget_password
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -23,6 +23,7 @@ import com.durand.dogedex.api.response.Dog
 import com.durand.dogedex.databinding.ActivityMainBinding
 import com.durand.dogedex.machinelearning.Classifier
 import com.durand.dogedex.machinelearning.DogRecognition
+import com.durand.dogedex.ui.ApiServiceInterceptor
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity.Companion.DOG_KEY

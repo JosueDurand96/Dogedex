@@ -1,7 +1,6 @@
 package com.durand.dogedex.ui.user_fragment.register_hocico
 
 import android.Manifest
-import android.R
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -28,7 +26,7 @@ import com.durand.dogedex.databinding.FragmentRegisterHocicoBinding
 import com.durand.dogedex.machinelearning.Classifier
 import com.durand.dogedex.machinelearning.DogRecognition
 import com.durand.dogedex.ui.ApiServiceInterceptor
-import com.durand.dogedex.ui.MainViewModel
+import com.durand.dogedex.ui.forget_password.MainViewModel
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity
 import com.durand.dogedex.ui.settings.SettingsActivity

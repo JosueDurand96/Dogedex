@@ -8,9 +8,16 @@ import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.api.ApiResponseStatus
 import com.durand.dogedex.api.repository.AuthRepository
 import com.durand.dogedex.api.User
+import com.durand.dogedex.api.dto.AddLoginDTO
+import com.durand.dogedex.api.repository.NewRepository
+import com.durand.dogedex.api.response.LoginMasterResponse
+import com.durand.dogedex.api.response.list_mascotas.ListaMascotas
 import kotlinx.coroutines.launch
 
-class AuthViewModel : ViewModel() {
+class AuthViewModel(
+    private val repository: NewRepository = NewRepository()
+) : ViewModel() {
+
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User>
@@ -22,14 +29,40 @@ class AuthViewModel : ViewModel() {
 
     private val authRepository = AuthRepository()
 
-    fun login(email: String,password: String){
-        Log.d("josue","email: $email" )
-        Log.d("josue","password: $password" )
+
+    private val _login = MutableLiveData<LoginMasterResponse>()
+
+    val login: LiveData<LoginMasterResponse> = _login
+
+    fun onLogin(addLoginDTO: AddLoginDTO) = viewModelScope.launch {
+        try {
+            when (val res: ApiResponseStatus<LoginMasterResponse> = repository.getLogin(addLoginDTO)) {
+                is ApiResponseStatus.Error -> {
+                    Log.d("josue", "Error")
+                }
+                is ApiResponseStatus.Loading -> {
+                    Log.d("josue", "Loading")
+                }
+                is ApiResponseStatus.Success -> {
+                    Log.d("josue", "Success")
+                    _login.postValue(res.data!!)
+                    Log.d("josue", "list ${res.data}")
+                }
+            }
+        } catch (e: Exception) {
+
+        }
+    }
+
+    fun login(email: String, password: String) {
+        Log.d("josue", "email: $email")
+        Log.d("josue", "password: $password")
         viewModelScope.launch {
             _status.value = ApiResponseStatus.Loading()
             handleResponseStatus(authRepository.login(email, password))
         }
     }
+
     fun onSignUp(
         email: String,
         password: String,
@@ -47,7 +80,6 @@ class AuthViewModel : ViewModel() {
         }
         _status.value = apiResponseStatus
     }
-
 
 
 }

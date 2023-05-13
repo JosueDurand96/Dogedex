@@ -2,14 +2,11 @@
 
 package com.durand.dogedex.api
 
-import com.durand.dogedex.api.dto.AddBreedDTO
-import com.durand.dogedex.api.dto.AddPetDTO
-import com.durand.dogedex.api.dto.AddUserDTO
-import com.durand.dogedex.api.dto.AgregarMascotaPerdidaDTO
-import com.durand.dogedex.api.dto.ConsultarMascotaDTO
+import com.durand.dogedex.api.dto.*
 import com.durand.dogedex.api.response.AddBreedResponse
 import com.durand.dogedex.api.response.AddDogResponse
 import com.durand.dogedex.api.response.AddUserResponse
+import com.durand.dogedex.api.response.LoginMasterResponse
 import com.durand.dogedex.api.response.agregar_mascota_perdida.AgregarMascotaPerdidaResponse
 import com.durand.dogedex.api.response.consultarmascotas.ConsultarMascotasResponse
 import com.durand.dogedex.api.response.dangerousdogs.DangerousPetListResponse
@@ -21,8 +18,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
 
@@ -49,6 +44,9 @@ val newApiService: NewApiService by lazy {
 }
 
 interface NewApiService {
+
+    @POST("autenticarUsuario")
+    suspend fun getLogin(@Body addLoginDTO: AddLoginDTO): LoginMasterResponse
 
     @POST("consultarListaMascotas")
     suspend fun getConsultarListaMascotas(): ListMascotasMasterResponse

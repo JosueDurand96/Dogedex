@@ -10,7 +10,7 @@
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.MainActivity">
+            tools:context=".ui.forget_password.MainActivity">
 
         <androidx.camera.view.PreviewView
                 android:id="@+id/camera_preview"

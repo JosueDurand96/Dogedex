@@ -1,7 +1,6 @@
 package com.durand.dogedex.ui.admin_fragment.ui.reporte_canes_registrados
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.durand.dogedex.api.User
 import com.durand.dogedex.api.response.list_mascotas.ListaMascotas
 import com.durand.dogedex.databinding.FragmentReportRegisterCanBinding
-import com.durand.dogedex.ui.user_fragment.my_can_lost.FragmentCanPerdidoViewModel
 
 class ReporteCanesRegistradosFragment : Fragment() {
 

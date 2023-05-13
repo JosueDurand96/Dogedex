@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui
+package com.durand.dogedex.ui.forget_password
 
 import android.net.Uri
 import android.os.Bundle

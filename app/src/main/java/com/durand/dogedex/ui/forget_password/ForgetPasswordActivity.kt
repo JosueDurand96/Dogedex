@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui
+package com.durand.dogedex.ui.forget_password
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

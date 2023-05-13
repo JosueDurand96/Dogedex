@@ -44,8 +44,8 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
             user ->
             if(user != null){
                 Log.d("josue","user: startMainActivity" )
-                User.setLoggedInUser(this, user)
-                startMainActivity()
+
+               // startMainActivity()
             }else{
                 Log.d("josue","user: no" )
             }
@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
     }
 
     override fun onRegisterButtonClick() {
-        findNavController(R.id.nav_host_fragment).navigate(LoginFragmentDirections.actionLoginFragmentToSignUpFragment())
+        //findNavController(R.id.nav_host_fragment).navigate(LoginFragmentDirections.actionLoginFragmentToSignUpFragment())
     }
 
     override fun onLoginFieldsValidated(email: String, password: String) {

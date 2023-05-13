@@ -82,11 +82,7 @@ class DogDetailActivity : AppCompatActivity() {
         binding.dog = dog
         binding.dogImage.load(dog.imageUrl)
         binding.closeButton.setOnClickListener {
-            if (isRecognition) {
-                viewModel.addDogToUser(dog.id)
-            } else {
-                finish()
-            }
+            finish()
         }
     }
 }
