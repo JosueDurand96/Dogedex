@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 
 class User(
-    val id: Long,
+    val id: Int,
     val email: String,
     val authenticationToken: String,
 ) {
@@ -18,7 +18,7 @@ class User(
 
             activity.getSharedPreferences(AUTH_PREFS, Context.MODE_PRIVATE).also {
                 it.edit()
-                    .putLong(ID_KEY, user.id)
+                    .putInt(ID_KEY, user.id)
                     .putString(EMAIL_KEY, user.email)
                     .putString(AUTH_TOKEN_KEY, user.authenticationToken)
                     .apply()
@@ -28,8 +28,8 @@ class User(
         fun getLoggedInUser(activity: Activity): User? {
             val prefs =
                 activity.getSharedPreferences(AUTH_PREFS, Context.MODE_PRIVATE) ?: return null
-            val userId = prefs.getLong(ID_KEY, 0)
-            if (userId == 0L){
+            val userId = prefs.getInt(ID_KEY, 0)
+            if (userId == 0){
                 return null
             }
             val user = User(

@@ -4,6 +4,7 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.durand.dogedex.BR
 import com.durand.dogedex.api.dto.AddPetDTO
+import com.durand.dogedex.api.dto.RegisterCanRequest
 
 class RegisterCanForm : BaseObservable() {
 
@@ -113,21 +114,22 @@ class RegisterCanForm : BaseObservable() {
                 && size.isNotEmpty()
     }
 
-    fun toDto(userId: Long): AddPetDTO {
-        return AddPetDTO(
-            character = character,
+    fun toDto(userId: Int ): RegisterCanRequest {
+        return RegisterCanRequest(
+            caracter = character,
             color = color,
-            district = district,
-            species = specie,
-            sterilized = sterilized,
-            dateOfBirth = date,
-            gender = gender,
-            obtainMode = obtainMode,
-            name = name,
-            coat = coat,
-            tenancyReason = tenancyReason,
-            size = size,
-            userId = userId,
+            distrito = district,
+            especie = specie,
+            esterilizado = sterilized,
+            fechaNacimiento = date,
+            genero = gender,
+            modoObtencion = obtainMode,
+            nombre = name,
+            pelaje = coat,
+            razonTenencia = tenancyReason,
+            tamano = size,
+            idUsuario = userId,
+            idRaza = 28
         )
     }
 

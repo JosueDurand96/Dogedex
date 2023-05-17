@@ -13,9 +13,9 @@ data class AgregarMascotaPerdidaDTO(
     @field:Json(name = "fechaPerdida")
     val fechaPerdida: String,
     @field:Json(name = "idMascota")
-    val idMascota: Long,
+    val idMascota: Int,
     @field:Json(name = "idUsuario")
-    val idUsuario: Long,
+    val idUsuario: Int,
     @field:Json(name = "latitud")
     val latitud: String,
     @field:Json(name = "longitud")

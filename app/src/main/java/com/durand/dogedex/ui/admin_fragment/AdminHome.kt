@@ -1,7 +1,11 @@
 package com.durand.dogedex.ui.admin_fragment
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -13,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.durand.dogedex.R
 import com.durand.dogedex.databinding.ActivityAdminBinding
+import com.durand.dogedex.ui.auth.LoginActivity
 
 class AdminHome : AppCompatActivity() {
 
@@ -46,5 +51,47 @@ class AdminHome : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_admin)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private var doubleBackToExitPressedOnce = false
+    private val mHandler = Handler()
+
+
+    private val mRunnable = Runnable { doubleBackToExitPressedOnce = false }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mHandler != null) {
+            mHandler.removeCallbacks(mRunnable)
+        }
+    }
+
+
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("¿Desea volver al Inicio?")
+            builder.setTitle("Patitas seguras!")
+            builder.setPositiveButton(
+                "Si"
+            ) { dialog, which ->
+                startActivity(
+                    Intent(
+                        this@AdminHome, LoginActivity::class.java
+                    )
+                )
+                finish()
+            }
+            builder.setNegativeButton(
+                "No"
+            ) { dialog, which -> dialog.cancel() }
+            val dialog = builder.create()
+            dialog.show()
+            return
+        }
+        this.doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "Por favor presione dos veces para salir", Toast.LENGTH_SHORT).show()
+        mHandler.postDelayed(mRunnable, 2000)
     }
 }

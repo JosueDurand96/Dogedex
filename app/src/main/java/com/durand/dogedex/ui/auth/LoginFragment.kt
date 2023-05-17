@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.durand.dogedex.api.User
@@ -48,10 +49,11 @@ class LoginFragment : Fragment() {
         }
 
         viewModel.login.observe(requireActivity()) {
-
-            User.setLoggedInUser(requireActivity(), User(it.idUsuario.toLong(), it.correoElectronico,""))
-            Log.d("login", "nombre: " + it.nombre)
-            Log.d("login", "tipoUsuario: " + it.tipoUsuario)
+            Toast.makeText(requireContext(), "Bienvenido ${it.nombre}!", Toast.LENGTH_SHORT).show()
+            User.setLoggedInUser(requireActivity(), User(it.idUsuario, it.correoElectronico,""))
+            Log.d("josue", "nombre: " + it.idUsuario.toString())
+            Log.d("josue", "nombre: " + it.nombre)
+            Log.d("josue", "tipoUsuario: " + it.tipoUsuario)
             if (it.tipoUsuario == "U") {
                 val intent = Intent(requireContext(), UserHome::class.java)
                 startActivity(intent)

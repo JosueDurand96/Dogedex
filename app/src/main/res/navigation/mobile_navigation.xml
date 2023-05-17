@@ -29,4 +29,10 @@
             android:id="@+id/nav_can_report_lost"
             android:name="com.durand.dogedex.ui.user_fragment.can_report_lost.CanReportLostFragment"
             tools:layout="@layout/fragment_can_report_lost" />
+
+    <fragment
+            android:id="@+id/nav_close"
+            android:name="com.durand.dogedex.ui.CloseFragment"
+            tools:layout="@layout/fragment_close" />
+
 </navigation>

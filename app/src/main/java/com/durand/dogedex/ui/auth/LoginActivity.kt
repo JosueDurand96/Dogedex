@@ -34,8 +34,7 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
                 is ApiResponseStatus.Loading -> binding.loadingWheel.visibility = View.VISIBLE
                 is ApiResponseStatus.Success -> {
                     binding.loadingWheel.visibility = View.GONE
-                    Toast.makeText(this, "Se cargaron los datos correctamente!", Toast.LENGTH_SHORT)
-                        .show()
+
                 }
             }
         }
@@ -83,5 +82,9 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
         Log.d("josue","password: $password")
         Log.d("josue","passwordConfirmation: $passwordConfirmation")
         viewModel.onSignUp(email, password, passwordConfirmation)
+    }
+
+    override fun onBackPressed() {
+        finish()
     }
 }

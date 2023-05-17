@@ -43,7 +43,9 @@ data class DetalleMascota(
     @field:Json(name = "razonTenencia")
     val razonTenencia: String,
     @field:Json(name = "tamano")
-    val tamano: String
+    val tamano: String,
+    @field:Json(name = "foto")
+    val foto: String
 ) {
     override fun toString(): String {
         return nombre

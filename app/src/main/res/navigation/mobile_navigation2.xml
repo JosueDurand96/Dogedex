@@ -28,4 +28,9 @@
             android:id="@+id/nav_edit_roles_sistema"
             android:name="com.durand.dogedex.ui.admin_fragment.ui.editar_roles_sistema.EditarRolesSistemaFragment"
             tools:layout="@layout/fragment_editar_roles_sistema" />
+
+    <fragment
+            android:id="@+id/nav_close"
+            android:name="com.durand.dogedex.ui.CloseFragment"
+            tools:layout="@layout/fragment_close" />
 </navigation>

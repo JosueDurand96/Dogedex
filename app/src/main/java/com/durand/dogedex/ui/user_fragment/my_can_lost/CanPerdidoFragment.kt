@@ -4,6 +4,7 @@ import android.Manifest
 import android.R
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.durand.dogedex.api.User
+import com.durand.dogedex.api.response.consultar_mascotas.ConsultarDetalleMascota
 import com.durand.dogedex.api.response.consultarmascotas.DetalleMascota
 import com.durand.dogedex.databinding.FragmentCanPerdidoBinding
 import com.durand.dogedex.util.LocationsUtils
@@ -93,7 +95,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun setMyPetsAdapter(list: List<DetalleMascota>) {
+    private fun setMyPetsAdapter(list: List<ConsultarDetalleMascota>) {
         val adapterEspecie = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, list)
         binding.mascota.setAdapter(adapterEspecie)
     }
@@ -107,7 +109,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-12.014190, -77.030687)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Holiiii"))
+        mMap.addMarker(MarkerOptions().position(sydney).title("Hola"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 

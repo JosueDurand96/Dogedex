@@ -8,10 +8,12 @@ import com.durand.dogedex.api.response.AddDogResponse
 import com.durand.dogedex.api.response.AddUserResponse
 import com.durand.dogedex.api.response.LoginMasterResponse
 import com.durand.dogedex.api.response.agregar_mascota_perdida.AgregarMascotaPerdidaResponse
+import com.durand.dogedex.api.response.consultar_mascotas.ConsultarMascotasMasterResponse
 import com.durand.dogedex.api.response.consultarmascotas.ConsultarMascotasResponse
 import com.durand.dogedex.api.response.dangerousdogs.DangerousPetListResponse
 import com.durand.dogedex.api.response.list_mascotas.ListMascotasMasterResponse
 import com.durand.dogedex.api.response.lostpetslist.LostPetsListResponse
+import com.durand.dogedex.api.response.registar_can.RegisterCanResponse
 import com.durand.dogedex.ui.ApiServiceInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -55,7 +57,7 @@ interface NewApiService {
     suspend fun getDangerousPets(): DangerousPetListResponse
 
     @POST("agregarMascota")
-    suspend fun addPet(@Body addPetDTO: AddPetDTO): AddDogResponse
+    suspend fun addPet(@Body addPetDTO: RegisterCanRequest): RegisterCanResponse
 
     @POST("agregarUsuario")
     suspend fun addUser(@Body addUserDTO: AddUserDTO): AddUserResponse
@@ -67,7 +69,7 @@ interface NewApiService {
     suspend fun addBreed(@Body addBreedDTO: AddBreedDTO): AddBreedResponse
 
     @POST("consultarMascotas")
-    suspend fun consultarMascotas(@Body idUsuario: ConsultarMascotaDTO): ConsultarMascotasResponse
+    suspend fun consultarMascotas(@Body idUsuario: ConsultarMascotaDTO): ConsultarMascotasMasterResponse
 
     @POST("agregarMascotaPerdida")
     suspend fun agregarMascotaPerdida(@Body agregarMascotaPerdidaDTO: AgregarMascotaPerdidaDTO): AgregarMascotaPerdidaResponse

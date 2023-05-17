@@ -11,10 +11,12 @@ import com.durand.dogedex.api.response.AddDogResponse
 import com.durand.dogedex.api.response.AddUserResponse
 import com.durand.dogedex.api.response.LoginMasterResponse
 import com.durand.dogedex.api.response.agregar_mascota_perdida.AgregarMascotaPerdidaResponse
+import com.durand.dogedex.api.response.consultar_mascotas.ConsultarDetalleMascota
 import com.durand.dogedex.api.response.consultarmascotas.DetalleMascota
 import com.durand.dogedex.api.response.dangerousdogs.PetProfileResponse
 import com.durand.dogedex.api.response.list_mascotas.ListaMascotas
 import com.durand.dogedex.api.response.lostpetslist.LostPetDetailResponse
+import com.durand.dogedex.api.response.registar_can.RegisterCanResponse
 
 class NewRepository {
 
@@ -30,7 +32,7 @@ class NewRepository {
         newApiService.getDangerousPets().list
     }
 
-    suspend fun addPet(addPetDTO: AddPetDTO): ApiResponseStatus<AddDogResponse> = makeNetworkCall {
+    suspend fun addPet(addPetDTO: RegisterCanRequest): ApiResponseStatus<RegisterCanResponse> = makeNetworkCall {
         newApiService.addPet(addPetDTO)
     }
 
@@ -46,7 +48,7 @@ class NewRepository {
         newApiService.addBreed(addBreedDTO)
     }
 
-    suspend fun consultarMascotasPorId(idUsuario: Long): ApiResponseStatus<List<DetalleMascota>> = makeNetworkCall {
+    suspend fun consultarMascotasPorId(idUsuario: Int): ApiResponseStatus<List<ConsultarDetalleMascota>> = makeNetworkCall {
         newApiService.consultarMascotas(ConsultarMascotaDTO(idUsuario)).lista
     }
 

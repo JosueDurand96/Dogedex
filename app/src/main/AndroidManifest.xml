@@ -50,11 +50,7 @@
                 android:name=".ui.SplahActivity"
                 android:exported="true"
                 android:theme="@style/Theme.App.Starting">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
                 android:name=".ui.forget_password.WholeImageActivity"
@@ -66,8 +62,14 @@
                 android:theme="@style/Theme.Onboarding" />
         <activity
                 android:name=".ui.auth.LoginActivity"
-                android:exported="false"
-                android:theme="@style/Theme.Onboarding" />
+                android:exported="true"
+                android:theme="@style/Theme.Onboarding" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
                 android:name=".ui.dogdetail.DogDetailActivity"
                 android:exported="false"

@@ -1,17 +1,22 @@
 package com.durand.dogedex.ui.user_fragment
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
-import com.google.android.material.navigation.NavigationView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
 import com.durand.dogedex.R
 import com.durand.dogedex.databinding.ActivityHomeBinding
+import com.durand.dogedex.ui.auth.LoginActivity
+import com.google.android.material.navigation.NavigationView
 
 class UserHome : AppCompatActivity() {
 
@@ -50,8 +55,45 @@ class UserHome : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_home)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+    private var doubleBackToExitPressedOnce = false
+    private val mHandler = Handler()
+
+
+    private val mRunnable = Runnable { doubleBackToExitPressedOnce = false }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mHandler != null) {
+            mHandler.removeCallbacks(mRunnable)
+        }
+    }
+
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        if (doubleBackToExitPressedOnce) {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("¿Desea volver al Inicio?")
+            builder.setTitle("Patitas seguras!")
+            builder.setPositiveButton(
+                "Si"
+            ) { dialog, which ->
+                startActivity(
+                    Intent(
+                        this@UserHome, LoginActivity::class.java
+                    )
+                )
+                finish()
+            }
+            builder.setNegativeButton(
+                "No"
+            ) { dialog, which -> dialog.cancel() }
+            val dialog = builder.create()
+            dialog.show()
+            return
+        }
+        this.doubleBackToExitPressedOnce = true
+        Toast.makeText(this, "Por favor presione dos veces para salir", Toast.LENGTH_SHORT).show()
+        mHandler.postDelayed(mRunnable, 2000)
     }
 }

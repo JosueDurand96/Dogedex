@@ -33,7 +33,7 @@ data class AddPetDTO(
     @field:Json(name = "idRaza")
     val idRaza: Int? = null,
     @field:Json(name = "idUsuario")
-    val userId: Long,
+    val userId: Int,
     @field:Json(name = "modoObtencion")
     val obtainMode: String,
     @field:Json(name = "nombre")
