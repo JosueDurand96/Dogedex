@@ -17,12 +17,12 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import com.durand.dogedex.R
-import com.durand.dogedex.api.ApiResponseStatus
-import com.durand.dogedex.api.User
-import com.durand.dogedex.api.response.Dog
+import com.durand.dogedex.data.ApiResponseStatus
+import com.durand.dogedex.data.User
+import com.durand.dogedex.data.response.Dog
 import com.durand.dogedex.databinding.ActivityMainBinding
-import com.durand.dogedex.machinelearning.Classifier
-import com.durand.dogedex.machinelearning.DogRecognition
+import com.durand.dogedex.domain.Classifier
+import com.durand.dogedex.domain.DogRecognition
 import com.durand.dogedex.ui.ApiServiceInterceptor
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity

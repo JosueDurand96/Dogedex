@@ -3,11 +3,10 @@ package com.durand.dogedex.ui.admin_fragment.ui.reporte_canes_registrados
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.durand.dogedex.R
-import com.durand.dogedex.api.response.list_mascotas.ListaMascotas
+import com.durand.dogedex.data.response.list_mascotas.ListaMascotas
 
 
 //data class ItemsViewModelReporte(val image: String, val text: String) {

@@ -3,7 +3,7 @@ package com.durand.dogedex.ui.settings
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.durand.dogedex.api.User
+import com.durand.dogedex.data.User
 import com.durand.dogedex.databinding.ActivitySettingsBinding
 import com.durand.dogedex.ui.auth.LoginActivity
 

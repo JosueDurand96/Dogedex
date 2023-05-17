@@ -7,8 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.durand.dogedex.api.User
-import com.durand.dogedex.api.response.list_mascotas.ListaMascotas
+import com.durand.dogedex.data.response.list_mascotas.ListaMascotas
 import com.durand.dogedex.databinding.FragmentReportRegisterCanBinding
 
 class ReporteCanesRegistradosFragment : Fragment() {

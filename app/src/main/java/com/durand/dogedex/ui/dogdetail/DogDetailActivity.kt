@@ -8,8 +8,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.durand.dogedex.R
-import com.durand.dogedex.api.ApiResponseStatus
-import com.durand.dogedex.api.response.Dog
+import com.durand.dogedex.data.ApiResponseStatus
+import com.durand.dogedex.data.response.Dog
 import com.durand.dogedex.databinding.ActivityDogDetailBinding
 
 class DogDetailActivity : AppCompatActivity() {

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.durand.dogedex.R
-import com.durand.dogedex.api.User
+import com.durand.dogedex.data.User
 import com.durand.dogedex.databinding.FragmentMyCanRegisterBinding
 import com.durand.dogedex.ui.user_fragment.can_report_lost.ItemsViewModel
 import com.durand.dogedex.util.createLoadingDialog

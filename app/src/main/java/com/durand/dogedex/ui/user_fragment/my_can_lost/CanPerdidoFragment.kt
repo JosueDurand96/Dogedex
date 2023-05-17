@@ -4,7 +4,6 @@ import android.Manifest
 import android.R
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +16,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.durand.dogedex.api.User
-import com.durand.dogedex.api.response.consultar_mascotas.ConsultarDetalleMascota
-import com.durand.dogedex.api.response.consultarmascotas.DetalleMascota
+import com.durand.dogedex.data.User
 import com.durand.dogedex.databinding.FragmentCanPerdidoBinding
+import com.durand.dogedex.data.response.consultar_mascotas.ConsultarDetalleMascota
 import com.durand.dogedex.util.LocationsUtils
 import com.durand.dogedex.util.LocationsUtils.Companion.locationFlow
 import com.durand.dogedex.util.createLoadingDialog

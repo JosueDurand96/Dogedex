@@ -7,12 +7,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.durand.dogedex.api.ApiResponseStatus
-import com.durand.dogedex.api.User
-import com.durand.dogedex.api.dto.AgregarMascotaPerdidaDTO
-import com.durand.dogedex.api.repository.NewRepository
-import com.durand.dogedex.api.response.consultar_mascotas.ConsultarDetalleMascota
-import com.durand.dogedex.api.response.consultarmascotas.DetalleMascota
+import com.durand.dogedex.data.ApiResponseStatus
+import com.durand.dogedex.data.User
+import com.durand.dogedex.data.dto.AgregarMascotaPerdidaDTO
+import com.durand.dogedex.data.repository.NewRepository
+import com.durand.dogedex.data.response.consultar_mascotas.ConsultarDetalleMascota
 import kotlinx.coroutines.launch
 
 class CanPerdidoViewModel(
@@ -57,7 +56,7 @@ class CanPerdidoViewModel(
                 }
 
                 is ApiResponseStatus.Success -> {
-                    _list.postValue(res.data)
+                    _list.postValue(res!!.data)
                 }
 
                 else -> {

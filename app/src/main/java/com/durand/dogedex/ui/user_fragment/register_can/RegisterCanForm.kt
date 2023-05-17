@@ -3,8 +3,7 @@ package com.durand.dogedex.ui.user_fragment.register_can
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.durand.dogedex.BR
-import com.durand.dogedex.api.dto.AddPetDTO
-import com.durand.dogedex.api.dto.RegisterCanRequest
+import com.durand.dogedex.data.dto.RegisterCanRequest
 
 class RegisterCanForm : BaseObservable() {
 

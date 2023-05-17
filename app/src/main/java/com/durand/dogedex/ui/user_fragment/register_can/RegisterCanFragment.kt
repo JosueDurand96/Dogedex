@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.durand.dogedex.api.User
+import com.durand.dogedex.data.User
 import com.durand.dogedex.databinding.FragmentRegisterCanBinding
 import com.durand.dogedex.util.createLoadingDialog
 

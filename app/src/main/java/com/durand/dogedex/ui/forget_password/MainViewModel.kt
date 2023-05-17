@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.durand.dogedex.api.ApiResponseStatus
-import com.durand.dogedex.api.repository.DogRepository
-import com.durand.dogedex.api.response.Dog
+import com.durand.dogedex.data.ApiResponseStatus
+import com.durand.dogedex.data.repository.DogRepository
+import com.durand.dogedex.data.response.Dog
 import kotlinx.coroutines.launch
 
 class MainViewModel: ViewModel() {

@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.durand.dogedex.api.ApiResponseStatus
+import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.databinding.ActivityDogListBinding
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity.Companion.DOG_KEY

@@ -5,13 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.durand.dogedex.api.ApiResponseStatus
-import com.durand.dogedex.api.repository.AuthRepository
-import com.durand.dogedex.api.User
-import com.durand.dogedex.api.dto.AddLoginDTO
-import com.durand.dogedex.api.repository.NewRepository
-import com.durand.dogedex.api.response.LoginMasterResponse
-import com.durand.dogedex.api.response.list_mascotas.ListaMascotas
+import com.durand.dogedex.data.ApiResponseStatus
+import com.durand.dogedex.data.repository.AuthRepository
+import com.durand.dogedex.data.User
+import com.durand.dogedex.data.dto.AddLoginDTO
+import com.durand.dogedex.data.repository.NewRepository
+import com.durand.dogedex.data.response.LoginMasterResponse
 import kotlinx.coroutines.launch
 
 class AuthViewModel(

@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.durand.dogedex.api.ApiResponseStatus
-import com.durand.dogedex.api.repository.NewRepository
-import com.durand.dogedex.api.response.lostpetslist.LostPetDetailResponse
+import com.durand.dogedex.data.ApiResponseStatus
+import com.durand.dogedex.data.repository.NewRepository
+import com.durand.dogedex.data.response.lostpetslist.LostPetDetailResponse
 import kotlinx.coroutines.launch
 
 class CanReportLostViewModel(

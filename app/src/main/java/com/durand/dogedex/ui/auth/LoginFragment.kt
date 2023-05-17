@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.durand.dogedex.api.User
-import com.durand.dogedex.api.dto.AddLoginDTO
+import com.durand.dogedex.data.User
+import com.durand.dogedex.data.dto.AddLoginDTO
 import com.durand.dogedex.databinding.FragmentLoginBinding
 import com.durand.dogedex.ui.admin_fragment.AdminHome
 import com.durand.dogedex.ui.user_fragment.UserHome

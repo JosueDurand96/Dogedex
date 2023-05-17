@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.durand.dogedex.R
-import com.durand.dogedex.api.response.Dog
+import com.durand.dogedex.data.response.Dog
 import com.durand.dogedex.databinding.DogListItemBinding
 
 class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {

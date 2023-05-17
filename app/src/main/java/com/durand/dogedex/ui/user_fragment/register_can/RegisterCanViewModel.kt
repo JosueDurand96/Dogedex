@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.durand.dogedex.api.ApiResponseStatus
-import com.durand.dogedex.api.User
-import com.durand.dogedex.api.repository.NewRepository
+import com.durand.dogedex.data.ApiResponseStatus
+import com.durand.dogedex.data.User
+import com.durand.dogedex.data.repository.NewRepository
 import kotlinx.coroutines.launch
 
 class RegisterCanViewModel(
