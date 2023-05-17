@@ -44,4 +44,8 @@ data class ConsultarDetalleMascota(
     var razonTenencia: String,
     @SerializedName("tamano")
     var tamano: String
-)
+) {
+    override fun toString(): String {
+        return nombre
+    }
+}

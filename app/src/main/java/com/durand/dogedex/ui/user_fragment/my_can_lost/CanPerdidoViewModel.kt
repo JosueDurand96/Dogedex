@@ -35,11 +35,12 @@ class CanPerdidoViewModel(
     private var user: User? = null
 
     init {
-        executeConsultarMascotasPorId()
+
     }
 
     fun setUserProfile(user: User?) {
         this.user = user
+        executeConsultarMascotasPorId()
     }
 
     @SuppressLint("NullSafeMutableLiveData")
