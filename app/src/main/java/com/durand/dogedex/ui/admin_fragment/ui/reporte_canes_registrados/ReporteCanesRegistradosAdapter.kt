@@ -7,12 +7,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.durand.dogedex.R
 import com.durand.dogedex.data.response.list_mascotas.ListaMascotas
+import com.durand.dogedex.data.response.list_mascotas.MascotaResponse
 
 
 //data class ItemsViewModelReporte(val image: String, val text: String) {
 //}
 
-class ReporteCanesRegistradosAdapter(private val mList: List<ListaMascotas>) : RecyclerView.Adapter<ReporteCanesRegistradosAdapter.ViewHolder>() {
+class ReporteCanesRegistradosAdapter(private val mList: List<MascotaResponse>) : RecyclerView.Adapter<ReporteCanesRegistradosAdapter.ViewHolder>() {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

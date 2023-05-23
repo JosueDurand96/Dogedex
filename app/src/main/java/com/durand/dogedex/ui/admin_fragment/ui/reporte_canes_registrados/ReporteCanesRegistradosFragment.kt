@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.durand.dogedex.data.response.list_mascotas.ListaMascotas
+import com.durand.dogedex.data.response.list_mascotas.MascotaResponse
 import com.durand.dogedex.databinding.FragmentReportRegisterCanBinding
 
 class ReporteCanesRegistradosFragment : Fragment() {
@@ -37,7 +38,7 @@ class ReporteCanesRegistradosFragment : Fragment() {
         return root
     }
 
-    private fun listCan(list: List<ListaMascotas>) {
+    private fun listCan(list: List<MascotaResponse>) {
         _binding!!.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         val adapter = ReporteCanesRegistradosAdapter(list)
         _binding!!.canReportLostRecyclerView.adapter = adapter

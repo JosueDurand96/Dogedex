@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui.admin_fragment.ui.reporte_canes_registrados
+package com.durand.dogedex.ui.admin_fragment.ui.propietarios_can_peligroso
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -7,25 +7,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.repository.NewRepository
-import com.durand.dogedex.data.response.list_mascotas.ListaMascotas
-import com.durand.dogedex.data.response.list_mascotas.MascotaResponse
+import com.durand.dogedex.data.response.can_perdido.ListCanPerdido
 import kotlinx.coroutines.launch
 
-class ReporteCanesRegistradosViewModel(
+class ListCanPeligrosoPerdidas(
     private val repository: NewRepository = NewRepository()
 ) : ViewModel() {
 
-    init {
-        startReportCanesRegistrados()
-    }
 
-    private val _listCanes = MutableLiveData<List<MascotaResponse>>()
+    private val _listCanes = MutableLiveData<List<ListCanPerdido>>()
 
-    val listCanes: LiveData<List<MascotaResponse>> = _listCanes
+    val listCanes: LiveData<List<ListCanPerdido>> = _listCanes
 
     fun startReportCanesRegistrados() = viewModelScope.launch {
         try {
-            when(val res: ApiResponseStatus<List<MascotaResponse>> = repository.getConsultarListaMascotas()){
+            when(val res: ApiResponseStatus<List<ListCanPerdido>> = repository.getListCanLost()){
                 is ApiResponseStatus.Error -> {
                     Log.d("josue", "Error")
                 }

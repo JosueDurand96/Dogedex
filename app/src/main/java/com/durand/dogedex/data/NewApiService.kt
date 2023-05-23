@@ -7,6 +7,7 @@ import com.durand.dogedex.data.response.AddBreedResponse
 import com.durand.dogedex.data.response.AddUserResponse
 import com.durand.dogedex.data.response.LoginMasterResponse
 import com.durand.dogedex.data.response.agregar_mascota_perdida.AgregarMascotaPerdidaResponse
+import com.durand.dogedex.data.response.can_perdido.ListCanPerdidoMasterResponse
 import com.durand.dogedex.data.response.consultar_mascotas.ConsultarMascotasMasterResponse
 import com.durand.dogedex.data.response.dangerousdogs.DangerousPetListResponse
 import com.durand.dogedex.data.response.list_mascotas.ListMascotasMasterResponse
@@ -18,6 +19,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
 
@@ -44,6 +47,8 @@ val newApiService: NewApiService by lazy {
 }
 
 interface NewApiService {
+    @POST("consultarListaMascotasPerdidas")
+    suspend fun getListCanLost(@Header("Content-Type") content_type: String): ListCanPerdidoMasterResponse
 
     @POST("autenticarUsuario")
     suspend fun getLogin(@Body addLoginDTO: AddLoginDTO): LoginMasterResponse
@@ -55,7 +60,10 @@ interface NewApiService {
     suspend fun getDangerousPets(): DangerousPetListResponse
 
     @POST("agregarMascota")
-    suspend fun addPet(@Body addPetDTO: RegisterCanRequest): RegisterCanResponse
+    suspend fun addPet(
+        @Body addPetDTO: RegisterCanRequest,
+        @Header("Content-Type") content_type: String
+    ): RegisterCanResponse
 
     @POST("agregarUsuario")
     suspend fun addUser(@Body addUserDTO: AddUserDTO): AddUserResponse

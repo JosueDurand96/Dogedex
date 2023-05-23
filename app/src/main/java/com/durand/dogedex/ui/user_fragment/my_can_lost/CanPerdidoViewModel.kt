@@ -117,7 +117,7 @@ class CanPerdidoViewModel(
             descripcion = comentarios.value!!,
             estado = estado.value!!,
             fechaPerdida = fecha.value!!,
-            idMascota = _list.value!!.firstOrNull { it.nombre == nombreMascota.value!! }?.idMascota ?: -1,
+            idMascota = _list.value!!.firstOrNull { it.nombre == nombreMascota.value!! }?.idMascota ?: 1,
             idUsuario = user?.id ?: -1,
             latitud = latitude,
             longitud = longitude
