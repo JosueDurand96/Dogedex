@@ -4,20 +4,161 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.admin_fragment.ui.reportar_can_agresor.ReportarCanAgresorFragment">
+        tools:context=".ui.admin_fragment.ui.reportar_can_agresor.AddCanAgresorFragment">
 
     <TextView
-            android:id="@+id/text_slideshow"
-            android:layout_width="match_parent"
+            android:id="@+id/titleOne"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="14dp"
             android:layout_marginEnd="8dp"
             android:textAlignment="center"
-            android:textSize="20sp"
-            android:text="REPORTE CANES 3"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="Reportar can agresor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+            android:id="@+id/textTwo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="> DATOS DEL PROPIETARIO DEL CAN"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleOne" />
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dniTextInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Dni"
+            app:layout_constraintTop_toBottomOf="@+id/textTwo"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dniTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLength="8"
+                android:inputType="number" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+            android:id="@+id/textThree"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="> SELECCIONE CAN AGRESOR"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dniTextInputLayout" />
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dniRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textThree" />
+
+    <TextView
+            android:id="@+id/resultCanTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorSecondaryDark"
+            android:text="Nombre: Jessica - Can: Luly"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dniRecyclerView" />
+
+    <TextView
+            android:id="@+id/textFive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="> INGRESE INFORMACION DE AGRESION"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/resultCanTextView" />
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fechaTextInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fecha/Hora de Agresion"
+            app:layout_constraintTop_toBottomOf="@+id/textFive"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fechaTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/descriptionTextInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Descripcion"
+            app:layout_constraintTop_toBottomOf="@+id/fechaTextInputLayout"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/descriptionTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textAutoComplete" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/sign_up_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionTextInputLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            android:background="@color/color_primary"
+            android:textColor="@color/black"
+            android:textAllCaps="false"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Registrar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

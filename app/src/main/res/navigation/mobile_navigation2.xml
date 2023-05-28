@@ -17,7 +17,7 @@
 
     <fragment
             android:id="@+id/nav_report_can_agresor"
-            android:name="com.durand.dogedex.ui.admin_fragment.ui.reportar_can_agresor.ReportarCanAgresorFragment"
+            android:name="com.durand.dogedex.ui.admin_fragment.ui.reportar_can_agresor.AddCanAgresorFragment"
             tools:layout="@layout/fragment_report_can_agresor" />
 
     <fragment

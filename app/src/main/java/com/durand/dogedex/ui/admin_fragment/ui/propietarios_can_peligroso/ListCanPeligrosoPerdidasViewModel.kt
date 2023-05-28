@@ -10,7 +10,7 @@ import com.durand.dogedex.data.repository.NewRepository
 import com.durand.dogedex.data.response.can_perdido.ListCanPerdido
 import kotlinx.coroutines.launch
 
-class ListCanPeligrosoPerdidas(
+class ListCanPeligrosoPerdidasViewModel(
     private val repository: NewRepository = NewRepository()
 ) : ViewModel() {
 

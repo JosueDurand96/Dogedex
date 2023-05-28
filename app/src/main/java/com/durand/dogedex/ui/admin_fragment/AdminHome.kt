@@ -3,10 +3,8 @@ package com.durand.dogedex.ui.admin_fragment
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -15,20 +13,29 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.durand.dogedex.R
 import com.durand.dogedex.databinding.ActivityAdminBinding
+import com.durand.dogedex.ui.admin_fragment.ui.propietarios_can_peligroso.ListCanPeligrosoPerdidasViewModel
 import com.durand.dogedex.ui.auth.LoginActivity
+import com.google.android.gms.maps.model.LatLng
 
 class AdminHome : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityAdminBinding
-
+    private lateinit var viewModel: ListCanPeligrosoPerdidasViewModel
+    private var locationArrayList: ArrayList<LatLng>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(ListCanPeligrosoPerdidasViewModel::class.java)
 
         binding = ActivityAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+
+//
 
         setSupportActionBar(binding.appBarAdmin.toolbar)
 
@@ -46,6 +53,8 @@ class AdminHome : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
+
+
 
 
     override fun onSupportNavigateUp(): Boolean {

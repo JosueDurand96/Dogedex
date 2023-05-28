@@ -16,7 +16,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.logoutButton.setOnClickListener {
-            User.logout(this)
+            //User.logout(this)
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
