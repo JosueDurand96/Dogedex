@@ -12,7 +12,8 @@ interface OnPlaceClickListener {
     fun onPlaceClick(place: String?)
 }
 
-class AddCanAgresorAdapter(private val mList: List<ListMascotaDni>) : RecyclerView.Adapter<AddCanAgresorAdapter.ViewHolder>() {
+class AddCanAgresorAdapter(private val mList: List<ListMascotaDni>) :
+    RecyclerView.Adapter<AddCanAgresorAdapter.ViewHolder>() {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,7 +24,9 @@ class AddCanAgresorAdapter(private val mList: List<ListMascotaDni>) : RecyclerVi
 
         return ViewHolder(view)
     }
+
     private var mOnClickSelected: OnClickSelected? = null
+
     // binds the list items to a view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
@@ -33,11 +36,13 @@ class AddCanAgresorAdapter(private val mList: List<ListMascotaDni>) : RecyclerVi
         //holder.imageView.setImageResource(ItemsViewModel.image)
 
         // sets the text to the textview from our itemHolder class
-        holder.nombreTextView.text = "Nombre: "+item.nombre +" - Mascota "+item.nombreMascota
+        holder.nombreTextView.text = "Nombre: " + item.nombre + " - Mascota " + item.nombreMascota
         holder.nombreTextView.setOnClickListener {
             mOnClickSelected?.onSelected(
                 mList[position].nombre!!,
-                mList[position].nombreMascota!!
+                mList[position].nombreMascota!!,
+                mList[position].idMascota!!,
+                mList[position].idUsuario!!
             )
         }
 
@@ -60,7 +65,7 @@ class AddCanAgresorAdapter(private val mList: List<ListMascotaDni>) : RecyclerVi
     interface OnClickSelected {
         fun onSelected(
             nombre: String,
-            nombreMascota: String
+            nombreMascota: String, idMascota: Int, idUsuario: Int
         )
     }
 }
