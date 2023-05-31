@@ -108,8 +108,7 @@ class Classifier(tfLiteModel: MappedByteBuffer, private val labels: List<String>
      */
     private fun getTopKProbability(labelProb: Map<String, Float>): List<DogRecognition> {
         // Find the best classifications.
-        val priorityQueue =
-            PriorityQueue(MAX_RECOGNITION_DOG_RESULTS) { lhs: DogRecognition, rhs: DogRecognition ->
+        val priorityQueue = PriorityQueue(MAX_RECOGNITION_DOG_RESULTS) { lhs: DogRecognition, rhs: DogRecognition ->
                 (rhs.confidence).compareTo(lhs.confidence)
             }
 

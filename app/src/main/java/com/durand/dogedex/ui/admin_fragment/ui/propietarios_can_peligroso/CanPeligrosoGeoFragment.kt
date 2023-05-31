@@ -29,6 +29,7 @@ class CanPeligrosoGeoFragment : Fragment() , OnMapReadyCallback{
     private val binding get() = _binding!!
     private lateinit var mMap: GoogleMap
     private var locationArrayList: ArrayList<LatLng>? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -73,13 +74,12 @@ class CanPeligrosoGeoFragment : Fragment() , OnMapReadyCallback{
             try {
                 mMap = googleMap
                 for (i in locationArrayList!!.indices){
-                    mMap.addMarker(MarkerOptions().position(locationArrayList!![i]).title("Can Peligroso!"))
+                    mMap.addMarker(MarkerOptions().position(locationArrayList!![i]).title("Can Perdido!"))
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(20.0f))
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(locationArrayList!![1]))
                 }
-            }catch (e:Exception){
+            }catch (e:Exception){ }
 
-            }
             },
             2000 // value in milliseconds
         )

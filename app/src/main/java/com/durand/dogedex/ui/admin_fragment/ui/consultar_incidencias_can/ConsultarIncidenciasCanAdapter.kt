@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui.admin_fragment.ui.reportar_can_agresor
+package com.durand.dogedex.ui.admin_fragment.ui.consultar_incidencias_can
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +7,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.durand.dogedex.R
-import com.durand.dogedex.data.response.consultar_mascota_dni.ListMascotaDni
+import com.durand.dogedex.data.response.consultar_can_agresivo_dni.ConsultarCanAgresivoDni
 
-class AddCanAgresorAdapter(private val mList: List<ListMascotaDni>) :
-    RecyclerView.Adapter<AddCanAgresorAdapter.ViewHolder>() {
+
+class ConsultarIncidenciasCanAdapter(private val mList: List<ConsultarCanAgresivoDni>) :
+    RecyclerView.Adapter<ConsultarIncidenciasCanAdapter.ViewHolder>() {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,16 +35,48 @@ class AddCanAgresorAdapter(private val mList: List<ListMascotaDni>) :
 
         // sets the text to the textview from our itemHolder class
         holder.nombreTextView.text = "Nombre: " + item.nombre
-        holder.nombreMacotaTextView.text =  "Mascota " + item.nombreMascota
+        holder.nombreMacotaTextView.text = "Mascota: " + item.idMascota.toString()
         holder.principalLinearLayout.setOnClickListener {
             mOnClickSelected?.onSelected(
                 mList[position].nombre!!,
-                mList[position].nombreMascota!!,
+                mList[position].nombreMascota,
+                mList[position].apellidos!!,
+                mList[position].caracter!!,
+                mList[position].color!!,
+                mList[position].descripcionAgresion!!,
+                mList[position].descripcionRaza!!,
+                mList[position].fechaHora!!,
+                mList[position].genero!!,
+                mList[position].idAgresion!!,
                 mList[position].idMascota!!,
-                mList[position].idUsuario!!
+                mList[position].idRaza!!,
+                mList[position].idUsuario!!,
+                mList[position].numeroDocumento!!,
+                mList[position].pelaje!!,
+                mList[position].tamano!!,
             )
         }
+    }
 
+    interface OnClickSelected {
+        fun onSelected(
+            nombre: String,
+            nombreMascota: String,
+            apellidos: String,
+            caracter: String,
+            color: String,
+            descripcionAgresion: String,
+            descripcionRaza: String,
+            fechaHora: String,
+            genero: String,
+            idAgresion: Int,
+            idMascota: Int,
+            idRaza: Int,
+            idUsuario: Int,
+            numeroDocumento: String,
+            pelaje: String,
+            tamano: String
+        )
     }
 
     // return the number of the items in the list
@@ -62,10 +95,5 @@ class AddCanAgresorAdapter(private val mList: List<ListMascotaDni>) :
         mOnClickSelected = setOnClickSelected
     }
 
-    interface OnClickSelected {
-        fun onSelected(
-            nombre: String,
-            nombreMascota: String, idMascota: Int, idUsuario: Int
-        )
-    }
+
 }

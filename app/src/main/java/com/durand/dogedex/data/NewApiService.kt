@@ -4,6 +4,7 @@ package com.durand.dogedex.data
 
 import com.durand.dogedex.data.Request.AddAggressionPetRequest
 import com.durand.dogedex.data.Request.DniRequest
+import com.durand.dogedex.data.Request.IdAgresionRequest
 import com.durand.dogedex.data.dto.*
 import com.durand.dogedex.data.response.AddBreedResponse
 import com.durand.dogedex.data.response.AddUserResponse
@@ -11,6 +12,8 @@ import com.durand.dogedex.data.response.LoginMasterResponse
 import com.durand.dogedex.data.response.agregar_agresion_mascota.AgregarAgresionMascotaResponse
 import com.durand.dogedex.data.response.agregar_mascota_perdida.AgregarMascotaPerdidaResponse
 import com.durand.dogedex.data.response.can_perdido.ListCanPerdidoMasterResponse
+import com.durand.dogedex.data.response.consultar_agresiones_por_mascota.ConsultarAgresionesPorMascotaResponse
+import com.durand.dogedex.data.response.consultar_can_agresivo_dni.ConsultarCanAgresivoDniResponse
 import com.durand.dogedex.data.response.consultar_mascota_dni.ConsultarMascotaDniResponse
 import com.durand.dogedex.data.response.consultar_mascotas.ConsultarMascotasMasterResponse
 import com.durand.dogedex.data.response.dangerousdogs.DangerousPetListResponse
@@ -50,6 +53,19 @@ val newApiService: NewApiService by lazy {
 }
 
 interface NewApiService {
+
+
+    @POST("consultarAgresionesPorMascota")
+    suspend fun consultarAgresionesPorMascota(
+        @Body idAgresion: IdAgresionRequest,
+        @Header("Content-Type") content_type: String
+    ): ConsultarAgresionesPorMascotaResponse
+    @POST("ConsultaCanesAgresivoXDni")
+    suspend fun consultarCanAgresivoDni(
+        @Body dniRequest: DniRequest,
+        @Header("Content-Type") content_type: String
+    ): ConsultarCanAgresivoDniResponse
+
     @POST("agregarAgresionMascota")
     suspend fun getAgregarAgresionMascota(
         @Body addAggressionPetRequest: AddAggressionPetRequest,

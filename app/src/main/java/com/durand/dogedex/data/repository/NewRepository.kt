@@ -5,6 +5,7 @@ package com.durand.dogedex.data.repository
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.Request.AddAggressionPetRequest
 import com.durand.dogedex.data.Request.DniRequest
+import com.durand.dogedex.data.Request.IdAgresionRequest
 import com.durand.dogedex.data.dto.*
 import com.durand.dogedex.data.newApiService
 import com.durand.dogedex.data.makeNetworkCall
@@ -15,6 +16,10 @@ import com.durand.dogedex.data.response.agregar_agresion_mascota.AgregarAgresion
 import com.durand.dogedex.data.response.agregar_mascota_perdida.AgregarMascotaPerdidaResponse
 import com.durand.dogedex.data.response.can_perdido.ListCanPerdido
 import com.durand.dogedex.data.response.can_perdido.ListCanPerdidoMasterResponse
+import com.durand.dogedex.data.response.consultar_agresiones_por_mascota.ConsultarAgresionesPorMascota
+import com.durand.dogedex.data.response.consultar_agresiones_por_mascota.ConsultarAgresionesPorMascotaResponse
+import com.durand.dogedex.data.response.consultar_can_agresivo_dni.ConsultarCanAgresivoDni
+import com.durand.dogedex.data.response.consultar_can_agresivo_dni.ConsultarCanAgresivoDniResponse
 import com.durand.dogedex.data.response.consultar_mascota_dni.ListMascotaDni
 import com.durand.dogedex.data.response.consultar_mascotas.ConsultarDetalleMascota
 import com.durand.dogedex.data.response.dangerousdogs.PetProfileResponse
@@ -24,6 +29,15 @@ import com.durand.dogedex.data.response.lostpetslist.LostPetDetailResponse
 import com.durand.dogedex.data.response.registar_can.RegisterCanResponse
 
 class NewRepository {
+    suspend fun consultarAgresionesPorMascota(idAgresion: IdAgresionRequest): ApiResponseStatus<List<ConsultarAgresionesPorMascota>> =
+        makeNetworkCall {
+            newApiService.consultarAgresionesPorMascota(idAgresion, "application/json").lista
+        }
+
+    suspend fun consultarCanAgresivoDni(dniRequest: DniRequest): ApiResponseStatus<List<ConsultarCanAgresivoDni>> =
+        makeNetworkCall {
+            newApiService.consultarCanAgresivoDni(dniRequest, "application/json").lista
+        }
 
     suspend fun getAgregarAgresionMascota(addAggressionPetRequest: AddAggressionPetRequest): ApiResponseStatus<AgregarAgresionMascotaResponse> =
         makeNetworkCall {

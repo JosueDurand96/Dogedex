@@ -23,16 +23,13 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Dogedex"
             tools:targetApi="31">
+
         <activity
                 android:name=".ui.admin_fragment.AdminHome"
                 android:exported="true"
                 android:theme="@style/Theme.Onboarding">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
         <meta-data
@@ -56,7 +53,11 @@
                 android:name=".ui.SplahActivity"
                 android:exported="true"
                 android:theme="@style/Theme.App.Starting">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
                 android:name=".ui.forget_password.WholeImageActivity"
