@@ -18,7 +18,25 @@
     <fragment
             android:id="@+id/nav_report_can_agresor"
             android:name="com.durand.dogedex.ui.admin_fragment.ui.reportar_can_agresor.AddCanAgresorFragment"
-            tools:layout="@layout/fragment_report_can_agresor" />
+            tools:layout="@layout/fragment_report_can_agresor" >
+        <action
+                android:id="@+id/action_nav_report_can_agresor_to_nav_can_no_registrado_agresor"
+                app:destination="@id/nav_can_no_registrado_agresor" />
+        <action
+                android:id="@+id/action_nav_report_can_agresor_to_nav_can_registrado_agresor"
+                app:destination="@id/nav_can_registrado_agresor" />
+    </fragment>
+
+
+    <fragment
+            android:id="@+id/nav_can_registrado_agresor"
+            android:name="com.durand.dogedex.ui.admin_fragment.ui.reportar_can_agresor.CanRegistradoFragment"
+            tools:layout="@layout/fragment_can_registrado" />
+
+    <fragment
+            android:id="@+id/nav_can_no_registrado_agresor"
+            android:name="com.durand.dogedex.ui.admin_fragment.ui.reportar_can_agresor.CanNoRegistradoFragment"
+            tools:layout="@layout/fragment_can_no_registrado" />
 
     <fragment
             android:id="@+id/nav_consult_incidencias_can"

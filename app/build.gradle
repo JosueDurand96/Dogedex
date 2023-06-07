@@ -79,4 +79,11 @@ dependencies {
     //tensorflow
     implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly-SNAPSHOT'
     implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
+
+    //image
+    //user permission
+    implementation 'com.karumi:dexter:6.2.2'
+
+    //coil
+    implementation("io.coil-kt:coil:1.1.1")
 }

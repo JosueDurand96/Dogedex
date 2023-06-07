@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.Request.AddAggressionPetRequest
+import com.durand.dogedex.data.Request.AddAgressionPetRequest
 import com.durand.dogedex.data.Request.DniRequest
 import com.durand.dogedex.data.repository.NewRepository
+import com.durand.dogedex.data.response.AddAgressionPetResponse
 import com.durand.dogedex.data.response.agregar_agresion_mascota.AgregarAgresionMascotaResponse
 import com.durand.dogedex.data.response.can_perdido.ListCanPerdido
 import com.durand.dogedex.data.response.consultar_mascota_dni.ListMascotaDni
@@ -23,6 +25,9 @@ class AddCanAgresorViewModel(
 
     private val _addCan = MutableLiveData<Boolean>()
     val addCan: LiveData<Boolean> = _addCan
+
+    private val _addCanNoRegistrado = MutableLiveData<AddAgressionPetResponse>()
+    val addCanNoRegistrado: LiveData<AddAgressionPetResponse> = _addCanNoRegistrado
 
     fun startReportCanesRegistrados(dniRequest: DniRequest) = viewModelScope.launch {
         try {
@@ -43,6 +48,28 @@ class AddCanAgresorViewModel(
             Log.d("josue", "list ${e}")
         }
     }
+
+    fun startReportCanesRegistrados(addAgressionPetRequest: AddAgressionPetRequest) = viewModelScope.launch {
+        try {
+            when(val res: ApiResponseStatus<AddAgressionPetResponse> = repository.registerCanReporteAgresivo(addAgressionPetRequest)){
+                is ApiResponseStatus.Error -> {
+                    Log.d("josue", "Error")
+                }
+                is ApiResponseStatus.Loading -> {
+                    Log.d("josue", "Loading")
+                }
+                is ApiResponseStatus.Success -> {
+                    Log.d("josue", "Success startReportCanesRegistrados")
+                    _addCanNoRegistrado.postValue(res.data!!)
+                    Log.d("josue", "list ${res.data}")
+                }
+            }
+        }catch (e:Exception){
+            Log.d("josue", "list ${e}")
+        }
+    }
+
+
 
 
     fun addPerroPeligroso(dniRequest: AddAggressionPetRequest) = viewModelScope.launch {

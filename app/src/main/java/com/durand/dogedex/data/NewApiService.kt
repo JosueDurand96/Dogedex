@@ -3,9 +3,11 @@
 package com.durand.dogedex.data
 
 import com.durand.dogedex.data.Request.AddAggressionPetRequest
+import com.durand.dogedex.data.Request.AddAgressionPetRequest
 import com.durand.dogedex.data.Request.DniRequest
 import com.durand.dogedex.data.Request.IdAgresionRequest
 import com.durand.dogedex.data.dto.*
+import com.durand.dogedex.data.response.AddAgressionPetResponse
 import com.durand.dogedex.data.response.AddBreedResponse
 import com.durand.dogedex.data.response.AddUserResponse
 import com.durand.dogedex.data.response.LoginMasterResponse
@@ -53,7 +55,11 @@ val newApiService: NewApiService by lazy {
 }
 
 interface NewApiService {
-
+    @POST("agregarAgresionMascotaNV")
+    suspend fun registerCanReporteAgresivo(
+        @Body addAgressionPetRequest: AddAgressionPetRequest,
+        @Header("Content-Type") content_type: String
+    ): AddAgressionPetResponse
 
     @POST("consultarAgresionesPorMascota")
     suspend fun consultarAgresionesPorMascota(

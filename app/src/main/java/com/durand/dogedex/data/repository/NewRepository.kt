@@ -4,11 +4,13 @@ package com.durand.dogedex.data.repository
 
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.Request.AddAggressionPetRequest
+import com.durand.dogedex.data.Request.AddAgressionPetRequest
 import com.durand.dogedex.data.Request.DniRequest
 import com.durand.dogedex.data.Request.IdAgresionRequest
 import com.durand.dogedex.data.dto.*
 import com.durand.dogedex.data.newApiService
 import com.durand.dogedex.data.makeNetworkCall
+import com.durand.dogedex.data.response.AddAgressionPetResponse
 import com.durand.dogedex.data.response.AddBreedResponse
 import com.durand.dogedex.data.response.AddUserResponse
 import com.durand.dogedex.data.response.LoginMasterResponse
@@ -29,6 +31,12 @@ import com.durand.dogedex.data.response.lostpetslist.LostPetDetailResponse
 import com.durand.dogedex.data.response.registar_can.RegisterCanResponse
 
 class NewRepository {
+
+    suspend fun registerCanReporteAgresivo(addAgressionPetRequest: AddAgressionPetRequest): ApiResponseStatus<AddAgressionPetResponse> =
+        makeNetworkCall {
+            newApiService.registerCanReporteAgresivo(addAgressionPetRequest, "application/json")
+        }
+
     suspend fun consultarAgresionesPorMascota(idAgresion: IdAgresionRequest): ApiResponseStatus<List<ConsultarAgresionesPorMascota>> =
         makeNetworkCall {
             newApiService.consultarAgresionesPorMascota(idAgresion, "application/json").lista
