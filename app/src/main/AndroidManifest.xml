@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ProjectTesisUpc">
+        <activity
+            android:name=".di.fragment.user.HomeUserActivity"
+            android:exported="false"
+            android:label="@string/title_activity_home_user"
+            android:theme="@style/Theme.Onboarding" />
+
+        <activity
+            android:name=".di.drawer.MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Onboarding" />
+
+        <activity
+            android:name=".di.activity.ForgetPasswordActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Onboarding" />
+        <activity
+            android:name=".di.activity.RegisterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Onboarding" />
+        <activity
+            android:name=".di.activity.OnboardingActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Onboarding" />
+        <activity
+            android:name=".di.activity.LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Onboarding" />
+        <activity
+            android:name=".di.activity.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.App.Starting">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
