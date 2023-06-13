@@ -22,15 +22,15 @@
             android:scrollbars="none">
 
             <FrameLayout
+                android:layout_marginTop="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/dog_image"
-                    android:layout_width="250dp"
+                    android:layout_width="260dp"
                     android:layout_height="200dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="56dp"
                     android:adjustViewBounds="true"
                     android:elevation="8dp" />
 
@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="182dp"
+                    android:layout_marginTop="230dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/detail_info_background"
                     android:elevation="4dp"
@@ -60,7 +60,7 @@
                         android:id="@+id/dog_name_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="34dp"
                         android:fontFamily="sans-serif-medium"
                         android:gravity="center"
                         android:padding="8dp"

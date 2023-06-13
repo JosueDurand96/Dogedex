@@ -3,7 +3,9 @@ package com.durand.dogedex.ui.user_fragment.register_can
 import android.Manifest
 import android.R
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.location.Location
@@ -153,13 +155,25 @@ class RegisterCanFragment : Fragment() {
             ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsGenero)
         _binding!!.generoAutoCompleteTextView.setAdapter(adapterGenero)
 
-        val itemsRazaCanina = listOf("Labrador", "Pugs", "Pitbull", "Mestizo")
+        val itemsRazaCanina = listOf(
+            "Labrador",
+            "Pugs",
+            "Pitbull",
+            "Mestizo",
+            "Doberman",
+            "Boxer",
+            "Rottweiler",
+            "staffordshire bullterrier",
+            "gran danes",
+            "Bullmastiff",
+            "American Staffordshire Terrier"
+        )
         val adapterRazaCanina =
             ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsRazaCanina)
         _binding!!.razaCaninaAutoCompleteTextView.setAdapter(adapterRazaCanina)
 
 
-        val itemsTamano = listOf("Labrador", "Pugs", "Pitbull", "Mestizo")
+        val itemsTamano = listOf("Pequeño", "Mediano", "Grande")
         val adapterTamano =
             ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsTamano)
         _binding!!.tamanoAutoCompleteTextView.setAdapter(adapterTamano)
@@ -321,6 +335,13 @@ class RegisterCanFragment : Fragment() {
     }
 
     private fun openDetailCan(dogCan: Dog) {
+        val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPref!!.edit()
+        editor.putString("foto", imageCan)
+        editor.apply()
+        editor.commit()
+
+
         val intent = Intent(requireContext(), DogDetailActivity::class.java)
         intent.putExtra(DogDetailActivity.DOG_KEY, dogCan)
         intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)

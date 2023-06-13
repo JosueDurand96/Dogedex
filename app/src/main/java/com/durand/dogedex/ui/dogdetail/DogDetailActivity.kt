@@ -1,16 +1,20 @@
 package com.durand.dogedex.ui.dogdetail
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import coil.load
 import com.durand.dogedex.R
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.response.Dog
 import com.durand.dogedex.databinding.ActivityDogDetailBinding
+
 
 class DogDetailActivity : AppCompatActivity() {
 
@@ -107,7 +111,11 @@ class DogDetailActivity : AppCompatActivity() {
                 }
             }
         }
-
+        val sharedPreferences = getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
+        val photo = sharedPreferences.getString("foto","")
+        Log.d("fotoDoG","DOG: $photo")
+        val decodedString: ByteArray = Base64.decode(photo, Base64.DEFAULT)
+        val decodedByte: Bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
 
         binding.dogIndex.text = getString(R.string.dog_index_format, dog.index)
         binding.fechaTextView.text = "Distrito: $distrito"
@@ -118,8 +126,11 @@ class DogDetailActivity : AppCompatActivity() {
         binding.especieTextView.text = especie
         binding.nombreMacotaTextView.text = nombreMacota
         binding.dog = dog
-        binding.dogImage.load(dog.imageUrl)
+        binding.dogImage.setImageBitmap(decodedByte)
         binding.closeButton.setOnClickListener {
+            val editor = sharedPreferences.edit()
+            editor.clear()
+            editor.apply()
             finish()
         }
     }
