@@ -1,10 +1,9 @@
-package com.durand.dogedex.data.response.registar_can
+package com.durand.dogedex.data.Request
 
 
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
-data class RegisterCanResponse(
+data class AgregarMascotaRequest(
     @SerializedName("caracter")
     val caracter: String,
     @SerializedName("color")
@@ -14,23 +13,15 @@ data class RegisterCanResponse(
     @SerializedName("especie")
     val especie: String,
     @SerializedName("estado")
-    val estado: String,
+    val estado: Int,
     @SerializedName("esterilizado")
     val esterilizado: String,
-    @SerializedName("fechaHoraCreacion")
-    val fechaHoraCreacion: String,
-    @SerializedName("fechaHoraModificacion")
-    val fechaHoraModificacion: String,
     @SerializedName("fechaNacimiento")
     val fechaNacimiento: String,
     @SerializedName("foto")
     val foto: String,
     @SerializedName("genero")
     val genero: String,
-    @SerializedName("idFoto")
-    val idFoto: Any,
-    @SerializedName("idMascota")
-    val idMascota: Int,
     @SerializedName("idRaza")
     val idRaza: Int,
     @SerializedName("idUsuario")
@@ -46,9 +37,9 @@ data class RegisterCanResponse(
     @SerializedName("pelaje")
     val pelaje: String,
     @SerializedName("peligroso")
-    val peligroso: String,
+    val peligroso: Int,
     @SerializedName("razonTenencia")
     val razonTenencia: String,
     @SerializedName("tamano")
     val tamano: String
-): Serializable
+)

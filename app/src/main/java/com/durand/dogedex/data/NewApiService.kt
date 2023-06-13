@@ -2,10 +2,7 @@
 
 package com.durand.dogedex.data
 
-import com.durand.dogedex.data.Request.AddAggressionPetRequest
-import com.durand.dogedex.data.Request.AddAgressionPetRequest
-import com.durand.dogedex.data.Request.DniRequest
-import com.durand.dogedex.data.Request.IdAgresionRequest
+import com.durand.dogedex.data.Request.*
 import com.durand.dogedex.data.dto.*
 import com.durand.dogedex.data.response.AddAgressionPetResponse
 import com.durand.dogedex.data.response.AddBreedResponse
@@ -98,7 +95,7 @@ interface NewApiService {
 
     @POST("agregarMascota")
     suspend fun addPet(
-        @Body addPetDTO: RegisterCanRequest,
+        @Body addPetDTO: AgregarMascotaRequest,
         @Header("Content-Type") content_type: String
     ): RegisterCanResponse
 

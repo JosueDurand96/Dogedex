@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="ANDROID.PERMISSION.READ_EXTERNAL_STORAGE"/>
-
     <uses-feature
             android:name="android.hardware.camera"
             android:required="false" />
@@ -49,6 +48,7 @@
                 android:name=".ui.user_fragment.UserHome"
                 android:exported="true"
                 android:theme="@style/Theme.Onboarding" >
+
         </activity>
 
         <activity

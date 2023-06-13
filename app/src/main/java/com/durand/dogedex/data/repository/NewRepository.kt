@@ -3,10 +3,7 @@
 package com.durand.dogedex.data.repository
 
 import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.Request.AddAggressionPetRequest
-import com.durand.dogedex.data.Request.AddAgressionPetRequest
-import com.durand.dogedex.data.Request.DniRequest
-import com.durand.dogedex.data.Request.IdAgresionRequest
+import com.durand.dogedex.data.Request.*
 import com.durand.dogedex.data.dto.*
 import com.durand.dogedex.data.newApiService
 import com.durand.dogedex.data.makeNetworkCall
@@ -17,15 +14,11 @@ import com.durand.dogedex.data.response.LoginMasterResponse
 import com.durand.dogedex.data.response.agregar_agresion_mascota.AgregarAgresionMascotaResponse
 import com.durand.dogedex.data.response.agregar_mascota_perdida.AgregarMascotaPerdidaResponse
 import com.durand.dogedex.data.response.can_perdido.ListCanPerdido
-import com.durand.dogedex.data.response.can_perdido.ListCanPerdidoMasterResponse
 import com.durand.dogedex.data.response.consultar_agresiones_por_mascota.ConsultarAgresionesPorMascota
-import com.durand.dogedex.data.response.consultar_agresiones_por_mascota.ConsultarAgresionesPorMascotaResponse
 import com.durand.dogedex.data.response.consultar_can_agresivo_dni.ConsultarCanAgresivoDni
-import com.durand.dogedex.data.response.consultar_can_agresivo_dni.ConsultarCanAgresivoDniResponse
 import com.durand.dogedex.data.response.consultar_mascota_dni.ListMascotaDni
 import com.durand.dogedex.data.response.consultar_mascotas.ConsultarDetalleMascota
 import com.durand.dogedex.data.response.dangerousdogs.PetProfileResponse
-import com.durand.dogedex.data.response.list_mascotas.ListaMascotas
 import com.durand.dogedex.data.response.list_mascotas.MascotaResponse
 import com.durand.dogedex.data.response.lostpetslist.LostPetDetailResponse
 import com.durand.dogedex.data.response.registar_can.RegisterCanResponse
@@ -75,7 +68,7 @@ class NewRepository {
         newApiService.getDangerousPets().list
     }
 
-    suspend fun addPet(addPetDTO: RegisterCanRequest): ApiResponseStatus<RegisterCanResponse> =
+    suspend fun addPet(addPetDTO: AgregarMascotaRequest): ApiResponseStatus<RegisterCanResponse> =
         makeNetworkCall {
             newApiService.addPet(addPetDTO, "application/json")
         }

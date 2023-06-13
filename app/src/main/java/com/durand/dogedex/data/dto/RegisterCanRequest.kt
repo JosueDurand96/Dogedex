@@ -32,4 +32,12 @@ data class RegisterCanRequest(
     var modoObtencion: String,
     @SerializedName("razonTenencia")
     var razonTenencia: String,
+    @SerializedName("foto")
+    var foto: String,
+    @SerializedName("longitud")
+    var longitud: String,
+    @SerializedName("latitud")
+    var latitud: String,
+    @SerializedName("peligroso")
+    var peligroso: String,
 )

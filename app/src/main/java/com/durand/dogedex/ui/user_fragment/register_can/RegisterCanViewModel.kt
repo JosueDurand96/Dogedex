@@ -1,12 +1,14 @@
 package com.durand.dogedex.ui.user_fragment.register_can
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.data.ApiResponseStatus
+import com.durand.dogedex.data.Request.AgregarMascotaRequest
 import com.durand.dogedex.data.User
 import com.durand.dogedex.data.repository.NewRepository
+import com.durand.dogedex.data.response.registar_can.RegisterCanResponse
 import kotlinx.coroutines.launch
 
 class RegisterCanViewModel(
@@ -19,41 +21,24 @@ class RegisterCanViewModel(
 
     val event = MutableLiveData<RegisterCanEvent>(RegisterCanEvent.None)
 
-
+    private val _list = MutableLiveData<RegisterCanResponse>()
+    val list: LiveData<RegisterCanResponse> = _list
     fun setUserProfile(user: User?) {
         this.user = user
     }
 
-    fun registerCan() = viewModelScope.launch {
+     fun registerCan(add: AgregarMascotaRequest) = viewModelScope.launch {
         try {
-            event.value = RegisterCanEvent.Loading
-            val validate = formState.value?.validate() ?: false
-
-            if (validate.not()) {
-                event.value = RegisterCanEvent.ShowError("Completa todos los campos")
-                return@launch
-            }
-
-            formState.value!!.toDto(user?.id!!.toInt()).let {
-                when (repository.addPet(it)) {
-                    is ApiResponseStatus.Error -> {
-                        event.postValue(RegisterCanEvent.ShowError("Error el intentar registrar"))
-                    }
-
-                    is ApiResponseStatus.Success -> {
-                       Log.d("JOSUEEEE","EXITOOOO")
-                    }
-
-                    else -> {
-                        event.postValue(RegisterCanEvent.None)
-                    }
+            when (val res = repository.addPet(add)) {
+                is ApiResponseStatus.Success -> {
+                    _list.postValue(res.data!!)
                 }
-            }
-        } finally {
-            event.value = RegisterCanEvent.DismissLoading
-        }
 
+                else -> {}
+            }
+        } finally { }
     }
+
 
 }
 
