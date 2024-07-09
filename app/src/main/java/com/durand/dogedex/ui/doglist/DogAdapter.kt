@@ -48,6 +48,7 @@ class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
     inner class DogViewHolder(private val binding: DogListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(dog: Dog) {
+
             if (dog.inCollection){
                 binding.dogListItemLayout.setOnLongClickListener {
                     Log.d("josue","setOnLongClickListener")
@@ -65,6 +66,12 @@ class DogAdapter : ListAdapter<Dog, DogAdapter.DogViewHolder>(DiffCallback) {
 
                 binding.dogTextView.text = dog.name
                 binding.dogName.load(dog.imageUrl)
+
+            binding.dogTextView.text = dog.name
+            binding.dogName.load(dog.imageUrl)
+            binding.dogListItemLayout.setOnClickListener {
+                onItemClickListener?.invoke(dog)
+
             }
         }
     }
