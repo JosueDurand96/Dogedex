@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mobile_navigation"
+        app:startDestination="@+id/nav_register_can">
+
+    <fragment
+            android:id="@+id/nav_register_can"
+            android:name="com.durand.dogedex.ui.user_fragment.register_can.RegisterCanFragment"
+            tools:layout="@layout/fragment_register_can" >
+        <action
+            android:id="@+id/action_nav_register_can_to_nav_register_can_can_raza"
+            app:destination="@id/nav_register_can_can_raza" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_register_can_can_raza"
+        android:name="com.durand.dogedex.ui.user_fragment.register_can.RegisterCanDangerousFragment"
+        tools:layout="@layout/fragment_register_can_dangerous" />
+
+    <fragment
+            android:id="@+id/nav_register_hocio"
+            android:name="com.durand.dogedex.ui.user_fragment.register_hocico.RegisterHocicoFragment"
+            tools:layout="@layout/fragment_register_hocico" />
+
+    <fragment
+            android:id="@+id/nav_my_can_lost"
+            android:name="com.durand.dogedex.ui.user_fragment.my_can_lost.CanPerdidoFragment"
+            tools:layout="@layout/fragment_can_perdido" />
+
+    <fragment
+            android:id="@+id/nav_my_can_register"
+            android:name="com.durand.dogedex.ui.user_fragment.my_can_register.MyCanRegisterFragment"
+            tools:layout="@layout/fragment_my_can_register" />
+
+    <fragment
+            android:id="@+id/nav_can_report_lost"
+            android:name="com.durand.dogedex.ui.user_fragment.can_report_lost.CanReportLostFragment"
+            tools:layout="@layout/fragment_can_report_lost" />
+
+    <fragment
+            android:id="@+id/nav_close"
+            android:name="com.durand.dogedex.ui.CloseFragment"
+            tools:layout="@layout/fragment_close" />
+
+</navigation>

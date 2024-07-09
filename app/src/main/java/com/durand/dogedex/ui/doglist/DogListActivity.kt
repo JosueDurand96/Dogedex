@@ -2,12 +2,13 @@ package com.durand.dogedex.ui.doglist
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.durand.dogedex.api.ApiResponseStatus
+import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.databinding.ActivityDogListBinding
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity.Companion.DOG_KEY
@@ -27,11 +28,20 @@ class DogListActivity : AppCompatActivity() {
         val adapter = DogAdapter()
         recycler.adapter = adapter
 
+
+        adapter.setLongItemOnClickListener {
+            Log.d("josue","setLongOnClickListener - DogListActivity")
+            dogListViewModel.addDogToUser(it.id)
+        }
+
+
         adapter.setOnClickListener {
             val intent = Intent(this, DogDetailActivity::class.java)
             intent.putExtra(DOG_KEY, it)
             startActivity(intent)
         }
+
+
         dogListViewModel.dogList.observe(this) { dogList ->
             adapter.submitList(dogList)
         }
@@ -50,8 +60,6 @@ class DogListActivity : AppCompatActivity() {
                         .show()
                 }
             }
-
-
         }
 
     }

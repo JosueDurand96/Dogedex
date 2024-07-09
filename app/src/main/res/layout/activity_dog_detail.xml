@@ -6,13 +6,13 @@
 
         <variable
             name="dog"
-            type="com.durand.dogedex.api.response.Dog" />
+            type="com.durand.dogedex.data.response.Dog" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/secondary_background">
+        android:background="@color/color_primary">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -22,15 +22,15 @@
             android:scrollbars="none">
 
             <FrameLayout
+                android:layout_marginTop="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/dog_image"
-                    android:layout_width="wrap_content"
+                    android:layout_width="260dp"
                     android:layout_height="200dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="56dp"
                     android:adjustViewBounds="true"
                     android:elevation="8dp" />
 
@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="182dp"
+                    android:layout_marginTop="230dp"
                     android:layout_marginEnd="8dp"
                     android:background="@drawable/detail_info_background"
                     android:elevation="4dp"
@@ -51,6 +51,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:padding="8dp"
+                        android:visibility="gone"
                         android:textColor="@color/text_black"
                         android:textSize="24sp"
                         tools:text="#25" />
@@ -59,7 +60,7 @@
                         android:id="@+id/dog_name_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="34dp"
                         android:fontFamily="sans-serif-medium"
                         android:gravity="center"
                         android:padding="8dp"
@@ -74,34 +75,39 @@
                         android:layout_gravity="center"
                         android:orientation="horizontal">
 
-                        <ProgressBar
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="200dp"
-                            android:layout_height="6dp"
-                            android:layout_centerVertical="true"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="16dp"
-                            android:background="@drawable/progressbar_background"
-                            android:elevation="2dp"
-                            android:indeterminate="false"
-                            android:max="10"
-                            android:progress="10"
-                            android:progressTint="@color/color_primary" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/hearth_icon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_centerVertical="true"
-                            android:layout_marginBottom="4dp"
-                            android:background="@drawable/red_circle"
-                            android:elevation="2dp"
-                            android:padding="4dp"
-                            android:src="@drawable/ic_hearth_white" />
+                            <TextView
+                                android:id="@+id/canDangerousTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Peligroso"
+                                android:textColor="@color/md_red_A700"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/canNoDangerousTextView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center"
+                                android:text="No Peligroso"
+                                android:textColor="@color/md_green_800"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+
                     </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/life_expectancy"
+                        android:id="@+id/fechaTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -110,12 +116,12 @@
                         tools:text="10 - 14 años" />
 
                     <TextView
+                        android:id="@+id/caracterTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:fontFamily="sans-serif-medium"
                         android:gravity="center"
-                        android:text="@{dog.temperament}"
                         android:textColor="@color/text_black"
                         android:textSize="16sp"
                         tools:text="Gentle, smart, happy" />
@@ -147,38 +153,32 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="@string/female"
+                                android:text="Color"
                                 android:textColor="@color/text_black" />
 
                             <TextView
-                                android:id="@+id/female_weight"
+                                android:id="@+id/colorTextView"
                                 style="@style/DetailSectionInfo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="@{dog.weightFemale}"
                                 tools:text="13 - 14.5 kg" />
 
                             <TextView
                                 style="@style/DetailSectionName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/weight" />
+                                android:text="Especie" />
 
                             <TextView
-                                android:id="@+id/male_weight"
+                                android:id="@+id/especieTextView"
                                 style="@style/DetailSectionInfo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="@{dog.heightFemale}"
                                 tools:text="35 - 37 cm" />
 
-                            <TextView
-                                style="@style/DetailSectionName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/height" />
+
                         </LinearLayout>
 
                         <View
@@ -196,13 +196,13 @@
 
                             <TextView
                                 style="@style/DetailSectionInfo"
-                                android:layout_width="wrap_content"
+                                android:layout_width="120dp"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="@{dog.type}"
-                                tools:text="Hound" />
+                                android:text="Nombre de mascota" />
 
                             <TextView
+                                android:id="@+id/nombreMacotaTextView"
                                 style="@style/DetailSectionName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -227,38 +227,30 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
-                                android:text="@string/male"
+                                android:text="Genero"
                                 android:textColor="@color/text_black" />
 
                             <TextView
-                                android:id="@+id/female_height"
+                                android:id="@+id/generoTextView"
                                 style="@style/DetailSectionInfo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="@{dog.weightMale}"
                                 tools:text="13 - 14.5 kg" />
 
                             <TextView
                                 style="@style/DetailSectionName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/weight" />
+                                android:text="Esterelizado" />
 
                             <TextView
-                                android:id="@+id/male_height"
+                                android:id="@+id/esterelizadoTextView"
                                 style="@style/DetailSectionInfo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:text="@{dog.heightMale}"
                                 tools:text="37 - 40 cm" />
-
-                            <TextView
-                                style="@style/DetailSectionName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/height" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

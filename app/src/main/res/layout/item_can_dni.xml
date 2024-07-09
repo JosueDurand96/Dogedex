@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/principalLinearLayout"
+        android:background="@drawable/background_item_dni"
+        android:orientation="horizontal">
+    <LinearLayout
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_item_dni"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/nombreTextView"
+                android:textStyle="bold"
+                android:text="Josue"
+                android:layout_margin="5dp"
+                android:textColor="@color/md_black_1000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_item_dni"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/nombreMacotaTextView"
+                android:textStyle="bold"
+                android:text="Josue"
+                android:layout_margin="5dp"
+                android:textColor="@color/md_black_1000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>
