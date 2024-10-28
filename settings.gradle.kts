@@ -13,5 +13,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
 rootProject.name = "Patitas Seguras UPC"
-include ':app'
+include(":app")
+include(":data")

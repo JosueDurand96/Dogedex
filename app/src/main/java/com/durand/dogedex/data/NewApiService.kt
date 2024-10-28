@@ -2,6 +2,8 @@
 
 package com.durand.dogedex.data
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.durand.dogedex.MyApplication
 import com.durand.dogedex.data.Request.*
 import com.durand.dogedex.data.dto.*
 import com.durand.dogedex.data.response.AddAgressionPetResponse
@@ -31,6 +33,7 @@ import java.util.concurrent.TimeUnit
 
 private val okHttpClient = OkHttpClient
     .Builder()
+    .addInterceptor(ChuckerInterceptor(MyApplication.appContext))
     .addInterceptor(ApiServiceInterceptor)
     .addInterceptor(
         HttpLoggingInterceptor().apply {
@@ -43,7 +46,7 @@ private val okHttpClient = OkHttpClient
 
 private val retrofit = Retrofit.Builder()
     .client(okHttpClient)
-    .baseUrl("https://app-patitas.azurewebsites.net/api/oper/")
+    .baseUrl("https://be-conap.onrender.com/api/")
     .addConverterFactory(MoshiConverterFactory.create())
     .build()
 
@@ -63,6 +66,7 @@ interface NewApiService {
         @Body idAgresion: IdAgresionRequest,
         @Header("Content-Type") content_type: String
     ): ConsultarAgresionesPorMascotaResponse
+
     @POST("ConsultaCanesAgresivoXDni")
     suspend fun consultarCanAgresivoDni(
         @Body dniRequest: DniRequest,
