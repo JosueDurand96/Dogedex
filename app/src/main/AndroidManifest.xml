@@ -49,6 +49,7 @@
             android:name=".ui.user_fragment.UserHome"
             android:exported="true"
             android:theme="@style/Theme.Onboarding">
+
         </activity>
 
         <activity
@@ -65,7 +66,13 @@
         <activity
             android:name=".ui.SplahActivity"
             android:exported="true"
-            android:theme="@style/Theme.App.Starting"></activity>
+            android:theme="@style/Theme.App.Starting">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.forget_password.WholeImageActivity"
             android:exported="true">
@@ -95,11 +102,7 @@
             android:exported="true"
             android:parentActivityName=".ui.forget_password.MainActivity"
             android:theme="@style/Theme.Onboarding">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.forget_password.MainActivity"

@@ -68,13 +68,13 @@ class RegisterCanDangerousFragment : Fragment() {
     ): View? {
         val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         _binding = FragmentRegisterCanDangerousBinding.inflate(inflater, container, false)
-        val user = User.getLoggedInUser(requireActivity())
-        if (user == null) {
-            openLoginActivity()
-        } else {
-            Log.d("josue", "authenticationToken: " + user.authenticationToken)
-            ApiServiceInterceptor.setSessionToken(user.authenticationToken)
-        }
+//        val user = User.getLoggedInUser(requireActivity())
+//        if (user == null) {
+//            openLoginActivity()
+//        } else {
+//            Log.d("josue", "authenticationToken: " + user.authenticationToken)
+//            ApiServiceInterceptor.setSessionToken(user.authenticationToken)
+//        }
         viewModel.status.observe(requireActivity()) { status ->
             when (status) {
                 is ApiResponseStatus.Error -> {

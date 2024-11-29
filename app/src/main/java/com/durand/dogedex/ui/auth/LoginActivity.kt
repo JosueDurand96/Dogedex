@@ -40,7 +40,7 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
             if(user != null){
                 Log.d("josue","user: startMainActivity" )
 
-               // startMainActivity()
+                startMainActivity()
             }else{
                 Log.d("josue","user: no" )
             }

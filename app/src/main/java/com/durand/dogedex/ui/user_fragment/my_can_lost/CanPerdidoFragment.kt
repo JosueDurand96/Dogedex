@@ -190,8 +190,8 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun getUserProfile() {
-        val loggedInUser: User? = User.getLoggedInUser(requireActivity())
-        vm.setUserProfile(loggedInUser)
+       // val loggedInUser: User? = User.getLoggedInUser(requireActivity())
+       // vm.setUserProfile(loggedInUser)
     }
 }
 
