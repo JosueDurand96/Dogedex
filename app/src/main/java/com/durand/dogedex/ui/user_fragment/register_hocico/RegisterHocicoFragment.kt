@@ -2,10 +2,13 @@ package com.durand.dogedex.ui.user_fragment.register_hocico
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +52,8 @@ class RegisterHocicoFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by viewModels()
+    private lateinit var photo: Bitmap
+    private lateinit var imageCan: String
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -117,6 +122,12 @@ class RegisterHocicoFragment : Fragment() {
     }
 
     private fun openDetailActivity(dog: Dog) {
+        val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPref!!.edit()
+        editor.putString("foto", imageCan)
+        editor.apply()
+        editor.commit()
+
         val intent = Intent(requireContext(), DogDetailActivity::class.java)
         intent.putExtra(DogDetailActivity.DOG_KEY, dog)
         intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
@@ -251,6 +262,7 @@ class RegisterHocicoFragment : Fragment() {
                     //    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                     val bitmap = convertImageProxyToBitmap(imageProxy)
                     if (bitmap != null){
+                        getPhotoBitmap(bitmap)
                         val dogRecognition = classifier.recognizeImage(bitmap).first()
                         enableTakePhotoButton(dogRecognition)
                     }
@@ -269,6 +281,15 @@ class RegisterHocicoFragment : Fragment() {
             }, ContextCompat.getMainExecutor(requireContext())
         )
     }
+
+    private fun getPhotoBitmap(imageBytes: Bitmap) {
+        photo = imageBytes
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        photo.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        val byteArray = byteArrayOutputStream.toByteArray()
+        imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
+    }
+
 
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
         if (dogRecognition.confidence > 80.0){

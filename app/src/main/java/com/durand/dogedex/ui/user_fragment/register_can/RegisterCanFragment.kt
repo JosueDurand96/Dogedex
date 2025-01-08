@@ -605,46 +605,51 @@ class RegisterCanFragment : Fragment() {
     }
 
     private fun startCamera() {
+        try {
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+            cameraProviderFuture.addListener(
+                {
+                    val cameraProvider = cameraProviderFuture.get()
 
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-        cameraProviderFuture.addListener(
-            {
-                val cameraProvider = cameraProviderFuture.get()
+                    val preview = Preview.Builder().build()
+                    preview.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
 
-                val preview = Preview.Builder().build()
-                preview.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
+                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
-                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                    val imageAnalysis = ImageAnalysis.Builder()
+                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .build()
+                    imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
+                        //    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                        val bitmap = convertImageProxyToBitmap(imageProxy)
+                        if (bitmap != null) {
+                            getPhotoBitmap(bitmap)
+                            val dogRecognition = classifier.recognizeImage(bitmap).first()
+                            enableTakePhotoButton(dogRecognition)
 
-                val imageAnalysis = ImageAnalysis.Builder()
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                    .build()
-                imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
-                    //    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                    val bitmap = convertImageProxyToBitmap(imageProxy)
-                    if (bitmap != null) {
-                        getPhotoBitmap(bitmap)
-                        val dogRecognition = classifier.recognizeImage(bitmap).first()
-                        enableTakePhotoButton(dogRecognition)
+                        }
 
+                        //    val photoUri = outputFileResults.savedUri
+                        //    val bitmap = BitmapFactory.decodeFile(photoUri?.path)
+                        //    val dogRecognition = classifier.recognizeImage(bitmap).first()
+                        //    viewModel.getDogByMlId(dogRecognition.id)
+                        imageProxy.close()
                     }
 
-                    //    val photoUri = outputFileResults.savedUri
-                    //    val bitmap = BitmapFactory.decodeFile(photoUri?.path)
-                    //    val dogRecognition = classifier.recognizeImage(bitmap).first()
-                    //    viewModel.getDogByMlId(dogRecognition.id)
-                    imageProxy.close()
-                }
 
 
+//                    cameraProvider.bindToLifecycle(
+//                        this, cameraSelector,
+//                        preview, imageCapture, imageAnalysis
+//                    )
 
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector,
-                    preview, imageCapture, imageAnalysis
-                )
+                }, ContextCompat.getMainExecutor(requireContext())
+            )
+        }catch (e: Exception) {
 
-            }, ContextCompat.getMainExecutor(requireContext())
-        )
+        }
+
+
     }
 
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
