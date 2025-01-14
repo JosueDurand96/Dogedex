@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -54,6 +55,7 @@ class RegisterHocicoFragment : Fragment() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var photo: Bitmap
     private lateinit var imageCan: String
+    private var isProcessing = mutableStateOf(false) // Estado para el modal
 
     private val requestPermissionLauncher =
         registerForActivityResult(
