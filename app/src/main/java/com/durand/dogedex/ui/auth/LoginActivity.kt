@@ -11,7 +11,8 @@ import com.durand.dogedex.ui.user_fragment.UserHome
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.databinding.ActivityLoginBinding
 
-class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, SignUpFragment.SignUpFragmentActions{
+class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions,
+    SignUpFragment.SignUpFragmentActions {
 
     private val viewModel: AuthViewModel by viewModels()
 
@@ -27,6 +28,7 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
                     binding.loadingWheel.visibility = View.GONE
                     showErrorDialog(status.message)
                 }
+
                 is ApiResponseStatus.Loading -> binding.loadingWheel.visibility = View.VISIBLE
                 is ApiResponseStatus.Success -> {
                     binding.loadingWheel.visibility = View.GONE
@@ -35,28 +37,27 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
             }
         }
 
-        viewModel.user.observe(this){
-            user ->
-            if(user != null){
-                Log.d("josue","user: startMainActivity" )
+        viewModel.user.observe(this) { user ->
+            if (user != null) {
+                Log.d("josue", "user: startMainActivity")
 
                 startMainActivity()
-            }else{
-                Log.d("josue","user: no" )
+            } else {
+                Log.d("josue", "user: no")
             }
         }
     }
 
-    private fun startMainActivity(){
+    private fun startMainActivity() {
         startActivity(Intent(this, UserHome::class.java))
         finish()
     }
 
-    private fun showErrorDialog(messageId: Int){
+    private fun showErrorDialog(messageId: Int) {
         AlertDialog.Builder(this)
             .setTitle("Error")
             .setMessage(messageId)
-            .setPositiveButton(android.R.string.ok) { _, _ ->}
+            .setPositiveButton(android.R.string.ok) { _, _ -> }
             .create()
             .show()
     }
@@ -66,7 +67,7 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
     }
 
     override fun onLoginFieldsValidated(email: String, password: String) {
-        viewModel.login(email,password)
+        viewModel.login(email, password)
     }
 
     override fun onSignUpFieldsValidated(
@@ -74,9 +75,9 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
         password: String,
         passwordConfirmation: String
     ) {
-        Log.d("josue","email: $email")
-        Log.d("josue","password: $password")
-        Log.d("josue","passwordConfirmation: $passwordConfirmation")
+        Log.d("josue", "email: $email")
+        Log.d("josue", "password: $password")
+        Log.d("josue", "passwordConfirmation: $passwordConfirmation")
         viewModel.onSignUp(email, password, passwordConfirmation)
     }
 
