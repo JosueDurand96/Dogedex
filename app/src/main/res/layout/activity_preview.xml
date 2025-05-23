@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@color/color_primary"
+        tools:context=".ui.user_fragment.register_can.PreviewActivity">
+
+    <FrameLayout
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_primary">
+
+        <ImageView
+                android:id="@+id/imagePreview"
+                android:layout_width="260dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:adjustViewBounds="true"
+                android:elevation="8dp" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="230dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/detail_info_background"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:paddingBottom="8dp">
+
+            <TextView
+                    android:id="@+id/dog_index"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:padding="8dp"
+                    android:visibility="gone"
+                    android:textColor="@color/text_black"
+                    android:textSize="24sp"
+                    tools:text="#25" />
+
+            <TextView
+                    android:id="@+id/dog_name_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="34dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:textColor="@color/text_black"
+                    android:textSize="32sp"
+                    android:text="Doberman" />
+
+            <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    <TextView
+                            android:id="@+id/canDangerousTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Peligroso"
+                            android:textColor="@color/md_red_A700"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    <TextView
+                            android:id="@+id/canNoDangerousTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center"
+                            android:text="No Peligroso"
+                            android:textColor="@color/md_green_800"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <TextView
+                    android:id="@+id/fechaTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/text_black"
+                    android:visibility="gone"
+                    android:textSize="16sp"
+                    android:text="10 - 14 años" />
+
+            <TextView
+                    android:id="@+id/caracterTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:textColor="@color/text_black"
+                    android:textSize="16sp"
+                    android:text="Gentle, smart, happy" />
+
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/divider" />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="1"
+                        android:visibility="gone"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                    <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Color"
+                            android:textColor="@color/text_black" />
+
+                    <TextView
+                            android:id="@+id/colorTextView"
+                            style="@style/DetailSectionInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="13 - 14.5 kg" />
+
+                    <TextView
+                            style="@style/DetailSectionName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Especie" />
+
+                    <TextView
+                            android:id="@+id/especieTextView"
+                            style="@style/DetailSectionInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="35 - 37 cm" />
+
+
+                </LinearLayout>
+
+                <View
+                        android:layout_width="1dp"
+                        android:layout_height="60dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@color/divider" />
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:orientation="vertical">
+
+                    <TextView
+                            style="@style/DetailSectionInfo"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Nombre de mascota" />
+
+                    <TextView
+                            android:id="@+id/nombreMacotaTextView"
+                            style="@style/DetailSectionName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/group" />
+                </LinearLayout>
+
+                <View
+                        android:layout_width="1dp"
+                        android:layout_height="60dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@color/divider" />
+
+                <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:visibility="gone"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                    <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:text="Genero"
+                            android:textColor="@color/text_black" />
+
+                    <TextView
+                            android:id="@+id/generoTextView"
+                            style="@style/DetailSectionInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="13 - 14.5 kg" />
+
+                    <TextView
+                            style="@style/DetailSectionName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Esterelizado" />
+
+                    <TextView
+                            android:id="@+id/esterelizadoTextView"
+                            style="@style/DetailSectionInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="37 - 40 cm" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

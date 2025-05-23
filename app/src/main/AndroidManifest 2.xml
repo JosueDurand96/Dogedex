@@ -4,7 +4,6 @@
     package="com.durand.dogedex">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="ANDROID.PERMISSION.READ_EXTERNAL_STORAGE" />
@@ -12,15 +11,16 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
     <uses-feature
         android:name="android.hardware.camera.flash"
         android:required="false" />
-
     <uses-feature android:name="android.hardware.location.gps" />
-
 
     <application
         android:name=".MyApplication"
@@ -33,14 +33,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Dogedex"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ui.user_fragment.register_can.PreviewActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.admin_fragment.AdminHome"
             android:exported="true"
-            android:theme="@style/Theme.Onboarding">
+            android:theme="@style/Theme.Onboarding"></activity>
 
-
-        </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDZesMoYh0NX3Y036zG2fHif5uwGYwGNwo" />
@@ -48,21 +48,14 @@
         <activity
             android:name=".ui.user_fragment.UserHome"
             android:exported="true"
-            android:theme="@style/Theme.Onboarding">
-
-        </activity>
-
+            android:theme="@style/Theme.Onboarding"></activity>
         <activity
             android:name=".ui.forget_password.ForgetPasswordActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".ui.auth.OnboardingActivity"
             android:exported="true"
-            android:theme="@style/Theme.Onboarding">
-
-        </activity>
+            android:theme="@style/Theme.Onboarding"></activity>
         <activity
             android:name=".ui.SplahActivity"
             android:exported="true"
@@ -75,48 +68,29 @@
         </activity>
         <activity
             android:name=".ui.forget_password.WholeImageActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="true"
             android:parentActivityName=".ui.forget_password.MainActivity"
-            android:theme="@style/Theme.Onboarding">
-
-        </activity>
+            android:theme="@style/Theme.Onboarding"></activity>
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="true"
-            android:theme="@style/Theme.Onboarding">
-
-        </activity>
+            android:theme="@style/Theme.Onboarding"></activity>
         <activity
             android:name=".ui.dogdetail.DogDetailActivity"
             android:exported="true"
-            android:theme="@style/Theme.Onboarding">
-
-        </activity>
+            android:theme="@style/Theme.Onboarding"></activity>
         <activity
             android:name=".ui.doglist.DogListActivity"
             android:exported="true"
             android:parentActivityName=".ui.forget_password.MainActivity"
-            android:theme="@style/Theme.Onboarding">
-
-        </activity>
+            android:theme="@style/Theme.Onboarding"></activity>
         <activity
             android:name=".ui.forget_password.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Onboarding">
-
-        </activity>
-
-        <activity
-                android:name=".ui.user_fragment.register_can.PreviewActivity"
-                android:exported="true"
-                android:theme="@style/Theme.Onboarding">
-
-        </activity>
+            android:theme="@style/Theme.Onboarding"></activity>
     </application>
 
 </manifest>

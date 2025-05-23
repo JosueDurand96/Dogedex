@@ -3,6 +3,7 @@ package com.durand.dogedex.ui.user_fragment.register_can
 import android.Manifest
 import android.R
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -12,15 +13,22 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
@@ -30,12 +38,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.Request.AgregarMascotaRequest
-import com.durand.dogedex.data.User
 import com.durand.dogedex.data.response.Dog
 import com.durand.dogedex.databinding.FragmentRegisterCanBinding
 import com.durand.dogedex.domain.Classifier
-import com.durand.dogedex.domain.DogRecognition
-import com.durand.dogedex.ui.ApiServiceInterceptor
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity
 import com.durand.dogedex.ui.forget_password.MainViewModel
@@ -48,6 +53,7 @@ import com.google.android.gms.location.LocationServices
 import org.tensorflow.lite.support.common.FileUtil
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -66,7 +72,11 @@ class RegisterCanFragment : Fragment() {
     private val loading by lazy {
         requireContext().createLoadingDialog()
     }
-
+    private lateinit var takePictureLauncher: ActivityResultLauncher<Void?>
+    private var capturedImage: Bitmap? = null
+    private lateinit var nextActivity: Button
+    private lateinit var idImageView: ImageView
+    private lateinit var bitmap: Bitmap
 
     private lateinit var nombreMacota: String
     private lateinit var fechaNacimiento: String
@@ -86,12 +96,14 @@ class RegisterCanFragment : Fragment() {
     private lateinit var imageCan: String
     private lateinit var dogCan: Dog
 
+    private lateinit var progressDialog: ProgressDialog
+
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                setupCamera()
+               // setupCamera()
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -244,7 +256,6 @@ class RegisterCanFragment : Fragment() {
         binding.vm = vm
         binding.lifecycleOwner = viewLifecycleOwner
         _binding!!.razonDeTenenciaAutoCompleteTextView.setAdapter(adapterrazonDeTenencia)
-        getUserProfile()
         initObservers()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
@@ -308,8 +319,42 @@ class RegisterCanFragment : Fragment() {
             openDetailCan(dogCan)
         }
 
+        binding.cameraPreview.setOnClickListener {
+            takePictureLauncher.launch(null)
+        }
+        takePictureLauncher =
+            registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bit ->
+                bitmap = bit!!
+                if (bitmap != null) {
+                    capturedImage = bitmap
+                    binding.cameraPreview.setImageBitmap(bitmap)
+                }
+            }
+
+        binding.confirmAppCompatButton.setOnClickListener {
+            takePhoto(bitmap)
+        }
+
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requestCameraPermission() // ya lo tienes
+        setupCamera() // AGREGA ESTA LÍNEA
+    }
+
+    private fun setupCamera() {
+        binding.cameraPreview.post {
+            imageCapture = ImageCapture.Builder()
+                .setTargetRotation(binding.cameraPreview.display.rotation)
+                .build()
+            cameraExecutor = Executors.newSingleThreadExecutor()
+            isCameraReady = true
+        }
+    }
+
+
 
     private fun initObservers() {
         vm.event.observe(viewLifecycleOwner) {
@@ -361,10 +406,6 @@ class RegisterCanFragment : Fragment() {
         startActivity(intent)
     }
 
-
-    private fun openLoginActivity() {
-        startActivity(Intent(requireContext(), LoginActivity::class.java))
-    }
 
     private fun openDetailActivity(dog: Dog) {
 
@@ -432,7 +473,7 @@ class RegisterCanFragment : Fragment() {
                 Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED -> {
                 // You can use the API that requires the permission.
-                setupCamera()
+               // setupCamera()
             }
             shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
                 AlertDialog.Builder(requireContext())
@@ -453,17 +494,6 @@ class RegisterCanFragment : Fragment() {
                     Manifest.permission.CAMERA
                 )
             }
-        }
-    }
-
-    private fun setupCamera() {
-        binding.cameraPreview.post {
-            imageCapture = ImageCapture.Builder()
-                .setTargetRotation(binding.cameraPreview.display.rotation)
-                .build()
-            cameraExecutor = Executors.newSingleThreadExecutor()
-            startCamera()
-            isCameraReady = true
         }
     }
 
@@ -541,27 +571,6 @@ class RegisterCanFragment : Fragment() {
         )
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        Log.i(TAG, "onRequestPermissionResult")
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            when {
-                grantResults.isEmpty() -> {
-                    // If user interaction was interrupted, the permission request is cancelled and you
-                    // receive empty arrays.
-                    Log.i(TAG, "User interaction was cancelled.")
-                }
-                grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
-                    // Permission granted.
-                    getLastLocation()
-                }
-                else -> {
-                }
-            }
-        }
-    }
 
     companion object {
         private val TAG = "LocationProvider"
@@ -569,100 +578,14 @@ class RegisterCanFragment : Fragment() {
     }
 
 
-    private fun takePhoto() {
-        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(getOutputPhotoFile()).build()
-        imageCapture.takePicture(outputFileOptions, cameraExecutor,
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exception: ImageCaptureException) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Error: ${exception.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+    private fun takePhoto(bitmap: Bitmap) {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        val byteArray = stream.toByteArray()
 
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    /*    val photoUri = outputFileResults.savedUri
-                        val bitmap = BitmapFactory.decodeFile(photoUri?.path)
-                        val dogRecognition = classifier.recognizeImage(bitmap).first()
-                        viewModel.getDogByMlId(dogRecognition.id)*/
-                }
-
-            })
-    }
-
-    private fun getOutputPhotoFile(): File {
-        val mediaDir = requireActivity().externalMediaDirs.firstOrNull()?.let {
-            File(it, resources.getString(com.durand.dogedex.R.string.app_name) + ".jpg").apply {
-                mkdirs()
-            }
-        }
-        return if (mediaDir != null && mediaDir.exists()) {
-            mediaDir
-        } else {
-            requireActivity()!!.filesDir
-        }
-    }
-
-    private fun startCamera() {
-        try {
-            val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-            cameraProviderFuture.addListener(
-                {
-                    val cameraProvider = cameraProviderFuture.get()
-
-                    val preview = Preview.Builder().build()
-                    preview.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
-
-                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-                    val imageAnalysis = ImageAnalysis.Builder()
-                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                        .build()
-                    imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
-                        //    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                        val bitmap = convertImageProxyToBitmap(imageProxy)
-                        if (bitmap != null) {
-                            getPhotoBitmap(bitmap)
-                            val dogRecognition = classifier.recognizeImage(bitmap).first()
-                            enableTakePhotoButton(dogRecognition)
-
-                        }
-
-                        //    val photoUri = outputFileResults.savedUri
-                        //    val bitmap = BitmapFactory.decodeFile(photoUri?.path)
-                        //    val dogRecognition = classifier.recognizeImage(bitmap).first()
-                        //    viewModel.getDogByMlId(dogRecognition.id)
-                        imageProxy.close()
-                    }
-
-
-
-//                    cameraProvider.bindToLifecycle(
-//                        this, cameraSelector,
-//                        preview, imageCapture, imageAnalysis
-//                    )
-
-                }, ContextCompat.getMainExecutor(requireContext())
-            )
-        }catch (e: Exception) {
-
-        }
-
-
-    }
-
-    private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
-        if (dogRecognition.confidence > 80.0) {
-            //binding.takePhotoFab.alpha = 1f
-            binding.confirmAppCompatButton.setOnClickListener {
-                mainViewModel.getDogByMlId(dogRecognition.id)
-            }
-        } else {
-
-            // binding.takePhotoFab.alpha = 0.2f
-            binding.confirmAppCompatButton.setOnClickListener(null)
-        }
+        val intent = Intent(requireContext(), PreviewActivity::class.java)
+        intent.putExtra("image", byteArray)
+        startActivity(intent)
     }
 
     override fun onDestroy() {
@@ -671,11 +594,5 @@ class RegisterCanFragment : Fragment() {
             cameraExecutor.shutdown()
         }
     }
-
-    private fun getUserProfile() {
-       // val loggedInUser: User? = User.getLoggedInUser(requireActivity())
-       // vm.setUserProfile(loggedInUser)
-    }
-
 
 }
