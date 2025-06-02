@@ -122,16 +122,20 @@ class RegisterHocicoFragment : Fragment() {
     }
 
     private fun openDetailActivity(dog: Dog) {
-        val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = sharedPref!!.edit()
-        editor.putString("foto", imageCan)
-        editor.apply()
-        editor.commit()
+        try {
+            val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPref!!.edit()
+            editor.putString("foto", imageCan)
+            editor.apply()
+            editor.commit()
 
-        val intent = Intent(requireContext(), DogDetailActivity::class.java)
-        intent.putExtra(DogDetailActivity.DOG_KEY, dog)
-        intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
-        startActivity(intent)
+            val intent = Intent(requireContext(), DogDetailActivity::class.java)
+            intent.putExtra(DogDetailActivity.DOG_KEY, dog)
+            intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
+            startActivity(intent)
+        }catch (e: Exception){
+            Toast.makeText(requireContext(), "Intente de nuevo por favor!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun openSettingsActivity() {
@@ -259,7 +263,6 @@ class RegisterHocicoFragment : Fragment() {
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
                 imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
-                    //    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
                     val bitmap = convertImageProxyToBitmap(imageProxy)
                     if (bitmap != null){
                         getPhotoBitmap(bitmap)
@@ -267,10 +270,6 @@ class RegisterHocicoFragment : Fragment() {
                         enableTakePhotoButton(dogRecognition)
                     }
 
-                    //    val photoUri = outputFileResults.savedUri
-                    //    val bitmap = BitmapFactory.decodeFile(photoUri?.path)
-                    //    val dogRecognition = classifier.recognizeImage(bitmap).first()
-                    //    viewModel.getDogByMlId(dogRecognition.id)
                     imageProxy.close()
                 }
 

@@ -61,4 +61,5 @@
     <string name="error_adding_dog">Tuvimos un problema al agregar un perrito!</string>
     <string name="camera_permission">permisso</string>
     <string name="title_activity_admin">AdminActivity</string>
+    <string name="todo">todo</string>
 </resources>
