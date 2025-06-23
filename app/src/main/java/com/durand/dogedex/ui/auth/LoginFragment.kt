@@ -11,11 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.durand.dogedex.data.Request.oficial.LoginRequest
-import com.durand.dogedex.data.User
-import com.durand.dogedex.data.dto.AddLoginDTO
 import com.durand.dogedex.databinding.FragmentLoginBinding
-import com.durand.dogedex.ui.admin_fragment.AdminHome
-import com.durand.dogedex.ui.admin_fragment.ui.reportar_can_agresor.AddCanAgresorViewModel
 import com.durand.dogedex.ui.auth.oficial.LoginViewModel
 import com.durand.dogedex.ui.user_fragment.UserHome
 
@@ -25,6 +21,7 @@ class LoginFragment : Fragment() {
         fun onRegisterButtonClick()
         fun onLoginFieldsValidated(email: String, password: String)
     }
+
     private lateinit var viewModel: LoginViewModel
     private lateinit var loginFragmentActions: LoginFragmentActions
     private lateinit var binding: FragmentLoginBinding
@@ -50,18 +47,17 @@ class LoginFragment : Fragment() {
         binding.loginButton.setOnClickListener {
             validateFields()
         }
-
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.loginButton.isEnabled = !isLoading
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
         viewModel.login.observe(requireActivity()) {
+            binding.loginButton.isEnabled = true
             Toast.makeText(requireContext(), "Bienvenido ${it.nombre}!", Toast.LENGTH_SHORT).show()
             Log.d("josue", "apellido: " + it.apellido.toString())
             Log.d("josue", "nombre: " + it.nombre)
-//            if (it.tipoUsuario == "U") {
-//                val intent = Intent(requireContext(), UserHome::class.java)
-//                startActivity(intent)
-//            } else if (it.tipoUsuario == "A") {
-//                val intent = Intent(requireContext(), AdminHome::class.java)
-//                startActivity(intent)
-//            }
+            val intent = Intent(requireContext(), UserHome::class.java)
+            startActivity(intent)
         }
         return binding.root
     }
@@ -70,11 +66,6 @@ class LoginFragment : Fragment() {
         binding.emailInput.error = ""
         binding.passwordInput.error = ""
         val email = binding.emailEdit.text.toString()
-//        if (!isValidEmail(email)){
-//            binding.emailInput.error = "Email is not valid!"
-//            return
-//        }
-
         val password = binding.passwordEdit.text.toString()
         if (password.isEmpty()) {
             binding.passwordInput.error = "Password is not valid!"
@@ -83,10 +74,7 @@ class LoginFragment : Fragment() {
         Log.d("login", "Probando login")
         Log.d("login", "email: $email")
         Log.d("login", "password: $password")
-        Log.d("login", "viewModel: 1")
+        binding.loginButton.isEnabled = false
         viewModel.login(LoginRequest(email, password))
-        Log.d("login", "viewModel: 2")
-        //loginFragmentActions.onLoginFieldsValidated("josue@gmail.com", "12345678")
-        Log.d("login", "viewModel: 3")
     }
 }

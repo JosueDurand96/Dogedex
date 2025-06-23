@@ -18,24 +18,34 @@ class LoginViewModel(
     private val _login = MutableLiveData<LoginResponse>()
     val login: LiveData<LoginResponse> = _login
 
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+
 
     fun login(loginRequest: LoginRequest) = viewModelScope.launch {
+        _isLoading.postValue(true)
         try {
-            when(val res: ApiResponseStatus<LoginResponse> = repository.login(loginRequest)){
+            when (val res: ApiResponseStatus<LoginResponse> = repository.login(loginRequest)) {
                 is ApiResponseStatus.Error -> {
                     Log.d("josue", "Login Error")
+                    _isLoading.postValue(false)
                 }
+
                 is ApiResponseStatus.Loading -> {
                     Log.d("josue", "Login Loading")
+                    // Ya se setea en true arriba
                 }
+
                 is ApiResponseStatus.Success -> {
-                    Log.d("josue", "Login Success ")
+                    Log.d("josue", "Login Success")
                     _login.postValue(res.data)
-                    Log.d("josue", "list ${res.data}")
+                    _isLoading.postValue(false)
                 }
             }
-        }catch (e:Exception){
-            Log.d("josue", "list ${e}")
+        } catch (e: Exception) {
+            Log.e("josue", "Login Exception: ${e.localizedMessage}")
+            _isLoading.postValue(false)
         }
     }
+
 }
