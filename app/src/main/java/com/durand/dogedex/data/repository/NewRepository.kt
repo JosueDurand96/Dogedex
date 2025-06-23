@@ -3,7 +3,7 @@
 package com.durand.dogedex.data.repository
 
 import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.Request.*
+import com.durand.dogedex.data.request.*
 import com.durand.dogedex.data.dto.*
 import com.durand.dogedex.data.newApiService
 import com.durand.dogedex.data.makeNetworkCall

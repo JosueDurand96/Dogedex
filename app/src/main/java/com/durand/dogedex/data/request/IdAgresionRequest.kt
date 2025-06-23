@@ -1,4 +1,4 @@
-package com.durand.dogedex.data.Request
+package com.durand.dogedex.data.request
 
 
 import com.google.gson.annotations.SerializedName

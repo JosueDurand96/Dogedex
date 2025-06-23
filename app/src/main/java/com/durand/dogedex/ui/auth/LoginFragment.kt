@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.durand.dogedex.data.Request.oficial.LoginRequest
+import com.durand.dogedex.data.request.oficial.LoginRequest
 import com.durand.dogedex.databinding.FragmentLoginBinding
 import com.durand.dogedex.ui.auth.oficial.LoginViewModel
 import com.durand.dogedex.ui.user_fragment.UserHome

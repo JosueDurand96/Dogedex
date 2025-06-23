@@ -8,10 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.durand.dogedex.data.Request.DniRequest
+import com.durand.dogedex.data.request.DniRequest
 import com.durand.dogedex.data.response.consultar_can_agresivo_dni.ConsultarCanAgresivoDni
 import com.durand.dogedex.databinding.FragmentConsultarIncidenciasCanBinding
-import com.durand.dogedex.ui.admin_fragment.ui.reportar_can_agresor.AddCanAgresorAdapter
 
 class ConsultarIncidenciasCanFragment : Fragment() {
 

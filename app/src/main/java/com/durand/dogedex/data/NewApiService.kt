@@ -4,7 +4,7 @@ package com.durand.dogedex.data
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.durand.dogedex.MyApplication
-import com.durand.dogedex.data.Request.*
+import com.durand.dogedex.data.request.*
 import com.durand.dogedex.data.dto.*
 import com.durand.dogedex.data.response.AddAgressionPetResponse
 import com.durand.dogedex.data.response.AddBreedResponse

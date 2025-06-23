@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.durand.dogedex.data.Request.AddAgressionPetRequest
+import com.durand.dogedex.data.request.AddAgressionPetRequest
 import com.durand.dogedex.databinding.FragmentCanNoRegistradoBinding
 import android.app.Activity
 import android.graphics.Bitmap
@@ -21,7 +21,6 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.widget.Toast
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken

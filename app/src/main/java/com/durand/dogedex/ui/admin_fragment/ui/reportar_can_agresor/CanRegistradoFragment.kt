@@ -9,12 +9,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.durand.dogedex.R
-import com.durand.dogedex.data.Request.AddAggressionPetRequest
-import com.durand.dogedex.data.Request.DniRequest
+import com.durand.dogedex.data.request.AddAggressionPetRequest
+import com.durand.dogedex.data.request.DniRequest
 import com.durand.dogedex.data.response.consultar_mascota_dni.ListMascotaDni
 import com.durand.dogedex.databinding.FragmentCanRegistradoBinding
-import com.durand.dogedex.databinding.FragmentReportCanAgresorBinding
 
 
 class CanRegistradoFragment : Fragment() {

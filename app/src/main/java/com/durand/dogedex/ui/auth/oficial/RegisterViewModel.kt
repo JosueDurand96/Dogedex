@@ -6,25 +6,25 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.request.oficial.LoginRequest
 import com.durand.dogedex.data.repository.NewOficialRepository
-import com.durand.dogedex.data.response.oficial.LoginResponse
+import com.durand.dogedex.data.request.oficial.RegisterRequest
+import com.durand.dogedex.data.response.oficial.RegisterResponse
 import kotlinx.coroutines.launch
 
-class LoginViewModel(
+class RegisterViewModel(
     private val repository: NewOficialRepository = NewOficialRepository()
 ) : ViewModel() {
 
-    private val _login = MutableLiveData<LoginResponse>()
-    val login: LiveData<LoginResponse> = _login
+    private val _register = MutableLiveData<RegisterResponse>()
+    val register: LiveData<RegisterResponse> = _register
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun login(loginRequest: LoginRequest) = viewModelScope.launch {
+    fun registerUser(registerRequest: RegisterRequest) = viewModelScope.launch {
         _isLoading.postValue(true)
         try {
-            when (val res: ApiResponseStatus<LoginResponse> = repository.login(loginRequest)) {
+            when (val res: ApiResponseStatus<RegisterResponse> = repository.registerUser(registerRequest)) {
                 is ApiResponseStatus.Error -> {
                     Log.d("josue", "Login Error")
                     _isLoading.postValue(false)
@@ -37,7 +37,7 @@ class LoginViewModel(
 
                 is ApiResponseStatus.Success -> {
                     Log.d("josue", "Login Success")
-                    _login.postValue(res.data)
+                    _register.postValue(res.data)
                     _isLoading.postValue(false)
                 }
             }
@@ -46,5 +46,4 @@ class LoginViewModel(
             _isLoading.postValue(false)
         }
     }
-
 }

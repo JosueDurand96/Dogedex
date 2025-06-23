@@ -4,9 +4,10 @@ package com.durand.dogedex.data
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.durand.dogedex.MyApplication
-import com.durand.dogedex.data.Request.oficial.LoginRequest
-import com.durand.dogedex.data.response.AddAgressionPetResponse
+import com.durand.dogedex.data.request.oficial.LoginRequest
+import com.durand.dogedex.data.request.oficial.RegisterRequest
 import com.durand.dogedex.data.response.oficial.LoginResponse
+import com.durand.dogedex.data.response.oficial.RegisterResponse
 import com.durand.dogedex.ui.ApiServiceInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -48,5 +49,11 @@ interface NewApiOficialService {
         @Body loginRequest: LoginRequest,
         @Header("Content-Type") content_type: String
     ): LoginResponse
+
+    @POST("api/v1/Autenticacion/registrar")
+    suspend fun registerUser(
+        @Body registerRequest: RegisterRequest,
+        @Header("Content-Type") content_type: String
+    ): RegisterResponse
 
 }

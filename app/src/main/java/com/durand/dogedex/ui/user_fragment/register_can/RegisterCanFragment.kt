@@ -29,13 +29,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.Request.AgregarMascotaRequest
-import com.durand.dogedex.data.User
+import com.durand.dogedex.data.request.AgregarMascotaRequest
 import com.durand.dogedex.data.response.Dog
 import com.durand.dogedex.databinding.FragmentRegisterCanBinding
 import com.durand.dogedex.domain.Classifier
 import com.durand.dogedex.domain.DogRecognition
-import com.durand.dogedex.ui.ApiServiceInterceptor
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity
 import com.durand.dogedex.ui.forget_password.MainViewModel

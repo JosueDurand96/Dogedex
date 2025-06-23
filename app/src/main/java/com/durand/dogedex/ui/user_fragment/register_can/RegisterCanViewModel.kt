@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.Request.AgregarMascotaRequest
+import com.durand.dogedex.data.request.AgregarMascotaRequest
 import com.durand.dogedex.data.User
 import com.durand.dogedex.data.repository.NewRepository
 import com.durand.dogedex.data.response.registar_can.RegisterCanResponse
