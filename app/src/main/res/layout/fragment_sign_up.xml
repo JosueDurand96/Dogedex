@@ -68,8 +68,8 @@
                                     android:id="@+id/name_edit"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:autofillHints="emailAddress"
-                                    android:inputType="textEmailAddress" />
+                                    android:inputType="textPersonName"
+                                    android:autofillHints="name" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -86,8 +86,8 @@
                                     android:id="@+id/apellidos_edit"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:autofillHints="emailAddress"
-                                    android:inputType="textEmailAddress" />
+                                    android:inputType="textPersonName"
+                                    android:autofillHints="name" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -105,8 +105,7 @@
                                     android:maxLength="8"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:autofillHints="emailAddress"
-                                    android:inputType="phone" />
+                                    android:inputType="number"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -123,8 +122,8 @@
                                     android:id="@+id/distrito_edit"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:autofillHints="emailAddress"
-                                    android:inputType="text" />
+                                    android:inputType="textPersonName"
+                                    android:autofillHints="name" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -141,8 +140,8 @@
                                     android:id="@+id/direccion_edit"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:autofillHints="emailAddress"
-                                    android:inputType="textEmailAddress" />
+                                    android:inputType="textPersonName"
+                                    android:autofillHints="name" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -159,8 +158,8 @@
                                     android:id="@+id/email_edit"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:autofillHints="emailAddress"
-                                    android:inputType="textEmailAddress" />
+                                    android:inputType="textEmailAddress"
+                                    android:autofillHints="name" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView

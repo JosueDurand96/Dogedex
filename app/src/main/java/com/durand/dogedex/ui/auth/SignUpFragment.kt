@@ -76,7 +76,7 @@ class SignUpFragment : Fragment() {
         if (password != passwordConfirmation) {
             binding.passwordInput.error = "Passwords do not match!"
         }
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        viewModel.isLoading.observe(requireActivity()) { isLoading ->
             binding.signUpButton.isEnabled = !isLoading
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
@@ -84,7 +84,7 @@ class SignUpFragment : Fragment() {
             binding.signUpButton.isEnabled = true
             Log.d("josue", "codigo: " + it.codigo)
             Log.d("josue", "mensaje: " + it.mensaje)
-            val intent = Intent(requireContext(), LoginFragment::class.java)
+            val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
         }
         viewModel.registerUser(
