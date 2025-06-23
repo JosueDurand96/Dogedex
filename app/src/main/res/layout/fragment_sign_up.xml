@@ -29,100 +29,196 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_onboarding">
 
-            <LinearLayout
+            <!-- 📦 ScrollView añadido -->
+            <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:fillViewport="true"
+                    android:overScrollMode="ifContentScrolls"
+                    android:paddingBottom="20dp">
 
-                <TextView
-                        android:id="@+id/sign_up_toolbar"
+                <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textSize="19sp"
-                        android:textColor="@color/black"
-                        android:text="Registrarse" />
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-
-                <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/email_input"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Correo"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/email_edit"
+                    <TextView
+                            android:id="@+id/sign_up_toolbar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:autofillHints="emailAddress"
-                            android:inputType="textEmailAddress" />
-                </com.google.android.material.textfield.TextInputLayout>
+                            android:gravity="center"
+                            android:textSize="19sp"
+                            android:textColor="@color/black"
+                            android:text="Registrarse" />
 
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginStart="16dp"
-                        android:textColor="@color/black"
-                        android:text="El password debe tener 8 digitos!" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/password_input"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Password"
-                        app:passwordToggleEnabled="true"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/password_edit"
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/name_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:autofillHints="password"
-                            android:inputType="textPassword"
-                            android:maxLength="8" />
-                </com.google.android.material.textfield.TextInputLayout>
+                            android:hint="Nombre"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp">
 
-                <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/confirm_password_input"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:hint="Confirmar Password"
-                        app:passwordToggleEnabled="true"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="16dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/name_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="emailAddress"
+                                android:inputType="textEmailAddress" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/confirm_password_edit"
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/apellidos_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:autofillHints="password"
-                            android:inputType="textPassword"
-                            android:maxLength="8" />
-                </com.google.android.material.textfield.TextInputLayout>
+                            android:hint="Apellidos"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp">
 
-                <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/sign_up_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/color_primary"
-                        android:textColor="@color/black"
-                        android:textAllCaps="false"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:text="Registrarse" />
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/apellidos_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="emailAddress"
+                                android:inputType="textEmailAddress" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            </LinearLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/dni_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Dni"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/dni_edit"
+                                android:maxLength="8"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="emailAddress"
+                                android:inputType="phone" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/distrito_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Distrito"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/distrito_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="emailAddress"
+                                android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/direccion_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Dirección"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/direccion_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="emailAddress"
+                                android:inputType="textEmailAddress" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/email_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Correo"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/email_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="emailAddress"
+                                android:inputType="textEmailAddress" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginStart="16dp"
+                            android:textColor="@color/black"
+                            android:text="La contraseña debe tener 8 digitos!" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/password_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Password"
+                            app:passwordToggleEnabled="true"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/password_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="password"
+                                android:inputType="textPassword"
+                                android:maxLength="8" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/confirm_password_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:hint="Confirmar Password"
+                            app:passwordToggleEnabled="true"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="16dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/confirm_password_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:autofillHints="password"
+                                android:inputType="textPassword"
+                                android:maxLength="8" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/sign_up_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/color_primary"
+                            android:textColor="@color/black"
+                            android:textAllCaps="false"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:text="Registrarse" />
+
+                </LinearLayout>
+            </ScrollView>
         </RelativeLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

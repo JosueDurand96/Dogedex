@@ -7,6 +7,9 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
+import com.durand.dogedex.R
 import com.durand.dogedex.ui.user_fragment.UserHome
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.databinding.ActivityLoginBinding
@@ -62,7 +65,7 @@ class LoginActivity : AppCompatActivity(), LoginFragment.LoginFragmentActions, S
     }
 
     override fun onRegisterButtonClick() {
-        //findNavController(R.id.nav_host_fragment).navigate(LoginFragmentDirections.actionLoginFragmentToSignUpFragment())
+        findNavController(R.id.nav_host_fragment).navigate(LoginFragmentDirections.actionLoginFragmentToSignUpFragment())
     }
 
     override fun onLoginFieldsValidated(email: String, password: String) {
