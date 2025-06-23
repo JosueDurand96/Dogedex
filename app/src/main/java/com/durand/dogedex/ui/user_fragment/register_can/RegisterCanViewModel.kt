@@ -8,7 +8,7 @@ import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.request.AgregarMascotaRequest
 import com.durand.dogedex.data.User
 import com.durand.dogedex.data.repository.NewRepository
-import com.durand.dogedex.data.response.registar_can.RegisterCanResponse
+import com.durand.dogedex.data.response.oficial.RegisterCanResponse
 import kotlinx.coroutines.launch
 
 class RegisterCanViewModel(

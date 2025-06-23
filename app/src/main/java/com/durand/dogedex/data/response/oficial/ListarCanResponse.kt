@@ -1,22 +1,21 @@
-package com.durand.dogedex.data.dto
-
+package com.durand.dogedex.data.response.oficial
 
 import com.google.gson.annotations.SerializedName
 
-data class RegisterCanRequest(
-    @SerializedName("idUsuario")
-    var idUsuario: Int,
+data class ListarCanResponse(
+    @SerializedName("id")
+    var id: Int,
     @SerializedName("nombre")
-    var nombre: String,
+    var nombre: Int,
     @SerializedName("fechaNacimiento")
     var fechaNacimiento: String,
     @SerializedName("especie")
     var especie: String,
     @SerializedName("genero")
     var genero: String,
-    @SerializedName("idRaza")
-    var idRaza: Int,
-    @SerializedName("tamano")
+    @SerializedName("raza")
+    var raza: Int,
+    @SerializedName("tamanio")
     var tamano: String,
     @SerializedName("caracter")
     var caracter: String,
@@ -28,16 +27,16 @@ data class RegisterCanRequest(
     var esterilizado: String,
     @SerializedName("distrito")
     var distrito: String,
-    @SerializedName("modoObtencion")
-    var modoObtencion: String,
-    @SerializedName("razonTenencia")
-    var razonTenencia: String,
+    @SerializedName("obtencion")
+    var obtencion: String,
+    @SerializedName("tenencia")
+    var tenencia: String,
     @SerializedName("foto")
     var foto: String,
-    @SerializedName("longitud")
-    var longitud: String,
-    @SerializedName("latitud")
-    var latitud: String,
-    @SerializedName("peligroso")
-    var peligroso: String,
+    @SerializedName("idUsuario")
+    var idUsuario: Int,
+    @SerializedName("nombreUsuario")
+    var nombreUsuario: String,
+    @SerializedName("apellidoUsuario")
+    var apellidoUsuario: String,
 )

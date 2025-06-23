@@ -54,9 +54,11 @@ class LoginFragment : Fragment() {
         viewModel.login.observe(requireActivity()) {
             binding.loginButton.isEnabled = true
             Toast.makeText(requireContext(), "Bienvenido ${it.nombre}!", Toast.LENGTH_SHORT).show()
-            Log.d("josue", "apellido: " + it.apellido.toString())
+            Log.d("josue", "apellido: " + it.apellido)
             Log.d("josue", "nombre: " + it.nombre)
             val intent = Intent(requireContext(), UserHome::class.java)
+            intent.putExtra("id", it.id)
+            intent.putExtra("nombre", it.nombre)
             startActivity(intent)
         }
         return binding.root

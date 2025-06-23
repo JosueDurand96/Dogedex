@@ -21,7 +21,7 @@ import com.durand.dogedex.data.response.consultar_mascotas.ConsultarDetalleMasco
 import com.durand.dogedex.data.response.dangerousdogs.PetProfileResponse
 import com.durand.dogedex.data.response.list_mascotas.MascotaResponse
 import com.durand.dogedex.data.response.lostpetslist.LostPetDetailResponse
-import com.durand.dogedex.data.response.registar_can.RegisterCanResponse
+import com.durand.dogedex.data.response.oficial.RegisterCanResponse
 
 class NewRepository {
 
