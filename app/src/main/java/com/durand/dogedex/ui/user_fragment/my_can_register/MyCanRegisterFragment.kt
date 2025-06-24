@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.durand.dogedex.databinding.FragmentMyCanRegisterBinding
-import com.durand.dogedex.ui.user_fragment.can_report_lost.CanReportLostAdapter
 
 class MyCanRegisterFragment : Fragment() {
 
@@ -34,9 +33,7 @@ class MyCanRegisterFragment : Fragment() {
             binding.canReportLostRecyclerView. adapter = MyCanRegisterAdapter(it)
 
         }
-
         return root
     }
-
 
 }

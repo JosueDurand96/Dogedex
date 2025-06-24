@@ -63,34 +63,9 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         val adapterEspecie = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsEspecie)
         _binding!!.activoAutoCompleteTextView.setAdapter(adapterEspecie)
         binding.vm = vm
+
         binding.lifecycleOwner = viewLifecycleOwner
-        setupObservers()
-        getUserProfile()
         return root
-    }
-
-    private fun setupObservers() {
-        vm.list.observe(viewLifecycleOwner) {
-            setMyPetsAdapter(it)
-        }
-
-        vm.loading.observe(viewLifecycleOwner) {
-            if (it) loading.show() else loading.dismiss()
-        }
-
-        vm.viewState.observe(viewLifecycleOwner) {
-            when (it) {
-                is CanPerdidoViewModel.CanPerdidoEvent.Error -> {
-                    Toast.makeText(requireContext(), it.msg, Toast.LENGTH_SHORT).show()
-                }
-
-                is CanPerdidoViewModel.CanPerdidoEvent.SuccessAgregarMascotaPerdida -> {
-                    Toast.makeText(requireContext(), it.msg, Toast.LENGTH_SHORT).show()
-                }
-
-                CanPerdidoViewModel.CanPerdidoEvent.None -> {}
-            }
-        }
     }
 
     private fun setMyPetsAdapter(list: List<ConsultarDetalleMascota>) {
@@ -189,10 +164,6 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         if (hasPermissions) getCurrentPosition()
     }
 
-    private fun getUserProfile() {
-       // val loggedInUser: User? = User.getLoggedInUser(requireActivity())
-       // vm.setUserProfile(loggedInUser)
-    }
 }
 
 inline fun Fragment.safeCollectInViews(crossinline c: suspend CoroutineScope.() -> Unit) {

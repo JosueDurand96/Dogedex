@@ -22,10 +22,6 @@ class MyCanRegisterViewModel(
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    init {
-        listar()
-    }
-
     fun listar() = viewModelScope.launch {
         _isLoading.postValue(true)
         try {
