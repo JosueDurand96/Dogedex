@@ -2,46 +2,53 @@
 
 package com.durand.dogedex.ui.user_fragment.my_can_register
 
-import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.User
-import com.durand.dogedex.data.repository.NewRepository
-import com.durand.dogedex.data.response.consultar_mascotas.ConsultarDetalleMascota
+import com.durand.dogedex.data.repository.NewOficialRepository
+import com.durand.dogedex.data.response.oficial.ListarCanResponse
 import kotlinx.coroutines.launch
 
 class MyCanRegisterViewModel(
-    private val repository: NewRepository = NewRepository()
+    private val repository: NewOficialRepository = NewOficialRepository()
 ) : ViewModel() {
 
-    private val _list = MutableLiveData<List<ConsultarDetalleMascota>>(emptyList())
-    val list: LiveData<List<ConsultarDetalleMascota>> = _list
+    private val _list = MutableLiveData<List<ListarCanResponse>>(emptyList())
+    val list: LiveData<List<ListarCanResponse>> = _list
 
-    val loading = MutableLiveData(false)
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
 
-    private var user: User? = null
-
-    fun setUserProfile(user: User?) {
-        this.user = user
+    init {
+        listar()
     }
 
-    @SuppressLint("NullSafeMutableLiveData")
-    fun executeConsultarMascotasPorId() = viewModelScope.launch {
+    fun listar() = viewModelScope.launch {
+        _isLoading.postValue(true)
         try {
-            loading.postValue(true)
-            when (val res: ApiResponseStatus<List<ConsultarDetalleMascota>> = repository.consultarMascotasPorId(user?.id ?: -1)) {
-                is ApiResponseStatus.Success -> {
-                    _list.postValue(res.data)
+            when (val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarMascota()) {
+                is ApiResponseStatus.Error -> {
+                    Log.d("josue", "Login Error")
+                    _isLoading.postValue(false)
                 }
 
-                else -> {}
+                is ApiResponseStatus.Loading -> {
+                    Log.d("josue", "Login Loading")
+                    // Ya se setea en true arriba
+                }
+
+                is ApiResponseStatus.Success -> {
+                    Log.d("josue", "Login Success")
+                    _list.postValue(res.data)
+                    _isLoading.postValue(false)
+                }
             }
-        } finally {
-            loading.postValue(false)
+        } catch (e: Exception) {
+            Log.e("josue", "Login Exception: ${e.localizedMessage}")
+            _isLoading.postValue(false)
         }
     }
-
 }

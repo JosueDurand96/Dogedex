@@ -6,7 +6,7 @@ data class ListarCanResponse(
     @SerializedName("id")
     var id: Int,
     @SerializedName("nombre")
-    var nombre: Int,
+    var nombre: String,
     @SerializedName("fechaNacimiento")
     var fechaNacimiento: String,
     @SerializedName("especie")
@@ -14,7 +14,7 @@ data class ListarCanResponse(
     @SerializedName("genero")
     var genero: String,
     @SerializedName("raza")
-    var raza: Int,
+    var raza: String,
     @SerializedName("tamanio")
     var tamano: String,
     @SerializedName("caracter")
@@ -23,8 +23,8 @@ data class ListarCanResponse(
     var color: String,
     @SerializedName("pelaje")
     var pelaje: String,
-    @SerializedName("esterilizado")
-    var esterilizado: String,
+    @SerializedName("esterelizado")
+    var esterelizado: String,
     @SerializedName("distrito")
     var distrito: String,
     @SerializedName("obtencion")
