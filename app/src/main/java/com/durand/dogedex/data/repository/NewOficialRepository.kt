@@ -41,7 +41,7 @@ class NewOficialRepository {
             newApiOficialService.listarMascota( "application/json")
         }
 
-    suspend fun registerCanPerdido(): ApiResponseStatus<List<ListarCanPerdidoResponse>> =
+    suspend fun listarMascotaPerdida(): ApiResponseStatus<List<ListarCanPerdidoResponse>> =
         makeNetworkCall {
             newApiOficialService.listarMascotaPerdida( "application/json")
         }

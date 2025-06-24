@@ -7,12 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.durand.dogedex.R
+import com.durand.dogedex.data.response.oficial.ListarCanPerdidoResponse
 
-
-data class ItemsViewModel(val image: Int, val text: String, val description: String = "") {
-}
-
-class CanReportLostAdapter(private val mList: MutableList<ItemsViewModel> = mutableListOf()) :
+class CanReportLostAdapter(private val mList: List<ListarCanPerdidoResponse> = mutableListOf()) :
     RecyclerView.Adapter<CanReportLostAdapter.ViewHolder>() {
 
     // create new views
@@ -31,23 +28,17 @@ class CanReportLostAdapter(private val mList: MutableList<ItemsViewModel> = muta
         val ItemsViewModel = mList[position]
 
         // sets the image to the imageview from our itemHolder class
-        holder.imageView.setImageResource(ItemsViewModel.image)
+            //   holder.imageView.setImageResource(ItemsViewModel)
 
         // sets the text to the textview from our itemHolder class
-        holder.textView.text = ItemsViewModel.text
-        holder.description.text = ItemsViewModel.description
+        holder.textView.text = ItemsViewModel.nombre
+        holder.description.text = ItemsViewModel.nombre
 
     }
 
     // return the number of the items in the list
     override fun getItemCount(): Int {
         return mList.size
-    }
-
-    fun add(new: List<ItemsViewModel>) {
-        mList.clear()
-        mList.addAll(new)
-        notifyDataSetChanged()
     }
 
     // Holds the views for adding it to image and text
