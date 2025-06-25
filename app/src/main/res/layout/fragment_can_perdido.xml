@@ -9,163 +9,174 @@
                 name="vm"
                 type="com.durand.dogedex.ui.user_fragment.my_can_lost.CanPerdidoViewModel" />
     </data>
-
-    <RelativeLayout
+    <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.user_fragment.my_can_lost.CanPerdidoFragment">
-
-        <ScrollView
+            android:layout_height="match_parent">
+        <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                tools:context=".ui.user_fragment.my_can_lost.CanPerdidoFragment">
 
-            <RelativeLayout
+            <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-
-                <androidx.cardview.widget.CardView
+                <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginEnd="25dp"
-                        android:elevation="15dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent">
+                        android:layout_height="wrap_content">
 
-                    <TextView
+                    <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="Mascota perdida"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:layout_marginStart="25dp"
+                            android:layout_marginEnd="25dp"
+                            android:elevation="15dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent">
 
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            android:orientation="vertical">
-
-                        <fragment
-                                android:id="@+id/map"
-                                android:name="com.google.android.gms.maps.SupportMapFragment"
+                        <TextView
                                 android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:layout_marginStart="25dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="Mascota perdida"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginTop="25dp"
-                                android:layout_marginEnd="25dp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:orientation="vertical">
 
-                        <Spinner
-                                android:id="@+id/mascota"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginEnd="25dp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                android:inputType="none" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="25dp"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginEnd="25dp"
-                                android:hint="Estado"
-                                app:boxBackgroundColor="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent">
-
-                            <AutoCompleteTextView
-                                    android:id="@+id/activoAutoCompleteTextView"
+                            <fragment
+                                    android:id="@+id/map"
+                                    android:name="com.google.android.gms.maps.SupportMapFragment"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="none"
-                                    tools:ignore="LabelFor" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-
-                        <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="25dp"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginEnd="25dp"
-                                android:hint="Fecha de perdida"
-                                app:boxBackgroundColor="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/textView2">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="date"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp"
-                                    android:textStyle="normal" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="25dp"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginEnd="25dp"
-                                android:hint="Comentarios"
-                                app:boxBackgroundColor="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/textView2">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="textAutoComplete"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp"
-                                    android:textStyle="normal" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <androidx.cardview.widget.CardView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="25dp"
-                                android:layout_marginTop="25dp"
-                                android:layout_marginEnd="25dp"
-                                android:layout_marginBottom="25dp"
-                                android:elevation="15dp">
-
-                            <androidx.appcompat.widget.AppCompatButton
-                                    android:id="@+id/confirmAppCompatButton"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="50dp"
-                                    android:background="@drawable/btn_blue_selector"
-                                    android:elevation="15dp"
-                                    android:text="Confirmar"
-                                    android:textAllCaps="false"
-                                    android:textColor="@color/black"
-                                    android:textSize="15sp"
-                                    android:textStyle="bold"
+                                    android:layout_height="200dp"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="25dp"
+                                    android:layout_marginEnd="25dp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/userTextInputLayout" />
-                        </androidx.cardview.widget.CardView>
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                            <Spinner
+                                    android:id="@+id/mascota"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="15dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    android:inputType="none" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Estado"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <AutoCompleteTextView
+                                        android:id="@+id/activoAutoCompleteTextView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="none"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
 
 
-                    </LinearLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Fecha de perdida"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textView2">
 
-                </androidx.cardview.widget.CardView>
-            </RelativeLayout>
-        </ScrollView>
-    </RelativeLayout>
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="date"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Comentarios"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="textAutoComplete"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <androidx.cardview.widget.CardView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="25dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:layout_marginBottom="25dp"
+                                    android:elevation="15dp">
+
+                                <androidx.appcompat.widget.AppCompatButton
+                                        android:id="@+id/confirmAppCompatButton"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="50dp"
+                                        android:background="@drawable/btn_blue_selector"
+                                        android:elevation="15dp"
+                                        android:text="Confirmar"
+                                        android:textAllCaps="false"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toBottomOf="@+id/userTextInputLayout" />
+                            </androidx.cardview.widget.CardView>
+
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </RelativeLayout>
+            </ScrollView>
+        </RelativeLayout>
+        <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/color_primary"
+                android:visibility="gone" />
+    </FrameLayout>
+
 </layout>

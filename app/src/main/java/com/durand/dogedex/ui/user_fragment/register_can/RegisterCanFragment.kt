@@ -110,7 +110,9 @@ class RegisterCanFragment : Fragment() {
     ): View {
         viewModel = ViewModelProvider(this).get(RegisterCanViewModel::class.java)
         _binding = FragmentRegisterCanBinding.inflate(inflater, container, false)
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading -> }
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
         viewModel.list.observe(viewLifecycleOwner) {
             Log.d("josue", "HUBO EXITO")
         }

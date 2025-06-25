@@ -55,7 +55,9 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         val adapterEspecie = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsEspecie)
         _binding!!.activoAutoCompleteTextView.setAdapter(adapterEspecie)
         binding.lifecycleOwner = viewLifecycleOwner
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading -> }
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
         viewModel.listar(
             RegisterCanPerdidoRequest(
                 fechaPerdida = "24/22/2222",
