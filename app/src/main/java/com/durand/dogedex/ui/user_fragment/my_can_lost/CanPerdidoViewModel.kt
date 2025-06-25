@@ -33,17 +33,17 @@ class CanPerdidoViewModel(
         try {
             when (val res: ApiResponseStatus<RegisterCanPerdidoResponse> = repository.registerCanPerdido(registerCanRequest)) {
                 is ApiResponseStatus.Error -> {
-                    Log.d("josue", "Login Error")
+                    Log.d("josue", "Mascota perdida Error")
                     _isLoading.postValue(false)
                 }
 
                 is ApiResponseStatus.Loading -> {
-                    Log.d("josue", "Login Loading")
+                    Log.d("josue", "Mascota perdida Loading")
                     // Ya se setea en true arriba
                 }
 
                 is ApiResponseStatus.Success -> {
-                    Log.d("josue", "Login Success")
+                    Log.d("josue", "Mascota perdida Success")
                     _list.postValue(res.data)
                     _isLoading.postValue(false)
                 }

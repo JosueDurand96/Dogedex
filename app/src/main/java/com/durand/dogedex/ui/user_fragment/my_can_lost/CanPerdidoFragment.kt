@@ -4,24 +4,26 @@ import android.Manifest
 import android.R
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.durand.dogedex.data.User
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.durand.dogedex.data.request.oficial.RegisterCanPerdidoRequest
 import com.durand.dogedex.databinding.FragmentCanPerdidoBinding
-import com.durand.dogedex.data.response.consultar_mascotas.ConsultarDetalleMascota
+import com.durand.dogedex.ui.user_fragment.can_report_lost.CanReportLostAdapter
+import com.durand.dogedex.ui.user_fragment.can_report_lost.CanReportLostViewModel
 import com.durand.dogedex.util.LocationsUtils
 import com.durand.dogedex.util.LocationsUtils.Companion.locationFlow
-import com.durand.dogedex.util.createLoadingDialog
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -38,18 +40,11 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentCanPerdidoBinding? = null
     private lateinit var mMap: GoogleMap
-    private val vm: CanPerdidoViewModel by viewModels()
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var viewModel: CanPerdidoViewModel
 
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(requireContext())
-    }
-
-    private val loading by lazy {
-        requireContext().createLoadingDialog()
     }
 
     override fun onCreateView(
@@ -57,14 +52,25 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel = ViewModelProvider(this).get(CanPerdidoViewModel::class.java)
         _binding = FragmentCanPerdidoBinding.inflate(inflater, container, false)
         val root: View = binding.root
         val itemsEspecie = listOf("Activo", "Inactivo")
         val adapterEspecie = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsEspecie)
         _binding!!.activoAutoCompleteTextView.setAdapter(adapterEspecie)
-        binding.vm = vm
-
         binding.lifecycleOwner = viewLifecycleOwner
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading -> }
+        viewModel.listar(
+            RegisterCanPerdidoRequest(
+                fechaPerdida = "24/22/2222",
+                lugarPerdida = "Rimac",
+                comentario = "Hola",
+                idMascota = 1
+            )
+        )
+        viewModel.list.observe(viewLifecycleOwner) {
+            Log.d("josue", "HUBO EXITO")
+        }
         return root
     }
 
@@ -99,9 +105,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private val requestPermissionLocation = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions: Map<String, Boolean> ->
+    private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions: Map<String, Boolean> ->
         val permissionDenied = permissions.entries.find { !it.value }
         if (permissionDenied == null) {
             getCurrentPosition()
@@ -110,8 +114,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private val requestActiveGPS =
-        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+    private val requestActiveGPS = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
             if (it.resultCode == AppCompatActivity.RESULT_OK) {
                 getCurrentPosition()
             } else {
