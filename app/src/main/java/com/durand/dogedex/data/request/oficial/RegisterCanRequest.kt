@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class RegisterCanRequest(
     @SerializedName("nombre")
-    var nombre: Int,
+    var nombre: String,
     @SerializedName("fechaNacimiento")
     var fechaNacimiento: String,
     @SerializedName("especie")
@@ -12,7 +12,7 @@ data class RegisterCanRequest(
     @SerializedName("genero")
     var genero: String,
     @SerializedName("raza")
-    var raza: Int,
+    var raza: String,
     @SerializedName("tamanio")
     var tamano: String,
     @SerializedName("caracter")
@@ -31,6 +31,6 @@ data class RegisterCanRequest(
     var razonTenencia: String,
     @SerializedName("foto")
     var foto: String,
-    @SerializedName("peligroso")
-    var peligroso: String,
+    @SerializedName("idUsuario")
+    var idUsuario: Int,
 )
