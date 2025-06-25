@@ -43,7 +43,7 @@
         </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDZesMoYh0NX3Y036zG2fHif5uwGYwGNwo" />
+            android:value="AIzaSyBr6oSuQSDS5vN-hJPUvSJ0vhc_9JDxZ-c" />
 
         <activity
             android:name=".ui.user_fragment.UserHome"

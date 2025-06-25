@@ -68,14 +68,11 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         return root
     }
 
-    private fun setMyPetsAdapter(list: List<ConsultarDetalleMascota>) {
-        val adapterEspecie = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, list)
-        binding.mascota.setAdapter(adapterEspecie)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkPermissions()
+        val mapFragment = childFragmentManager.findFragmentById(com.durand.dogedex.R.id.map) as? com.google.android.gms.maps.SupportMapFragment
+        mapFragment?.getMapAsync(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -145,7 +142,12 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
             .firstOrNull { it != null }
 
         location?.let {
-            vm.setCoordinates(latitude = it.latitude.toString(), longitude = it.longitude.toString())
+            val currentLatLng = LatLng(it.latitude, it.longitude)
+
+            mMap.clear() // Limpia otros marcadores
+            mMap.addMarker(MarkerOptions().position(currentLatLng).title("Tu ubicación"))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
+          //  vm.setCoordinates(latitude = it.latitude.toString(), longitude = it.longitude.toString())
         }
     }
 

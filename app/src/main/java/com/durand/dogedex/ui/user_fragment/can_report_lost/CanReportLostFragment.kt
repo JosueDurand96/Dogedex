@@ -25,13 +25,9 @@ class CanReportLostFragment : Fragment() {
         _binding = FragmentCanReportLostBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-        }
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading -> }
         viewModel.listar()
-        viewModel.list.observe(requireActivity()) {
-            Log.d("josue", "nombre: " + it[0].nombre)
-            Log.d("josue", "complete: " + it)
-
+        viewModel.list.observe(viewLifecycleOwner) {
             binding.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
             binding.canReportLostRecyclerView. adapter = CanReportLostAdapter(it)
 

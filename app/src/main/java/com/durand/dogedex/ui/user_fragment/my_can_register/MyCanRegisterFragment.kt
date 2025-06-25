@@ -27,12 +27,12 @@ class MyCanRegisterFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading -> }
 
         viewModel.listar()
-        viewModel.list.observe(requireActivity()) {
-
-            binding.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            binding.canReportLostRecyclerView. adapter = MyCanRegisterAdapter(it)
-
+        viewModel.list.observe(viewLifecycleOwner) {
+            binding.canReportLostRecyclerView.layoutManager =
+                LinearLayoutManager(requireContext()) // o `binding.root.context`
+            binding.canReportLostRecyclerView.adapter = MyCanRegisterAdapter(it)
         }
+
         return root
     }
 
