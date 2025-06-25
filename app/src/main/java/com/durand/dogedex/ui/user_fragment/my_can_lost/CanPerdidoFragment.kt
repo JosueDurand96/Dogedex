@@ -12,16 +12,12 @@ import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.durand.dogedex.data.request.oficial.RegisterCanPerdidoRequest
 import com.durand.dogedex.databinding.FragmentCanPerdidoBinding
-import com.durand.dogedex.ui.user_fragment.can_report_lost.CanReportLostAdapter
-import com.durand.dogedex.ui.user_fragment.can_report_lost.CanReportLostViewModel
 import com.durand.dogedex.util.LocationsUtils
 import com.durand.dogedex.util.LocationsUtils.Companion.locationFlow
 import com.google.android.gms.location.FusedLocationProviderClient

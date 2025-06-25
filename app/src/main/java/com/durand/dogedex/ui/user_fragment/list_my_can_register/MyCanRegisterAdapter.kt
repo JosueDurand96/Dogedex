@@ -1,4 +1,4 @@
-package com.durand.dogedex.ui.user_fragment.my_can_register
+package com.durand.dogedex.ui.user_fragment.list_my_can_register
 
 import android.view.LayoutInflater
 import android.view.View

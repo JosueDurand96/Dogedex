@@ -1,4 +1,6 @@
-package com.durand.dogedex.ui.user_fragment.can_report_lost
+@file:Suppress("SpellCheckingInspection")
+
+package com.durand.dogedex.ui.user_fragment.list_my_can_register
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -7,27 +9,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.repository.NewOficialRepository
-import com.durand.dogedex.data.response.oficial.ListarCanPerdidoResponse
+import com.durand.dogedex.data.response.oficial.ListarCanResponse
 import kotlinx.coroutines.launch
 
-class CanReportLostViewModel(
+class MyCanRegisterViewModel(
     private val repository: NewOficialRepository = NewOficialRepository()
 ) : ViewModel() {
 
-    private val _list = MutableLiveData<List<ListarCanPerdidoResponse>>()
-    val list: LiveData<List<ListarCanPerdidoResponse>> = _list
+    private val _list = MutableLiveData<List<ListarCanResponse>>(emptyList())
+    val list: LiveData<List<ListarCanResponse>> = _list
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    init {
-        listar()
-    }
-
     fun listar() = viewModelScope.launch {
         _isLoading.postValue(true)
         try {
-            when (val res: ApiResponseStatus<List<ListarCanPerdidoResponse>> = repository.listarMascotaPerdida()) {
+            when (val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarMascota()) {
                 is ApiResponseStatus.Error -> {
                     Log.d("josue", "Login Error")
                     _isLoading.postValue(false)
@@ -49,5 +47,4 @@ class CanReportLostViewModel(
             _isLoading.postValue(false)
         }
     }
-
 }
