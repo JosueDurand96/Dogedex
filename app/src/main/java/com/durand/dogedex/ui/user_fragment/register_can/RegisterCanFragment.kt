@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -110,18 +111,18 @@ class RegisterCanFragment : Fragment() {
                 RegisterCanRequest(
                     nombre = binding.namePetTextInputEditText.text.toString(),
                     fechaNacimiento = binding.fechaTextInputEditText.text.toString(),
-                    especie = "especie",
-                    genero = "genero",
-                    raza = "raza",
-                    tamano = "tamano",
-                    caracter = "caracter",
-                    color = "color",
-                    pelaje = "pelaje",
-                    esterilizado = "esterelizado",
-                    distrito = "distrito",
-                    modoObtencion = "modoObtencion",
-                    razonTenencia = "razonTenencia",
-                    foto = "foto",
+                    especie = especie,
+                    genero = genero,
+                    raza = raza,
+                    tamano = tamano,
+                    caracter = caracter,
+                    color = color,
+                    pelaje = pelaje,
+                    esterilizado = esterelizado,
+                    distrito = distrito,
+                    modoObtencion = modoObtencion,
+                    razonTenencia = razonTenencia,
+                    foto = imageCan,
                     idUsuario = 1
                 )
             )
@@ -141,17 +142,17 @@ class RegisterCanFragment : Fragment() {
                 intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
                 intent.putExtra("nombreMacota", binding.namePetTextInputEditText.text.toString())
                 intent.putExtra("fechaNacimiento", binding.fechaTextInputEditText.text.toString())
-                intent.putExtra("especie", "especie")
-                intent.putExtra("genero", "genero")
-                intent.putExtra("raza", "raza")
-                intent.putExtra("tamano", "tamano")
-                intent.putExtra("caracter", "caracter")
-                intent.putExtra("color", "color")
-                intent.putExtra("pelaje", "pelaje")
-                intent.putExtra("esterelizado", "esterelizado")
-                intent.putExtra("distrito", "distrito")
-                intent.putExtra("modoObtencion", "modoObtencion")
-                intent.putExtra("razonTenencia", "razonTenencia")
+                intent.putExtra("especie", especie)
+                intent.putExtra("genero", genero)
+                intent.putExtra("raza", raza)
+                intent.putExtra("tamano", tamano)
+                intent.putExtra("caracter", caracter)
+                intent.putExtra("color", color)
+                intent.putExtra("pelaje", pelaje)
+                intent.putExtra("esterelizado", esterelizado)
+                intent.putExtra("distrito", distrito)
+                intent.putExtra("modoObtencion", modoObtencion)
+                intent.putExtra("razonTenencia", razonTenencia)
                 startActivity(intent)
             }
         }
@@ -254,7 +255,6 @@ class RegisterCanFragment : Fragment() {
         )
         binding.lifecycleOwner = viewLifecycleOwner
         _binding!!.razonDeTenenciaAutoCompleteTextView.setAdapter(adapterrazonDeTenencia)
-        getUserProfile()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         binding.especieAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
@@ -315,63 +315,6 @@ class RegisterCanFragment : Fragment() {
         return binding.root
     }
 
-    private fun openDetailCan(dogCan: Dog) {
-        val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = sharedPref!!.edit()
-        editor.putString("foto", imageCan)
-        editor.apply()
-        editor.commit()
-
-
-        val intent = Intent(requireContext(), DogDetailActivity::class.java)
-        intent.putExtra(DogDetailActivity.DOG_KEY, dogCan)
-        intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
-        intent.putExtra("nombreMacota", binding.namePetTextInputEditText.text.toString())
-        intent.putExtra("fechaNacimiento", binding.fechaTextInputEditText.text.toString())
-        intent.putExtra("especie", especie)
-        intent.putExtra("genero", genero)
-        intent.putExtra("raza", raza)
-        intent.putExtra("tamano", tamano)
-        intent.putExtra("caracter", caracter)
-        intent.putExtra("color", color)
-        intent.putExtra("pelaje", pelaje)
-        intent.putExtra("esterelizado", esterelizado)
-        intent.putExtra("distrito", distrito)
-        intent.putExtra("modoObtencion", modoObtencion)
-        intent.putExtra("razonTenencia", razonTenencia)
-        startActivity(intent)
-    }
-
-
-    private fun openLoginActivity() {
-        startActivity(Intent(requireContext(), LoginActivity::class.java))
-    }
-
-    private fun buttonRegistrarCan(dogRecognition: DogRecognition) {
-        registerCanViewModel.listar(
-            RegisterCanRequest(
-                nombre = binding.namePetTextInputEditText.text.toString(),
-                fechaNacimiento = binding.fechaTextInputEditText.text.toString(),
-                especie = "especie",
-                genero = "genero",
-                raza = "raza",
-                tamano = "tamano",
-                caracter = "caracter",
-                color = "color",
-                pelaje = "pelaje",
-                esterilizado = "esterelizado",
-                distrito = "distrito",
-                modoObtencion = "modoObtencion",
-                razonTenencia = "razonTenencia",
-                foto = "foto",
-                idUsuario = 1
-            )
-        )
-
-
-    }
-
-
     @SuppressLint("UnsafeOptInUsageError")
     private fun convertImageProxyToBitmap(imageProxy: ImageProxy): Bitmap? {
         val image = imageProxy.image ?: return null
@@ -403,7 +346,6 @@ class RegisterCanFragment : Fragment() {
         val byteArray = byteArrayOutputStream.toByteArray()
         imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
-
 
     private fun requestCameraPermission() {
         when {
@@ -441,6 +383,7 @@ class RegisterCanFragment : Fragment() {
     private fun setupCamera() {
         binding.cameraPreview.post {
             imageCapture = ImageCapture.Builder()
+                .setTargetResolution(Size(640, 480)) // reducir resolución
                 .setTargetRotation(binding.cameraPreview.display.rotation)
                 .build()
             cameraExecutor = Executors.newSingleThreadExecutor()
@@ -524,7 +467,8 @@ class RegisterCanFragment : Fragment() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
+        requestCode: Int,
+        permissions: Array<String>,
         grantResults: IntArray
     ) {
         Log.i(TAG, "onRequestPermissionResult")
@@ -552,89 +496,61 @@ class RegisterCanFragment : Fragment() {
         private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
     }
 
-
-    private fun takePhoto() {
-        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(getOutputPhotoFile()).build()
-        imageCapture.takePicture(
-            outputFileOptions, cameraExecutor,
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exception: ImageCaptureException) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Error: ${exception.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    /*    val photoUri = outputFileResults.savedUri
-                        val bitmap = BitmapFactory.decodeFile(photoUri?.path)
-                        val dogRecognition = classifier.recognizeImage(bitmap).first()
-                        viewModel.getDogByMlId(dogRecognition.id)*/
-                }
-
-            })
-    }
-
-    private fun getOutputPhotoFile(): File {
-        val mediaDir = requireActivity().externalMediaDirs.firstOrNull()?.let {
-            File(it, resources.getString(com.durand.dogedex.R.string.app_name) + ".jpg").apply {
-                mkdirs()
-            }
-        }
-        return if (mediaDir != null && mediaDir.exists()) {
-            mediaDir
-        } else {
-            requireActivity()!!.filesDir
-        }
-    }
-
     private fun startCamera() {
-        try {
-            val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-            cameraProviderFuture.addListener(
-                {
-                    val cameraProvider = cameraProviderFuture.get()
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
-                    val preview = Preview.Builder().build()
-                    preview.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
-                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val preview = Preview.Builder()
+                .setTargetResolution(Size(640, 480))
+                .build()
+                .apply {
+                    setSurfaceProvider(binding.cameraPreview.surfaceProvider)
+                }
 
-                    val imageAnalysis = ImageAnalysis.Builder()
-                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                        .build()
-                    imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
-                        //    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+            imageCapture = ImageCapture.Builder()
+                .setTargetResolution(Size(640, 480))
+                .build()
+
+            val imageAnalysis = ImageAnalysis.Builder()
+                .setTargetResolution(Size(640, 480))
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .apply {
+                    setAnalyzer(cameraExecutor) { imageProxy ->
                         val bitmap = convertImageProxyToBitmap(imageProxy)
                         if (bitmap != null) {
                             getPhotoBitmap(bitmap)
                             val dogRecognition = classifier.recognizeImage(bitmap).first()
                             enableTakePhotoButton(dogRecognition)
-
                         }
-
-                        //    val photoUri = outputFileResults.savedUri
-                        //    val bitmap = BitmapFactory.decodeFile(photoUri?.path)
-                        //    val dogRecognition = classifier.recognizeImage(bitmap).first()
-                        //    viewModel.getDogByMlId(dogRecognition.id)
                         imageProxy.close()
                     }
+                }
 
+            try {
+                // MUY IMPORTANTE
+                cameraProvider.unbindAll()
 
-                    cameraProvider.bindToLifecycle(
-                        this, cameraSelector,
-                        preview, imageCapture, imageAnalysis
-                    )
+                // Solo enlazamos preview + analysis
+                cameraProvider.bindToLifecycle(
+                    viewLifecycleOwner,
+                    cameraSelector,
+                    preview,
+                    imageAnalysis
+                )
 
-                }, ContextCompat.getMainExecutor(requireContext())
-            )
-        } catch (e: Exception) {
+                // Guarda el provider para tomar fotos más adelante
+                this.imageCapture = imageCapture
 
-        }
-
-
+            } catch (exc: Exception) {
+                Log.e(TAG, "Use case binding failed", exc)
+            }
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
+
 
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
         if (dogRecognition.confidence > 80.0) {
@@ -656,10 +572,6 @@ class RegisterCanFragment : Fragment() {
         }
     }
 
-    private fun getUserProfile() {
-        // val loggedInUser: User? = User.getLoggedInUser(requireActivity())
-        // vm.setUserProfile(loggedInUser)
-    }
 
 
 }
