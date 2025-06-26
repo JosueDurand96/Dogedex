@@ -9,7 +9,6 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.location.Location
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
@@ -28,9 +27,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.request.AgregarMascotaRequest
-import com.durand.dogedex.data.request.oficial.RegisterCanPerdidoRequest
 import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.response.Dog
 import com.durand.dogedex.databinding.FragmentRegisterCanBinding
@@ -38,10 +34,9 @@ import com.durand.dogedex.domain.Classifier
 import com.durand.dogedex.domain.DogRecognition
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity
-import com.durand.dogedex.ui.settings.SettingsActivity
+import com.durand.dogedex.ui.forget_password.MainViewModel
 import com.durand.dogedex.util.LABEL_PATH
 import com.durand.dogedex.util.MODEL_PATH
-import com.durand.dogedex.util.createLoadingDialog
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.tensorflow.lite.support.common.FileUtil
@@ -58,13 +53,9 @@ class RegisterCanFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private var isCameraReady = false
     private lateinit var classifier: Classifier
-    private lateinit var viewModel: RegisterCanViewModel
-    private lateinit var locationManager: LocationManager
-    private val locationPermissionCode = 2
+    private val viewModel: MainViewModel by viewModels()
+    private lateinit var registerCanViewModel: RegisterCanViewModel
     private var lastLocation: Location? = null
-    private val loading by lazy {
-        requireContext().createLoadingDialog()
-    }
 
 
     private lateinit var nombreMacota: String
@@ -108,15 +99,63 @@ class RegisterCanFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this).get(RegisterCanViewModel::class.java)
+        registerCanViewModel = ViewModelProvider(this).get(RegisterCanViewModel::class.java)
         _binding = FragmentRegisterCanBinding.inflate(inflater, container, false)
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        registerCanViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
-        viewModel.list.observe(viewLifecycleOwner) {
-            Log.d("josue", "HUBO EXITO")
+        viewModel.dog.observe(requireActivity()) { dog ->
+            dogCan = dog
+            registerCanViewModel.listar(
+                RegisterCanRequest(
+                    nombre = binding.namePetTextInputEditText.text.toString(),
+                    fechaNacimiento = binding.fechaTextInputEditText.text.toString(),
+                    especie = "especie",
+                    genero = "genero",
+                    raza = "raza",
+                    tamano = "tamano",
+                    caracter = "caracter",
+                    color = "color",
+                    pelaje = "pelaje",
+                    esterilizado = "esterelizado",
+                    distrito = "distrito",
+                    modoObtencion = "modoObtencion",
+                    razonTenencia = "razonTenencia",
+                    foto = "foto",
+                    idUsuario = 1
+                )
+            )
         }
-        buttonRegistrarCan()
+
+        registerCanViewModel.list.observe(viewLifecycleOwner) {
+            if (dogCan != null) {
+                Log.d("josue", "HUBO EXITO")
+                val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
+                val editor: SharedPreferences.Editor = sharedPref!!.edit()
+                editor.putString("foto", imageCan)
+                editor.apply()
+                editor.commit()
+
+                val intent = Intent(requireContext(), DogDetailActivity::class.java)
+                intent.putExtra(DogDetailActivity.DOG_KEY, dogCan)
+                intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
+                intent.putExtra("nombreMacota", binding.namePetTextInputEditText.text.toString())
+                intent.putExtra("fechaNacimiento", binding.fechaTextInputEditText.text.toString())
+                intent.putExtra("especie", "especie")
+                intent.putExtra("genero", "genero")
+                intent.putExtra("raza", "raza")
+                intent.putExtra("tamano", "tamano")
+                intent.putExtra("caracter", "caracter")
+                intent.putExtra("color", "color")
+                intent.putExtra("pelaje", "pelaje")
+                intent.putExtra("esterelizado", "esterelizado")
+                intent.putExtra("distrito", "distrito")
+                intent.putExtra("modoObtencion", "modoObtencion")
+                intent.putExtra("razonTenencia", "razonTenencia")
+                startActivity(intent)
+            }
+        }
+        //buttonRegistrarCan()
         requestCameraPermission()
         val itemsEspecie = listOf("Perro", "Gato", "Otro")
         val adapterEspecie =
@@ -308,9 +347,8 @@ class RegisterCanFragment : Fragment() {
         startActivity(Intent(requireContext(), LoginActivity::class.java))
     }
 
-    private fun buttonRegistrarCan() {
-
-        viewModel.listar(
+    private fun buttonRegistrarCan(dogRecognition: DogRecognition) {
+        registerCanViewModel.listar(
             RegisterCanRequest(
                 nombre = binding.namePetTextInputEditText.text.toString(),
                 fechaNacimiento = binding.fechaTextInputEditText.text.toString(),
@@ -584,10 +622,10 @@ class RegisterCanFragment : Fragment() {
                     }
 
 
-//                    cameraProvider.bindToLifecycle(
-//                        this, cameraSelector,
-//                        preview, imageCapture, imageAnalysis
-//                    )
+                    cameraProvider.bindToLifecycle(
+                        this, cameraSelector,
+                        preview, imageCapture, imageAnalysis
+                    )
 
                 }, ContextCompat.getMainExecutor(requireContext())
             )
@@ -602,7 +640,7 @@ class RegisterCanFragment : Fragment() {
         if (dogRecognition.confidence > 80.0) {
             //binding.takePhotoFab.alpha = 1f
             binding.confirmAppCompatButton.setOnClickListener {
-                buttonRegistrarCan()
+                viewModel.getDogByMlId(dogRecognition.id)
             }
         } else {
 
