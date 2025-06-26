@@ -2,6 +2,7 @@ package com.durand.dogedex.ui.user_fragment.my_can_lost
 
 import android.Manifest
 import android.R
+import android.content.Context
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -38,6 +39,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private val binding get() = _binding!!
     private lateinit var viewModel: CanPerdidoViewModel
+    private var idUsuario: Int? = 0
 
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(requireContext())
@@ -58,12 +60,15 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
+        val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
+        idUsuario = sharedPref?.getInt("idUsuario", -1) // -1 es el valor por defecto si no existe
+
         viewModel.listar(
             RegisterCanPerdidoRequest(
                 fechaPerdida = "24/22/2222",
                 lugarPerdida = "Rimac",
                 comentario = "Hola",
-                idMascota = 1
+                idMascota = idUsuario!!
             )
         )
         viewModel.list.observe(viewLifecycleOwner) {

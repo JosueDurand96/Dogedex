@@ -213,28 +213,6 @@ class RegisterHocicoFragment : Fragment() {
         )
     }
 
-    private fun takePhoto() {
-        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(getOutputPhotoFile()).build()
-        imageCapture.takePicture(outputFileOptions, cameraExecutor,
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exception: ImageCaptureException) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Error: ${exception.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    /*    val photoUri = outputFileResults.savedUri
-                        val bitmap = BitmapFactory.decodeFile(photoUri?.path)
-                        val dogRecognition = classifier.recognizeImage(bitmap).first()
-                        viewModel.getDogByMlId(dogRecognition.id)*/
-                }
-
-            })
-    }
-
     private fun getOutputPhotoFile(): File {
         val mediaDir =requireActivity().externalMediaDirs.firstOrNull()?.let {
             File(it, resources.getString(com.durand.dogedex.R.string.app_name) + ".jpg").apply {

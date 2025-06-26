@@ -2,6 +2,7 @@ package com.durand.dogedex.ui.auth
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -52,6 +53,11 @@ class LoginFragment : Fragment() {
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
         viewModel.login.observe(requireActivity()) {
+            val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPref!!.edit()
+            editor.putInt("idUsuario", it.id)
+            editor.apply()
+            editor.commit()
             binding.loginButton.isEnabled = true
             Toast.makeText(requireContext(), "Bienvenido ${it.nombre}!", Toast.LENGTH_SHORT).show()
             Log.d("josue", "apellido: " + it.apellido)
