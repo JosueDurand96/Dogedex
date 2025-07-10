@@ -8,12 +8,16 @@ import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.request.oficial.LoginRequest
 import com.durand.dogedex.data.request.oficial.RegisterCanPerdidoRequest
 import com.durand.dogedex.data.request.oficial.RegisterRequest
+import com.durand.dogedex.data.request.oficial.RegistrarCodigoRequest
+import com.durand.dogedex.data.request.oficial.ValidarCodigoRequest
 import com.durand.dogedex.data.response.oficial.ListarCanPerdidoResponse
 import com.durand.dogedex.data.response.oficial.ListarCanResponse
 import com.durand.dogedex.data.response.oficial.LoginResponse
 import com.durand.dogedex.data.response.oficial.RegisterCanPerdidoResponse
 import com.durand.dogedex.data.response.oficial.RegisterResponse
 import com.durand.dogedex.data.response.oficial.RegisterCanResponse
+import com.durand.dogedex.data.response.oficial.RegistrarCodigoResponse
+import com.durand.dogedex.data.response.oficial.ValidarCodigoResponse
 import com.durand.dogedex.ui.ApiServiceInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -84,5 +88,17 @@ interface NewApiOficialService {
     suspend fun listarMascotaPerdida(
         @Header("Content-Type") content_type: String
     ): List<ListarCanPerdidoResponse>
+
+    @POST("api/v1/CodigoVerificacion/registrarCodigo")
+    suspend fun postRegistrarCodigo(
+        @Body registrarCodigoRequest: RegistrarCodigoRequest,
+        @Header("Content-Type") content_type: String
+    ): RegistrarCodigoResponse
+
+    @POST("api/v1/CodigoVerificacion/validarCodigo")
+    suspend fun postValidarCodigo(
+        @Body registrarCodigoRequest: ValidarCodigoRequest,
+        @Header("Content-Type") content_type: String
+    ): ValidarCodigoResponse
 
 }

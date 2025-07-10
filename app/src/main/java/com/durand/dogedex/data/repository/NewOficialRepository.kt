@@ -7,12 +7,16 @@ import com.durand.dogedex.data.newApiOficialService
 import com.durand.dogedex.data.request.oficial.RegisterCanPerdidoRequest
 import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.request.oficial.RegisterRequest
+import com.durand.dogedex.data.request.oficial.RegistrarCodigoRequest
+import com.durand.dogedex.data.request.oficial.ValidarCodigoRequest
 import com.durand.dogedex.data.response.oficial.ListarCanPerdidoResponse
 import com.durand.dogedex.data.response.oficial.ListarCanResponse
 import com.durand.dogedex.data.response.oficial.LoginResponse
 import com.durand.dogedex.data.response.oficial.RegisterCanPerdidoResponse
 import com.durand.dogedex.data.response.oficial.RegisterCanResponse
 import com.durand.dogedex.data.response.oficial.RegisterResponse
+import com.durand.dogedex.data.response.oficial.RegistrarCodigoResponse
+import com.durand.dogedex.data.response.oficial.ValidarCodigoResponse
 
 class NewOficialRepository {
 
@@ -38,11 +42,21 @@ class NewOficialRepository {
 
     suspend fun listarMascota(): ApiResponseStatus<List<ListarCanResponse>> =
         makeNetworkCall {
-            newApiOficialService.listarMascota( "application/json")
+            newApiOficialService.listarMascota("application/json")
         }
 
     suspend fun listarMascotaPerdida(): ApiResponseStatus<List<ListarCanPerdidoResponse>> =
         makeNetworkCall {
-            newApiOficialService.listarMascotaPerdida( "application/json")
+            newApiOficialService.listarMascotaPerdida("application/json")
+        }
+
+    suspend fun posRegistrarCodigo(registrarCodigoRequest: RegistrarCodigoRequest): ApiResponseStatus<RegistrarCodigoResponse> =
+        makeNetworkCall {
+            newApiOficialService.postRegistrarCodigo(registrarCodigoRequest, "application/json")
+        }
+
+    suspend fun postValidarCodigo(validarCodigoRequest: ValidarCodigoRequest): ApiResponseStatus<ValidarCodigoResponse> =
+        makeNetworkCall {
+            newApiOficialService.postValidarCodigo(validarCodigoRequest, "application/json")
         }
 }

@@ -42,6 +42,9 @@ class SignUpFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
         binding = FragmentSignUpBinding.inflate(layoutInflater)
         setupSignUpButton()
+        binding.backImageView.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
         return binding.root
     }
 

@@ -57,10 +57,6 @@ class RegisterCanFragment : Fragment() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var registerCanViewModel: RegisterCanViewModel
     private var lastLocation: Location? = null
-
-
-    private lateinit var nombreMacota: String
-    private lateinit var fechaNacimiento: String
     private lateinit var especie: String
     private lateinit var genero: String
     private lateinit var raza: String
