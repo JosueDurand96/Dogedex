@@ -31,8 +31,10 @@ class CanReportLostAdapter(private val mList: List<ListarCanPerdidoResponse> = m
             //   holder.imageView.setImageResource(ItemsViewModel)
 
         // sets the text to the textview from our itemHolder class
-        holder.textView.text = ItemsViewModel.nombre
-        holder.description.text = ItemsViewModel.nombre
+        holder.detalleTextView.text = ItemsViewModel.comentario
+        holder.titleTextView.text = ItemsViewModel.nombre
+        holder.direccionTextView.text = ItemsViewModel.lugarPerdida
+        holder.fechaNacimientoTextView.text = ItemsViewModel.fechaPerdida
 
     }
 
@@ -43,8 +45,9 @@ class CanReportLostAdapter(private val mList: List<ListarCanPerdidoResponse> = m
 
     // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.photoImageView)
-        val textView: TextView = itemView.findViewById(R.id.titleTextView)
-        val description: TextView = itemView.findViewById(R.id.descriptionTextView)
+        val detalleTextView: TextView = itemView.findViewById(R.id.detalleTextView)
+        val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
+        val direccionTextView: TextView = itemView.findViewById(R.id.direccionTextView)
+        val fechaNacimientoTextView: TextView = itemView.findViewById(R.id.fechaNacimientoTextView)
     }
 }
