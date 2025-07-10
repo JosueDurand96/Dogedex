@@ -62,4 +62,7 @@
     <string name="camera_permission">permisso</string>
     <string name="title_activity_admin">AdminActivity</string>
     <string name="todo">todo</string>
+    <string name="introduce_tu_correo_electr_nico_para_enviarte_un_c_digo_de_recuperaci_n">Introduce tu correo electrónico para enviarte un código de recuperación.</string>
+    <string name="recuperar_contrase_a">Recuperar Contraseña</string>
+    <string name="enviar_c_digo_de_recuperaci_n">Enviar Código de Recuperación</string>
 </resources>

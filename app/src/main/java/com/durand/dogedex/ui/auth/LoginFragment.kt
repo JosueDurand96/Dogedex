@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.durand.dogedex.data.request.oficial.LoginRequest
 import com.durand.dogedex.databinding.FragmentLoginBinding
 import com.durand.dogedex.ui.auth.oficial.LoginViewModel
+import com.durand.dogedex.ui.auth.recoverpassword.RecoverPasswordActivity
 import com.durand.dogedex.ui.user_fragment.UserHome
 
 class LoginFragment : Fragment() {
@@ -51,6 +52,10 @@ class LoginFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.loginButton.isEnabled = !isLoading
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+        binding.forgotPassword.setOnClickListener{
+            val intent = Intent(requireContext(), RecoverPasswordActivity::class.java)
+            startActivity(intent)
         }
         viewModel.login.observe(requireActivity()) {
             val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
