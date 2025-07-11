@@ -53,11 +53,10 @@ class NewOficialRepository {
             )
         }
 
-    suspend fun listarMascotaPerdida(id: Int): ApiResponseStatus<List<ListarCanPerdidoResponse>> =
+    suspend fun listarMascotaPerdida(): ApiResponseStatus<List<ListarCanPerdidoResponse>> =
         makeNetworkCall {
             newApiOficialService.listarMascotaPerdida(
                 content_type = "application/json",
-                mascotaId = id,
             )
         }
 

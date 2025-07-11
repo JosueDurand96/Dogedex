@@ -21,10 +21,10 @@ class CanReportLostViewModel(
     val isLoading: LiveData<Boolean> = _isLoading
 
 
-    fun listar(id: Int) = viewModelScope.launch {
+    fun listar() = viewModelScope.launch {
         _isLoading.postValue(true)
         try {
-            when (val res: ApiResponseStatus<List<ListarCanPerdidoResponse>> = repository.listarMascotaPerdida(id)) {
+            when (val res: ApiResponseStatus<List<ListarCanPerdidoResponse>> = repository.listarMascotaPerdida()) {
                 is ApiResponseStatus.Error -> {
                     Log.d("josue", "Login Error")
                     _isLoading.postValue(false)

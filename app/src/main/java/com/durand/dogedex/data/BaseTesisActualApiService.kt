@@ -92,7 +92,6 @@ interface NewApiOficialService {
     @GET("api/v1/Mascota/obtenerMascotaPerdida/{id}")
     suspend fun listarMascotaPerdida(
         @Header("Content-Type") content_type: String,
-        @Path("id") mascotaId: Int
     ): List<ListarCanPerdidoResponse>
 
     @POST("api/v1/CodigoVerificacion/registrarCodigo")

@@ -30,9 +30,6 @@ class CanReportLostFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
-        val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
-        idUsuario = sharedPref?.getInt("idUsuario", -1) // -1 es el valor por defecto si no existe
-        Log.d("josue", "idUsuario: $idUsuario")
         viewModel.list.observe(viewLifecycleOwner) {
             binding.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
             binding.canReportLostRecyclerView. adapter = CanReportLostAdapter(it)
@@ -43,7 +40,7 @@ class CanReportLostFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.listar(1!!)
+        viewModel.listar()
     }
 
 }
