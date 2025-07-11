@@ -1,14 +1,17 @@
 package com.durand.dogedex.data.repository
 
+import android.util.Log
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.request.oficial.LoginRequest
 import com.durand.dogedex.data.makeNetworkCall
 import com.durand.dogedex.data.newApiOficialService
+import com.durand.dogedex.data.request.oficial.ActualizarClaveRequest
 import com.durand.dogedex.data.request.oficial.RegisterCanPerdidoRequest
 import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.request.oficial.RegisterRequest
 import com.durand.dogedex.data.request.oficial.RegistrarCodigoRequest
 import com.durand.dogedex.data.request.oficial.ValidarCodigoRequest
+import com.durand.dogedex.data.response.oficial.ActualizarClaveResponse
 import com.durand.dogedex.data.response.oficial.ListarCanPerdidoResponse
 import com.durand.dogedex.data.response.oficial.ListarCanResponse
 import com.durand.dogedex.data.response.oficial.LoginResponse
@@ -40,14 +43,22 @@ class NewOficialRepository {
             newApiOficialService.registrarMascotaPerdida(registerCanRequest, "application/json")
         }
 
-    suspend fun listarMascota(): ApiResponseStatus<List<ListarCanResponse>> =
+    suspend fun listarMascota(id: Int): ApiResponseStatus<List<ListarCanResponse>> =
         makeNetworkCall {
-            newApiOficialService.listarMascota("application/json")
+            Log.d("josue", "makeNetworkCall")
+            Log.d("josue", "id: $id")
+            newApiOficialService.listarMascota(
+                content_type = "application/json",
+                mascotaId = id,
+            )
         }
 
-    suspend fun listarMascotaPerdida(): ApiResponseStatus<List<ListarCanPerdidoResponse>> =
+    suspend fun listarMascotaPerdida(id: Int): ApiResponseStatus<List<ListarCanPerdidoResponse>> =
         makeNetworkCall {
-            newApiOficialService.listarMascotaPerdida("application/json")
+            newApiOficialService.listarMascotaPerdida(
+                content_type = "application/json",
+                mascotaId = id,
+            )
         }
 
     suspend fun posRegistrarCodigo(registrarCodigoRequest: RegistrarCodigoRequest): ApiResponseStatus<RegistrarCodigoResponse> =
@@ -58,5 +69,10 @@ class NewOficialRepository {
     suspend fun postValidarCodigo(validarCodigoRequest: ValidarCodigoRequest): ApiResponseStatus<ValidarCodigoResponse> =
         makeNetworkCall {
             newApiOficialService.postValidarCodigo(validarCodigoRequest, "application/json")
+        }
+
+    suspend fun postActualizarClave(actualizarClaveRequest: ActualizarClaveRequest): ApiResponseStatus<ActualizarClaveResponse> =
+        makeNetworkCall {
+            newApiOficialService.postActualizarClave(actualizarClaveRequest, "application/json")
         }
 }

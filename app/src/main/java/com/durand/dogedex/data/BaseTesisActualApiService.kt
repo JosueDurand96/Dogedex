@@ -4,12 +4,14 @@ package com.durand.dogedex.data
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.durand.dogedex.MyApplication
+import com.durand.dogedex.data.request.oficial.ActualizarClaveRequest
 import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.request.oficial.LoginRequest
 import com.durand.dogedex.data.request.oficial.RegisterCanPerdidoRequest
 import com.durand.dogedex.data.request.oficial.RegisterRequest
 import com.durand.dogedex.data.request.oficial.RegistrarCodigoRequest
 import com.durand.dogedex.data.request.oficial.ValidarCodigoRequest
+import com.durand.dogedex.data.response.oficial.ActualizarClaveResponse
 import com.durand.dogedex.data.response.oficial.ListarCanPerdidoResponse
 import com.durand.dogedex.data.response.oficial.ListarCanResponse
 import com.durand.dogedex.data.response.oficial.LoginResponse
@@ -26,7 +28,9 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
 
@@ -79,14 +83,16 @@ interface NewApiOficialService {
         @Header("Content-Type") content_type: String
     ): RegisterCanPerdidoResponse
 
-    @GET("api/v1/Mascota/obtenerMascota")
+    @GET("api/v1/Mascota/obtenerMascota/{id}")
     suspend fun listarMascota(
-        @Header("Content-Type") content_type: String
+        @Header("Content-Type") content_type: String,
+        @Path("id") mascotaId: Int
     ): List<ListarCanResponse>
 
-    @GET("api/v1/Mascota/obtenerMascotaPerdida")
+    @GET("api/v1/Mascota/obtenerMascotaPerdida/{id}")
     suspend fun listarMascotaPerdida(
-        @Header("Content-Type") content_type: String
+        @Header("Content-Type") content_type: String,
+        @Path("id") mascotaId: Int
     ): List<ListarCanPerdidoResponse>
 
     @POST("api/v1/CodigoVerificacion/registrarCodigo")
@@ -101,4 +107,9 @@ interface NewApiOficialService {
         @Header("Content-Type") content_type: String
     ): ValidarCodigoResponse
 
+    @POST("api/v1/Autenticacion/actualizarClave")
+    suspend fun postActualizarClave(
+        @Body actualizarClaveRequest: ActualizarClaveRequest,
+        @Header("Content-Type") content_type: String
+    ): ActualizarClaveResponse
 }

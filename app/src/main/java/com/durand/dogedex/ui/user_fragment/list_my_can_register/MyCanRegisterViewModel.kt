@@ -22,10 +22,10 @@ class MyCanRegisterViewModel(
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun listar() = viewModelScope.launch {
+    fun listar(id: Int) = viewModelScope.launch {
         _isLoading.postValue(true)
         try {
-            when (val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarMascota()) {
+            when (val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarMascota(id)) {
                 is ApiResponseStatus.Error -> {
                     Log.d("josue", "Login Error")
                     _isLoading.postValue(false)

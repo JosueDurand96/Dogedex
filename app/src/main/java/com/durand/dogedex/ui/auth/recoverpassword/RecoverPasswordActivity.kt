@@ -56,6 +56,7 @@ class RecoverPasswordActivity : AppCompatActivity() {
         validateCodViewModel.list.observe(this) { it ->
             Log.d("josue", "HUBO EXITO: "+it.codigo)
             val intent = Intent(this, ChangePasswordActivity::class.java)
+            intent.putExtra("email", binding.etEmail.text.toString())
             startActivity(intent)
         }
 

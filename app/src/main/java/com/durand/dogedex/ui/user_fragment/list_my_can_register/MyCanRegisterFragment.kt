@@ -2,6 +2,7 @@ package com.durand.dogedex.ui.user_fragment.list_my_can_register
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,13 +31,20 @@ class MyCanRegisterFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
-        viewModel.listar()
+        Log.d("josue", "onCreateView")
+        Log.d("josue", "idUsuario: $idUsuario")
         viewModel.list.observe(viewLifecycleOwner) {
             binding.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // o `binding.root.context`
             binding.canReportLostRecyclerView.adapter = MyCanRegisterAdapter(it)
         }
 
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d("josue", "onViewCreated")
+        viewModel.listar(idUsuario!!)
     }
 
 }
