@@ -67,25 +67,26 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="15dp"
                                     android:layout_marginTop="20dp"
+                                    android:visibility="invisible"
                                     android:layout_marginEnd="25dp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     android:inputType="none" />
 
                             <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="25dp"
                                     android:layout_marginTop="20dp"
                                     android:layout_marginEnd="25dp"
-                                    android:hint="Estado"
+                                    android:hint="Lugar de perdida"
                                     app:boxBackgroundColor="@color/white"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent">
 
-                                <AutoCompleteTextView
-                                        android:id="@+id/activoAutoCompleteTextView"
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/lugarPerdidaTextInputEditText"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:inputType="none"
@@ -101,12 +102,14 @@
                                     android:layout_marginTop="20dp"
                                     android:layout_marginEnd="25dp"
                                     android:hint="Fecha de perdida"
+                                    android:visibility="gone"
                                     app:boxBackgroundColor="@color/white"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/textView2">
 
                                 <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/fechaPerdidaEditText"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:inputType="date"
@@ -129,6 +132,7 @@
                                     app:layout_constraintTop_toBottomOf="@+id/textView2">
 
                                 <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/comentarioTextInputEditText"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:inputType="textAutoComplete"

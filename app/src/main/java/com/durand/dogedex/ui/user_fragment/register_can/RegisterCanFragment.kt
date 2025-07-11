@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.response.Dog
 import com.durand.dogedex.databinding.FragmentRegisterCanBinding
@@ -40,6 +41,8 @@ import com.durand.dogedex.util.LABEL_PATH
 import com.durand.dogedex.util.MODEL_PATH
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.common.FileUtil
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -115,7 +118,7 @@ class RegisterCanFragment : Fragment() {
                     especie = especie,
                     genero = genero,
                     raza = raza,
-                    tamano = tamano,
+                    tamanio = tamano,
                     caracter = caracter,
                     color = color,
                     pelaje = pelaje,
@@ -123,7 +126,7 @@ class RegisterCanFragment : Fragment() {
                     distrito = distrito,
                     modoObtencion = modoObtencion,
                     razonTenencia = razonTenencia,
-                    foto = imageCan,
+                    foto = "imageCan",
                     idUsuario = idUsuario!!
                 )
             )
@@ -552,19 +555,36 @@ class RegisterCanFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
-        if (dogRecognition.confidence > 80.0) {
-            //binding.takePhotoFab.alpha = 1f
-            binding.confirmAppCompatButton.setOnClickListener {
-                viewModel.getDogByMlId(dogRecognition.id)
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (dogRecognition.confidence > 80.0) {
+                binding.confirmAppCompatButton.isEnabled = true
+                binding.confirmAppCompatButton.setOnClickListener {
+                    binding.confirmAppCompatButton.isEnabled = false
+                    viewModel.getDogByMlId(dogRecognition.id)
+                }
+            } else {
+                binding.confirmAppCompatButton.isEnabled = false
+                binding.confirmAppCompatButton.setOnClickListener(null)
             }
-        } else {
-
-            // binding.takePhotoFab.alpha = 0.2f
-            binding.confirmAppCompatButton.setOnClickListener(null)
         }
     }
+
+
+//    private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
+//        if (dogRecognition.confidence > 80.0) {
+//            //binding.takePhotoFab.alpha = 1f
+//            binding.confirmAppCompatButton.isEnabled = true
+//            binding.confirmAppCompatButton.setOnClickListener {
+//                binding.confirmAppCompatButton.isEnabled = false
+//                viewModel.getDogByMlId(dogRecognition.id)
+//            }
+//        } else {
+//
+//            binding.confirmAppCompatButton.isEnabled = false
+//            binding.confirmAppCompatButton.setOnClickListener(null)
+//        }
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

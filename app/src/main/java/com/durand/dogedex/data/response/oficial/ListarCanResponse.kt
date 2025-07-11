@@ -1,6 +1,7 @@
 package com.durand.dogedex.data.response.oficial
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class ListarCanResponse(
     @SerializedName("id")
@@ -16,7 +17,7 @@ data class ListarCanResponse(
     @SerializedName("raza")
     var raza: String,
     @SerializedName("tamanio")
-    var tamano: String,
+    var tamanio: String,
     @SerializedName("caracter")
     var caracter: String,
     @SerializedName("color")
@@ -39,4 +40,4 @@ data class ListarCanResponse(
     var nombreUsuario: String,
     @SerializedName("apellidoUsuario")
     var apellidoUsuario: String,
-)
+): Serializable

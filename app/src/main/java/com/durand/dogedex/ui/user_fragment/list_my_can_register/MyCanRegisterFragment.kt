@@ -33,6 +33,8 @@ class MyCanRegisterFragment : Fragment() {
         }
         Log.d("josue", "onCreateView")
         Log.d("josue", "idUsuario: $idUsuario")
+        Log.d("josue", "onViewCreated")
+        viewModel.listar(idUsuario!!)
         viewModel.list.observe(viewLifecycleOwner) {
             binding.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // o `binding.root.context`
             binding.canReportLostRecyclerView.adapter = MyCanRegisterAdapter(it)
@@ -43,8 +45,6 @@ class MyCanRegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("josue", "onViewCreated")
-        viewModel.listar(idUsuario!!)
     }
 
 }

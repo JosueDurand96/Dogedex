@@ -32,6 +32,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
 
@@ -53,9 +56,6 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         viewModel = ViewModelProvider(this).get(CanPerdidoViewModel::class.java)
         _binding = FragmentCanPerdidoBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val itemsEspecie = listOf("Activo", "Inactivo")
-        val adapterEspecie = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsEspecie)
-        _binding!!.activoAutoCompleteTextView.setAdapter(adapterEspecie)
         binding.lifecycleOwner = viewLifecycleOwner
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
@@ -63,20 +63,27 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
         idUsuario = sharedPref?.getInt("idUsuario", -1) // -1 es el valor por defecto si no existe
 
-        viewModel.listar(
-            RegisterCanPerdidoRequest(
-                fechaPerdida = "24/22/2222",
-                lugarPerdida = "Rimac",
-                comentario = "Hola",
-                idMascota = idUsuario!!
+
+        binding.confirmAppCompatButton.setOnClickListener {
+            val date: String = obtenerFechaHoraActual()
+            viewModel.listar(
+                RegisterCanPerdidoRequest(
+                    fechaPerdida = date,
+                    lugarPerdida = binding.lugarPerdidaTextInputEditText.text.toString(),
+                    comentario   = binding.comentarioTextInputEditText.text.toString(),
+                    idMascota    = 31
+                )
             )
-        )
+        }
         viewModel.list.observe(viewLifecycleOwner) {
             Log.d("josue", "HUBO EXITO")
         }
         return root
     }
-
+    fun obtenerFechaHoraActual(): String {
+        val formato = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        return formato.format(Date())
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkPermissions()

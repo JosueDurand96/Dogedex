@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,8 +55,9 @@ class MyCanRegisterAdapter(private val mList: List<ListarCanResponse> = mutableL
         )
         holder.razaTextView.text = razaSpannableString
         // TAMAÑO
+        Log.d("josue", "tamano: ${model.tamanio}")
         val tamanoPrefix = "Tamaño: "
-        val tamanofullText = tamanoPrefix + model.tamano
+        val tamanofullText = tamanoPrefix + model.tamanio
         val tamanoSpannableString = SpannableString(tamanofullText)
         tamanoSpannableString.setSpan(
             StyleSpan(Typeface.BOLD), // Puedes usar Typeface.BOLD o Typeface.DEFAULT_BOLD (desde API 28)

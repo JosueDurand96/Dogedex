@@ -40,6 +40,6 @@ data class AgregarMascotaRequest(
     val peligroso: Int,
     @SerializedName("razonTenencia")
     val razonTenencia: String,
-    @SerializedName("tamano")
-    val tamano: String
+    @SerializedName("tamanio")
+    val tamanio: String
 )

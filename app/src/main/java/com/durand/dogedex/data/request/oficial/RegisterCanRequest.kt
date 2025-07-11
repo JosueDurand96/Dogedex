@@ -14,7 +14,7 @@ data class RegisterCanRequest(
     @SerializedName("raza")
     var raza: String,
     @SerializedName("tamanio")
-    var tamano: String,
+    var tamanio: String,
     @SerializedName("caracter")
     var caracter: String,
     @SerializedName("color")

@@ -364,6 +364,7 @@
                                         android:background="@drawable/btn_blue_selector"
                                         android:elevation="15dp"
                                         android:text="Continuar"
+                                        android:enabled="false"
                                         android:textAllCaps="false"
                                         android:textColor="@color/black"
                                         android:textSize="15sp"
