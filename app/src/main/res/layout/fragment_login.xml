@@ -95,7 +95,7 @@
                             android:layout_marginStart="25dp"
                             android:layout_marginTop="20dp"
                             android:layout_marginEnd="25dp"
-                            android:hint="Password"
+                            android:hint="Contraseña"
                             app:boxBackgroundColor="@color/white"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
