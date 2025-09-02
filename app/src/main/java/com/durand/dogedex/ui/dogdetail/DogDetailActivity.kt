@@ -83,6 +83,15 @@ class DogDetailActivity : AppCompatActivity() {
             binding.canDangerousTextView.visibility = View.VISIBLE
             binding.canNoDangerousTextView.visibility = View.GONE
         } else if(dog.name == "American Staffordshire Terrier") {
+            binding.dogNameText.text = "American Staffordshire Terrier"
+            binding.canDangerousTextView.visibility = View.VISIBLE
+            binding.canNoDangerousTextView.visibility = View.GONE
+        } else if(dog.name == "Weimaraner"){
+            binding.dogNameText.text = "Gran danés"
+            binding.canDangerousTextView.visibility = View.VISIBLE
+            binding.canNoDangerousTextView.visibility = View.GONE
+        }else if (dog.name == "Pinscher Miniatura"){
+            binding.dogNameText.text = "Rottweiler"
             binding.canDangerousTextView.visibility = View.VISIBLE
             binding.canNoDangerousTextView.visibility = View.GONE
         } else {
