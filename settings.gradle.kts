@@ -16,4 +16,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "Patitas Seguras UPC"
 include(":app")
-include(":data")
