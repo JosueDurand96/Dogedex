@@ -318,11 +318,16 @@ class RegisterHocicoFragment : Fragment() {
             when (status) {
                 is ApiResponseStatus.Error -> {
                     binding.loadingWheel.visibility = View.GONE
+                    binding.takePhotoFab.isEnabled = true
                     Toast.makeText(requireContext(), status.message, Toast.LENGTH_SHORT).show()
                 }
-                is ApiResponseStatus.Loading -> binding.loadingWheel.visibility = View.VISIBLE
+                is ApiResponseStatus.Loading -> {
+                    binding.loadingWheel.visibility = View.VISIBLE
+                    binding.takePhotoFab.isEnabled = false
+                }
                 is ApiResponseStatus.Success -> {
                     binding.loadingWheel.visibility = View.GONE
+                    binding.takePhotoFab.isEnabled = true
                     Toast.makeText(requireContext(), "Se cargaron los datos correctamente!", Toast.LENGTH_SHORT)
                         .show()
                 }
@@ -501,6 +506,8 @@ class RegisterHocicoFragment : Fragment() {
 
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
         binding.takePhotoFab.setOnClickListener {
+            binding.takePhotoFab.isEnabled = false
+            binding.loadingWheel.visibility = View.VISIBLE
             val labels = FileUtil.loadLabels(requireContext(), LABEL_PATH)
             classifier = Classifier(
                 FileUtil.loadMappedFile(requireContext(), MODEL_PATH),
