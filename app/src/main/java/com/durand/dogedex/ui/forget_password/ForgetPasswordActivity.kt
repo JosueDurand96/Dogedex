@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.durand.dogedex.R
 import com.durand.dogedex.databinding.ActivityForgetPasswordBinding
-import com.durand.dogedex.databinding.ActivityOnboardingBinding
 
 class ForgetPasswordActivity : AppCompatActivity() {
 

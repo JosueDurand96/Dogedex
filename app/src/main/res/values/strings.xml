@@ -12,6 +12,8 @@
 
     <string name="title_onboarding_3">Registrar!</string>
     <string name="description_onboarding_3">¡Registre a su mascota hoy y tenga la tranquilidad de saber que siempre tendrá acceso a su información importante! Haga clic en el botón "Registro" para comenzar.</string>
+    <string name="onboarding_button_create_account">Iniciar</string>
+    <string name="onboarding_button_skip">Saltar</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
