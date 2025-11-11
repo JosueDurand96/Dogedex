@@ -3,7 +3,6 @@ package com.durand.dogedex.ui.auth.recoverpassword
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -23,7 +22,6 @@ class ChangePasswordActivity : AppCompatActivity() {
     private lateinit var email: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityChangePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root) // Use binding.root here
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="com.durand.dogedex">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.durand.dogedex">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -10,58 +10,32 @@
     <uses-permission android:name="ANDROID.PERMISSION.READ_EXTERNAL_STORAGE" />
 
     <uses-feature
-            android:name="android.hardware.camera"
-            android:required="false" />
+        android:name="android.hardware.camera"
+        android:required="false" />
     <uses-feature
-            android:name="android.hardware.camera.autofocus"
-            android:required="false" />
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
     <uses-feature
-            android:name="android.hardware.camera.flash"
-            android:required="false" />
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
-            android:name=".MyApplication"
-            android:allowBackup="true"
-            android:dataExtractionRules="@xml/data_extraction_rules"
-            android:fullBackupContent="@xml/backup_rules"
-            android:icon="@drawable/logo"
-            android:label="@string/app_name"
-            android:roundIcon="@drawable/logo"
-            android:supportsRtl="true"
-            android:theme="@style/Theme.Dogedex"
-            tools:targetApi="31">
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/logo"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/logo"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Dogedex"
+        tools:targetApi="31">
         <activity
-                android:name=".ui.auth.recoverpassword.ChangePasswordActivity"
-                android:exported="false" />
-        <activity
-                android:name=".ui.auth.recoverpassword.RecoverPasswordActivity"
-                android:exported="false" />
-        <activity
-                android:name=".ui.admin_fragment.AdminHome"
-                android:exported="true"
-                android:theme="@style/Theme.Onboarding" />
-
-        <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyBr6oSuQSDS5vN-hJPUvSJ0vhc_9JDxZ-c" />
-
-        <activity
-                android:name=".ui.user_fragment.UserHome"
-                android:exported="true"
-                android:theme="@style/Theme.Onboarding" >
-        </activity>
-        <activity
-                android:name=".ui.forget_password.ForgetPasswordActivity"
-                android:exported="true" />
-        <activity
-                android:name=".ui.auth.OnboardingActivity"
-                android:exported="true"
-                android:theme="@style/Theme.Onboarding" />
-        <activity
-                android:name=".ui.SplahActivity"
-                android:exported="true"
-                android:theme="@style/Theme.App.Starting">
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.Dogedex">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,30 +43,56 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".ui.forget_password.WholeImageActivity"
-                android:exported="true" />
+            android:name=".ui.auth.recoverpassword.ChangePasswordActivity"
+            android:exported="false" />
         <activity
-                android:name=".ui.settings.SettingsActivity"
-                android:exported="true"
-                android:parentActivityName=".ui.forget_password.MainActivity"
-                android:theme="@style/Theme.Onboarding" />
+            android:name=".ui.auth.recoverpassword.RecoverPasswordActivity"
+            android:exported="false" />
         <activity
-                android:name=".ui.auth.LoginActivity"
-                android:exported="true"
-                android:theme="@style/Theme.Onboarding" />
+            android:name=".ui.admin_fragment.AdminHome"
+            android:exported="true"
+            android:theme="@style/Theme.Onboarding" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBr6oSuQSDS5vN-hJPUvSJ0vhc_9JDxZ-c" />
+
         <activity
-                android:name=".ui.dogdetail.DogDetailActivity"
-                android:exported="true"
-                android:theme="@style/Theme.Onboarding" />
+            android:name=".ui.user_fragment.UserHome"
+            android:exported="true"
+            android:theme="@style/Theme.Onboarding"></activity>
         <activity
-                android:name=".ui.doglist.DogListActivity"
-                android:exported="true"
-                android:parentActivityName=".ui.forget_password.MainActivity"
-                android:theme="@style/Theme.Onboarding" />
+            android:name=".ui.forget_password.ForgetPasswordActivity"
+            android:exported="true" />
         <activity
-                android:name=".ui.forget_password.MainActivity"
-                android:exported="true"
-                android:theme="@style/Theme.Onboarding" />
+            android:name=".ui.auth.OnboardingActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Onboarding" />
+        <activity
+            android:name=".ui.forget_password.WholeImageActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.forget_password.MainActivity"
+            android:theme="@style/Theme.Onboarding" />
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Onboarding" />
+        <activity
+            android:name=".ui.dogdetail.DogDetailActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Onboarding" />
+        <activity
+            android:name=".ui.doglist.DogListActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.forget_password.MainActivity"
+            android:theme="@style/Theme.Onboarding" />
+        <activity
+            android:name=".ui.forget_password.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Onboarding" />
     </application>
 
 </manifest>
