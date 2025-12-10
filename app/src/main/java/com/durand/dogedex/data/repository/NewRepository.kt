@@ -3,7 +3,7 @@
 package com.durand.dogedex.data.repository
 
 import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.Request.*
+import com.durand.dogedex.data.request.*
 import com.durand.dogedex.data.dto.*
 import com.durand.dogedex.data.newApiService
 import com.durand.dogedex.data.makeNetworkCall
@@ -21,7 +21,7 @@ import com.durand.dogedex.data.response.consultar_mascotas.ConsultarDetalleMasco
 import com.durand.dogedex.data.response.dangerousdogs.PetProfileResponse
 import com.durand.dogedex.data.response.list_mascotas.MascotaResponse
 import com.durand.dogedex.data.response.lostpetslist.LostPetDetailResponse
-import com.durand.dogedex.data.response.registar_can.RegisterCanResponse
+import com.durand.dogedex.data.response.oficial.RegisterCanResponse
 
 class NewRepository {
 

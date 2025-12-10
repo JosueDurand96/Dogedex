@@ -31,12 +31,12 @@
 
     <fragment
             android:id="@+id/nav_my_can_register"
-            android:name="com.durand.dogedex.ui.user_fragment.my_can_register.MyCanRegisterFragment"
+            android:name="com.durand.dogedex.ui.user_fragment.list_my_can_register.MyCanRegisterFragment"
             tools:layout="@layout/fragment_my_can_register" />
 
     <fragment
             android:id="@+id/nav_can_report_lost"
-            android:name="com.durand.dogedex.ui.user_fragment.can_report_lost.CanReportLostFragment"
+            android:name="com.durand.dogedex.ui.user_fragment.list_can_report_lost.CanReportLostFragment"
             tools:layout="@layout/fragment_can_report_lost" />
 
     <fragment

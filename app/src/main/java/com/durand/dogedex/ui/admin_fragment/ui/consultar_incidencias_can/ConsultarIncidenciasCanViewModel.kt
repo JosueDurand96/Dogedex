@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.Request.DniRequest
-import com.durand.dogedex.data.Request.IdAgresionRequest
+import com.durand.dogedex.data.request.DniRequest
+import com.durand.dogedex.data.request.IdAgresionRequest
 import com.durand.dogedex.data.repository.NewRepository
 import com.durand.dogedex.data.response.consultar_agresiones_por_mascota.ConsultarAgresionesPorMascota
 import com.durand.dogedex.data.response.consultar_can_agresivo_dni.ConsultarCanAgresivoDni

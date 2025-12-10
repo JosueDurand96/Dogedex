@@ -2,162 +2,178 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:background="@color/color_primary"
-            android:theme="@style/Theme.Login"
+    <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:background="@color/color_primary"
+                android:theme="@style/Theme.Login"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_height="match_parent">
+
+            <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="Iniciar Sesión"
-                        android:textColor="@color/black"
-                        android:textSize="33.5sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/image_onboarding"
-                        android:layout_width="230dp"
-                        android:layout_height="180dp"
-                        android:layout_margin="20dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView"
-                        app:lottie_autoPlay="true"
-                        app:lottie_loop="true"
-                        app:lottie_rawRes="@raw/mandog" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                    android:id="@+id/layout_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="450dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@drawable/layout_rounded_top_white"
-                    android:orientation="vertical"
-                    android:elevation="10dp"
-                    android:weightSum="10"
+                    android:layout_height="match_parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/email_input"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginEnd="25dp"
-                        android:hint="Usuario"
-                        app:boxBackgroundColor="@color/white"
+                        android:layout_height="wrap_content">
+
+                    <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Iniciar Sesión"
+                            android:textColor="@color/black"
+                            android:textSize="33.5sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/image_onboarding"
+                            android:layout_width="230dp"
+                            android:layout_height="180dp"
+                            android:layout_margin="20dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView"
+                            app:lottie_autoPlay="true"
+                            app:lottie_loop="true"
+                            app:lottie_rawRes="@raw/mandog" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                        android:id="@+id/layout_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="450dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@drawable/layout_rounded_top_white"
+                        android:orientation="vertical"
+                        android:elevation="10dp"
+                        android:weightSum="10"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/email_edit"
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/email_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textAutoComplete"
-                            android:textColor="@color/black"
-                            android:textSize="16sp"
-                            android:textStyle="normal" />
-                </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_marginTop="20dp"
+                            android:layout_marginStart="25dp"
+                            android:layout_marginEnd="25dp"
+                            android:hint="Correo"
+                            app:boxBackgroundColor="@color/white"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent">
 
-                <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/password_input"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="25dp"
-                        android:hint="Password"
-                        app:boxBackgroundColor="@color/white"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/userTextInputLayout"
-                        app:passwordToggleEnabled="true">
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/email_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textAutoComplete"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="normal" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/password_edit"
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/password_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="textAutoComplete"
-                            android:maxLength="8"
+                            android:layout_marginStart="25dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginEnd="25dp"
+                            android:hint="Contraseña"
+                            app:boxBackgroundColor="@color/white"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/userTextInputLayout"
+                            app:passwordToggleEnabled="true">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/password_edit"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textAutoComplete"
+                                android:maxLength="8"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="normal" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/login_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/btn_blue_selector"
+                            android:text="Iniciar Sesión"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginStart="25dp"
+                            android:layout_marginEnd="25dp"
+                            android:elevation="15dp"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:textColor="@color/black" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/loginRegisterButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginStart="25dp"
+                            android:layout_marginEnd="25dp"
+                            android:elevation="15dp"
+                            android:background="@drawable/btn_blue_selector"
+                            android:text="Registrate!"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:textColor="@color/black" />
+
+                    <TextView
+                            android:id="@+id/forgotPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="Recuperar contraseña!"
                             android:textColor="@color/black"
-                            android:textSize="16sp"
-                            android:textStyle="normal" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/login_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:background="@drawable/btn_blue_selector"
-                        android:text="Iniciar Sesión"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginEnd="25dp"
-                        android:elevation="15dp"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textAllCaps="true"
-                        android:textColor="@color/black" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/loginRegisterButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginEnd="25dp"
-                        android:elevation="15dp"
-                        android:background="@drawable/btn_blue_selector"
-                        android:text="Registrate!"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textAllCaps="true"
-                        android:textColor="@color/black" />
-
-                <TextView
-                        android:id="@+id/forgotPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="Recuperar contraseña!"
-                        android:textColor="@color/black"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginEnd="25dp"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:gravity="right"
-                        style="@style/TextAppearance.Material3.BodyLarge"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                            android:layout_marginStart="25dp"
+                            android:layout_marginEnd="25dp"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:gravity="right"
+                            style="@style/TextAppearance.Material3.BodyLarge"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
 
+                </LinearLayout>
+            </RelativeLayout>
 
-            </LinearLayout>
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Loader centrado sobre todo -->
+        <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/color_primary"
+                android:visibility="gone" />
+    </FrameLayout>
 </layout>

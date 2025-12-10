@@ -46,23 +46,23 @@ class DogDetailActivity : AppCompatActivity() {
         val distrito = intent?.extras?.getString("distrito")
         val modoObtencion = intent?.extras?.getString("modoObtencion")
         val razonTenencia = intent?.extras?.getString("razonTenencia")
-        Log.d("josue","name: "+dog!!.name)
-        Log.d("josue","imageUrl: "+dog!!.imageUrl)
+//        Log.d("josue","name: "+dog!!.name)
+ //       Log.d("josue","imageUrl: "+dog!!.imageUrl)
 
-        Log.d("josue", "nombreMacota: $nombreMacota")
-        Log.d("josue", "fechaNacimiento: $fechaNacimiento")
-        Log.d("josue", "especie: $especie")
-        Log.d("josue", "genero: $genero")
-
-        Log.d("josue", "raza: $raza")
-        Log.d("josue", "tamano: $tamano")
-        Log.d("josue", "caracter: $caracter")
-        Log.d("josue", "color: $color")
-        Log.d("josue", "pelaje: $pelaje")
-        Log.d("josue", "esterelizado: $esterelizado")
-        Log.d("josue", "distrito: $distrito")
-        Log.d("josue", "modoObtencion: $modoObtencion")
-        Log.d("josue", "razonTenencia: $razonTenencia")
+//        Log.d("josue", "nombreMacota: $nombreMacota")
+//        Log.d("josue", "fechaNacimiento: $fechaNacimiento")
+//        Log.d("josue", "especie: $especie")
+//        Log.d("josue", "genero: $genero")
+//
+//        Log.d("josue", "raza: $raza")
+//        Log.d("josue", "tamano: $tamano")
+//        Log.d("josue", "caracter: $caracter")
+//        Log.d("josue", "color: $color")
+//        Log.d("josue", "pelaje: $pelaje")
+//        Log.d("josue", "esterelizado: $esterelizado")
+//        Log.d("josue", "distrito: $distrito")
+//        Log.d("josue", "modoObtencion: $modoObtencion")
+//        Log.d("josue", "razonTenencia: $razonTenencia")
 
         if (dog!!.name == "Doberman") {
             binding.canDangerousTextView.visibility = View.VISIBLE
@@ -79,10 +79,19 @@ class DogDetailActivity : AppCompatActivity() {
         } else if (dog!!.name == "great_dane") {
             binding.canDangerousTextView.visibility = View.VISIBLE
             binding.canNoDangerousTextView.visibility = View.GONE
-        }else if (dog!!.name == "Bullmastiff"){
+        } else if (dog!!.name == "Bullmastiff") {
             binding.canDangerousTextView.visibility = View.VISIBLE
             binding.canNoDangerousTextView.visibility = View.GONE
-        }else if(dog.name == "American Staffordshire Terrier"){
+        } else if(dog.name == "American Staffordshire Terrier") {
+            binding.dogNameText.text = "American Staffordshire Terrier"
+            binding.canDangerousTextView.visibility = View.VISIBLE
+            binding.canNoDangerousTextView.visibility = View.GONE
+        } else if(dog.name == "Weimaraner"){
+            binding.dogNameText.text = "Gran danés"
+            binding.canDangerousTextView.visibility = View.VISIBLE
+            binding.canNoDangerousTextView.visibility = View.GONE
+        }else if (dog.name == "Pinscher Miniatura"){
+            binding.dogNameText.text = "Rottweiler"
             binding.canDangerousTextView.visibility = View.VISIBLE
             binding.canNoDangerousTextView.visibility = View.GONE
         } else {

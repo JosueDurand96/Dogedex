@@ -9,11 +9,11 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.location.Location
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,23 +28,21 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.Request.AgregarMascotaRequest
-import com.durand.dogedex.data.User
+import androidx.lifecycle.lifecycleScope
+import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.response.Dog
 import com.durand.dogedex.databinding.FragmentRegisterCanBinding
 import com.durand.dogedex.domain.Classifier
 import com.durand.dogedex.domain.DogRecognition
-import com.durand.dogedex.ui.ApiServiceInterceptor
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.durand.dogedex.ui.dogdetail.DogDetailActivity
 import com.durand.dogedex.ui.forget_password.MainViewModel
-import com.durand.dogedex.ui.settings.SettingsActivity
 import com.durand.dogedex.util.LABEL_PATH
 import com.durand.dogedex.util.MODEL_PATH
-import com.durand.dogedex.util.createLoadingDialog
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.common.FileUtil
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -59,17 +57,9 @@ class RegisterCanFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private var isCameraReady = false
     private lateinit var classifier: Classifier
-    private val vm: RegisterCanViewModel by viewModels()
-    private lateinit var locationManager: LocationManager
-    private val locationPermissionCode = 2
+    private val viewModel: MainViewModel by viewModels()
+    private lateinit var registerCanViewModel: RegisterCanViewModel
     private var lastLocation: Location? = null
-    private val loading by lazy {
-        requireContext().createLoadingDialog()
-    }
-
-
-    private lateinit var nombreMacota: String
-    private lateinit var fechaNacimiento: String
     private lateinit var especie: String
     private lateinit var genero: String
     private lateinit var raza: String
@@ -103,49 +93,75 @@ class RegisterCanFragment : Fragment() {
 
     // This property is only valid between onCreateView and
     private val binding get() = _binding!!
-    private val mainViewModel: MainViewModel by viewModels()
     private var fusedLocationClient: FusedLocationProviderClient? = null
+    private var idUsuario: Int? = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-
+        registerCanViewModel = ViewModelProvider(this).get(RegisterCanViewModel::class.java)
         _binding = FragmentRegisterCanBinding.inflate(inflater, container, false)
-        val user = User.getLoggedInUser(requireActivity())
-        if (user == null) {
-            openLoginActivity()
-        } else {
-            Log.d("josue", "authenticationToken: " + user.authenticationToken)
-            ApiServiceInterceptor.setSessionToken(user.authenticationToken)
+        registerCanViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
-        viewModel.status.observe(requireActivity()) { status ->
-            when (status) {
-                is ApiResponseStatus.Error -> {
-                    binding.loadingWheel.visibility = View.GONE
-                    Toast.makeText(requireContext(), status.message, Toast.LENGTH_SHORT).show()
-                }
-                is ApiResponseStatus.Loading -> binding.loadingWheel.visibility = View.VISIBLE
-                is ApiResponseStatus.Success -> {
-                    binding.loadingWheel.visibility = View.GONE
-                    Toast.makeText(
-                        requireContext(),
-                        "Se cargaron los datos correctamente!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
+        val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
+        idUsuario = sharedPref?.getInt("idUsuario", -1) // -1 es el valor por defecto si no existe
 
         viewModel.dog.observe(requireActivity()) { dog ->
-            if (dog != null) {
-                dogCan = dog
-                openDetailActivity(dog)
+            dogCan = dog
+            registerCanViewModel.listar(
+                RegisterCanRequest(
+                    nombre = binding.namePetTextInputEditText.text.toString(),
+                    fechaNacimiento = binding.fechaTextInputEditText.text.toString(),
+                    especie = especie,
+                    genero = genero,
+                    raza = raza,
+                    tamanio = tamano,
+                    caracter = caracter,
+                    color = color,
+                    pelaje = pelaje,
+                    esterilizado = esterelizado,
+                    distrito = distrito,
+                    modoObtencion = modoObtencion,
+                    razonTenencia = razonTenencia,
+                    foto = "imageCan",
+                    idUsuario = idUsuario!!
+                )
+            )
+        }
+
+        registerCanViewModel.list.observe(viewLifecycleOwner) {
+            if (dogCan != null) {
+                Log.d("josue", "HUBO EXITO")
+                val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
+                val editor: SharedPreferences.Editor = sharedPref!!.edit()
+                editor.putString("foto", imageCan)
+                editor.apply()
+                editor.commit()
+
+                val intent = Intent(requireContext(), DogDetailActivity::class.java)
+                intent.putExtra(DogDetailActivity.DOG_KEY, dogCan)
+                intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
+                intent.putExtra("nombreMacota", binding.namePetTextInputEditText.text.toString())
+                intent.putExtra("fechaNacimiento", binding.fechaTextInputEditText.text.toString())
+                intent.putExtra("especie", especie)
+                intent.putExtra("genero", genero)
+                intent.putExtra("raza", raza)
+                intent.putExtra("tamano", tamano)
+                intent.putExtra("caracter", caracter)
+                intent.putExtra("color", color)
+                intent.putExtra("pelaje", pelaje)
+                intent.putExtra("esterelizado", esterelizado)
+                intent.putExtra("distrito", distrito)
+                intent.putExtra("modoObtencion", modoObtencion)
+                intent.putExtra("razonTenencia", razonTenencia)
+                startActivity(intent)
             }
         }
+        //buttonRegistrarCan()
         requestCameraPermission()
-
         val itemsEspecie = listOf("Perro", "Gato", "Otro")
         val adapterEspecie =
             ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, itemsEspecie)
@@ -241,11 +257,8 @@ class RegisterCanFragment : Fragment() {
             R.layout.simple_spinner_dropdown_item,
             itemsrazonDeTenencia
         )
-        binding.vm = vm
         binding.lifecycleOwner = viewLifecycleOwner
         _binding!!.razonDeTenenciaAutoCompleteTextView.setAdapter(adapterrazonDeTenencia)
-        getUserProfile()
-        initObservers()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         binding.especieAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
@@ -303,93 +316,7 @@ class RegisterCanFragment : Fragment() {
             razonTenencia = selectedItem.toString()
         }
 
-        vm.list.observe(requireActivity()) {
-            binding.loadingWheel.visibility = View.GONE
-            openDetailCan(dogCan)
-        }
-
         return binding.root
-    }
-
-    private fun initObservers() {
-        vm.event.observe(viewLifecycleOwner) {
-            when (it) {
-                is RegisterCanEvent.ShowError -> {
-                    Toast.makeText(requireContext(), it.msg, Toast.LENGTH_SHORT).show()
-                }
-
-                RegisterCanEvent.Success -> {
-
-                }
-                RegisterCanEvent.Loading -> {
-                    loading.show()
-                }
-                RegisterCanEvent.DismissLoading -> {
-                    loading.dismiss()
-                }
-
-                else -> {}
-            }
-        }
-
-    }
-
-    private fun openDetailCan(dogCan: Dog) {
-        val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = sharedPref!!.edit()
-        editor.putString("foto", imageCan)
-        editor.apply()
-        editor.commit()
-
-
-        val intent = Intent(requireContext(), DogDetailActivity::class.java)
-        intent.putExtra(DogDetailActivity.DOG_KEY, dogCan)
-        intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
-        intent.putExtra("nombreMacota", binding.namePetTextInputEditText.text.toString())
-        intent.putExtra("fechaNacimiento", binding.fechaTextInputEditText.text.toString())
-        intent.putExtra("especie", especie)
-        intent.putExtra("genero", genero)
-        intent.putExtra("raza", raza)
-        intent.putExtra("tamano", tamano)
-        intent.putExtra("caracter", caracter)
-        intent.putExtra("color", color)
-        intent.putExtra("pelaje", pelaje)
-        intent.putExtra("esterelizado", esterelizado)
-        intent.putExtra("distrito", distrito)
-        intent.putExtra("modoObtencion", modoObtencion)
-        intent.putExtra("razonTenencia", razonTenencia)
-        startActivity(intent)
-    }
-
-
-    private fun openLoginActivity() {
-        startActivity(Intent(requireContext(), LoginActivity::class.java))
-    }
-
-    private fun openDetailActivity(dog: Dog) {
-
-        binding.loadingWheel.visibility = View.VISIBLE
-        vm.registerCan(
-            AgregarMascotaRequest(
-                caracter,
-                color, distrito,
-                especie, 1,
-                esterelizado,
-                binding.fechaTextInputEditText.text.toString(),
-                imageCan,
-                genero, 2,
-                4,
-                "9999", "9999",
-                modoObtencion, binding.namePetTextInputEditText.text.toString(),
-                pelaje, 0, razonTenencia,
-                tamano
-            )
-        )
-
-    }
-
-    private fun openSettingsActivity() {
-        startActivity(Intent(requireContext(), SettingsActivity::class.java))
     }
 
     @SuppressLint("UnsafeOptInUsageError")
@@ -424,7 +351,6 @@ class RegisterCanFragment : Fragment() {
         imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
 
-
     private fun requestCameraPermission() {
         when {
             ContextCompat.checkSelfPermission(
@@ -434,6 +360,7 @@ class RegisterCanFragment : Fragment() {
                 // You can use the API that requires the permission.
                 setupCamera()
             }
+
             shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
                 AlertDialog.Builder(requireContext())
                     .setTitle("Aceptame por favor")
@@ -446,6 +373,7 @@ class RegisterCanFragment : Fragment() {
                     }
                     .show()
             }
+
             else -> {
                 // You can directly ask for the permission.
                 // The registered ActivityResultCallback gets the result of this request.
@@ -459,6 +387,7 @@ class RegisterCanFragment : Fragment() {
     private fun setupCamera() {
         binding.cameraPreview.post {
             imageCapture = ImageCapture.Builder()
+                .setTargetResolution(Size(640, 480)) // reducir resolución
                 .setTargetRotation(binding.cameraPreview.display.rotation)
                 .build()
             cameraExecutor = Executors.newSingleThreadExecutor()
@@ -542,7 +471,8 @@ class RegisterCanFragment : Fragment() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
+        requestCode: Int,
+        permissions: Array<String>,
         grantResults: IntArray
     ) {
         Log.i(TAG, "onRequestPermissionResult")
@@ -553,10 +483,12 @@ class RegisterCanFragment : Fragment() {
                     // receive empty arrays.
                     Log.i(TAG, "User interaction was cancelled.")
                 }
+
                 grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
                     // Permission granted.
                     getLastLocation()
                 }
+
                 else -> {
                 }
             }
@@ -568,108 +500,97 @@ class RegisterCanFragment : Fragment() {
         private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
     }
 
-
-    private fun takePhoto() {
-        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(getOutputPhotoFile()).build()
-        imageCapture.takePicture(outputFileOptions, cameraExecutor,
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exception: ImageCaptureException) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Error: ${exception.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    /*    val photoUri = outputFileResults.savedUri
-                        val bitmap = BitmapFactory.decodeFile(photoUri?.path)
-                        val dogRecognition = classifier.recognizeImage(bitmap).first()
-                        viewModel.getDogByMlId(dogRecognition.id)*/
-                }
-
-            })
-    }
-
-    private fun getOutputPhotoFile(): File {
-        val mediaDir = requireActivity().externalMediaDirs.firstOrNull()?.let {
-            File(it, resources.getString(com.durand.dogedex.R.string.app_name) + ".jpg").apply {
-                mkdirs()
-            }
-        }
-        return if (mediaDir != null && mediaDir.exists()) {
-            mediaDir
-        } else {
-            requireActivity()!!.filesDir
-        }
-    }
-
     private fun startCamera() {
-
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-        cameraProviderFuture.addListener(
-            {
-                val cameraProvider = cameraProviderFuture.get()
 
-                val preview = Preview.Builder().build()
-                preview.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
-                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-                val imageAnalysis = ImageAnalysis.Builder()
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                    .build()
-                imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
-                    //    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                    val bitmap = convertImageProxyToBitmap(imageProxy)
-                    if (bitmap != null) {
-                        getPhotoBitmap(bitmap)
-                        val dogRecognition = classifier.recognizeImage(bitmap).first()
-                        enableTakePhotoButton(dogRecognition)
-
-                    }
-
-                    //    val photoUri = outputFileResults.savedUri
-                    //    val bitmap = BitmapFactory.decodeFile(photoUri?.path)
-                    //    val dogRecognition = classifier.recognizeImage(bitmap).first()
-                    //    viewModel.getDogByMlId(dogRecognition.id)
-                    imageProxy.close()
+            val preview = Preview.Builder()
+                .setTargetResolution(Size(640, 480))
+                .build()
+                .apply {
+                    setSurfaceProvider(binding.cameraPreview.surfaceProvider)
                 }
 
+            imageCapture = ImageCapture.Builder()
+                .setTargetResolution(Size(640, 480))
+                .build()
 
+            val imageAnalysis = ImageAnalysis.Builder()
+                .setTargetResolution(Size(640, 480))
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .apply {
+                    setAnalyzer(cameraExecutor) { imageProxy ->
+                        val bitmap = convertImageProxyToBitmap(imageProxy)
+                        if (bitmap != null) {
+                            getPhotoBitmap(bitmap)
+                            val dogRecognition = classifier.recognizeImage(bitmap).first()
+                            enableTakePhotoButton(dogRecognition)
+                        }
+                        imageProxy.close()
+                    }
+                }
 
+            try {
+                // MUY IMPORTANTE
+                cameraProvider.unbindAll()
+
+                // Solo enlazamos preview + analysis
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector,
-                    preview, imageCapture, imageAnalysis
+                    viewLifecycleOwner,
+                    cameraSelector,
+                    preview,
+                    imageAnalysis
                 )
 
-            }, ContextCompat.getMainExecutor(requireContext())
-        )
+                // Guarda el provider para tomar fotos más adelante
+                this.imageCapture = imageCapture
+
+            } catch (exc: Exception) {
+                Log.e(TAG, "Use case binding failed", exc)
+            }
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
-        if (dogRecognition.confidence > 80.0) {
-            //binding.takePhotoFab.alpha = 1f
-            binding.confirmAppCompatButton.setOnClickListener {
-                mainViewModel.getDogByMlId(dogRecognition.id)
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (dogRecognition.confidence > 80.0) {
+                binding.confirmAppCompatButton.isEnabled = true
+                binding.confirmAppCompatButton.setOnClickListener {
+                    binding.confirmAppCompatButton.isEnabled = false
+                    viewModel.getDogByMlId(dogRecognition.id)
+                }
+            } else {
+                binding.confirmAppCompatButton.isEnabled = false
+                binding.confirmAppCompatButton.setOnClickListener(null)
             }
-        } else {
-
-            // binding.takePhotoFab.alpha = 0.2f
-            binding.confirmAppCompatButton.setOnClickListener(null)
         }
     }
+
+
+//    private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
+//        if (dogRecognition.confidence > 80.0) {
+//            //binding.takePhotoFab.alpha = 1f
+//            binding.confirmAppCompatButton.isEnabled = true
+//            binding.confirmAppCompatButton.setOnClickListener {
+//                binding.confirmAppCompatButton.isEnabled = false
+//                viewModel.getDogByMlId(dogRecognition.id)
+//            }
+//        } else {
+//
+//            binding.confirmAppCompatButton.isEnabled = false
+//            binding.confirmAppCompatButton.setOnClickListener(null)
+//        }
+//    }
 
     override fun onDestroy() {
         super.onDestroy()
         if (::cameraExecutor.isInitialized) {
             cameraExecutor.shutdown()
         }
-    }
-
-    private fun getUserProfile() {
-        val loggedInUser: User? = User.getLoggedInUser(requireActivity())
-        vm.setUserProfile(loggedInUser)
     }
 
 

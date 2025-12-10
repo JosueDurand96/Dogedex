@@ -63,14 +63,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val user = User.getLoggedInUser(this)
-        if (user == null) {
-            openLoginActivity()
-            return
-        } else {
-            Log.d("josue", "authenticationToken: " + user.authenticationToken)
-            ApiServiceInterceptor.setSessionToken(user.authenticationToken)
-        }
+   //     val user = User.getLoggedInUser(this)
+//        if (user == null) {
+//            openLoginActivity()
+//            return
+//        } else {
+//            Log.d("josue", "authenticationToken: " + user.authenticationToken)
+//            ApiServiceInterceptor.setSessionToken(user.authenticationToken)
+//        }
 
         binding.settingsFab.setOnClickListener {
             openSettingsActivity()

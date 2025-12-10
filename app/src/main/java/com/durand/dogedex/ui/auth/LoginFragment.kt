@@ -2,6 +2,7 @@ package com.durand.dogedex.ui.auth
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,10 +11,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.durand.dogedex.data.User
-import com.durand.dogedex.data.dto.AddLoginDTO
+import com.durand.dogedex.data.request.oficial.LoginRequest
 import com.durand.dogedex.databinding.FragmentLoginBinding
-import com.durand.dogedex.ui.admin_fragment.AdminHome
+import com.durand.dogedex.ui.auth.oficial.LoginViewModel
+import com.durand.dogedex.ui.auth.recoverpassword.RecoverPasswordActivity
 import com.durand.dogedex.ui.user_fragment.UserHome
 
 class LoginFragment : Fragment() {
@@ -23,9 +24,10 @@ class LoginFragment : Fragment() {
         fun onLoginFieldsValidated(email: String, password: String)
     }
 
+    private lateinit var viewModel: LoginViewModel
     private lateinit var loginFragmentActions: LoginFragmentActions
     private lateinit var binding: FragmentLoginBinding
-    private lateinit var viewModel: AuthViewModel
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         loginFragmentActions = try {
@@ -39,7 +41,7 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         binding = FragmentLoginBinding.inflate(layoutInflater)
         binding.loginRegisterButton.setOnClickListener {
             loginFragmentActions.onRegisterButtonClick()
@@ -47,20 +49,28 @@ class LoginFragment : Fragment() {
         binding.loginButton.setOnClickListener {
             validateFields()
         }
-
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.loginButton.isEnabled = !isLoading
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+        binding.forgotPassword.setOnClickListener{
+            val intent = Intent(requireContext(), RecoverPasswordActivity::class.java)
+            startActivity(intent)
+        }
         viewModel.login.observe(requireActivity()) {
+            val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPref!!.edit()
+            editor.putInt("idUsuario", it.id)
+            editor.apply()
+            editor.commit()
+            binding.loginButton.isEnabled = true
             Toast.makeText(requireContext(), "Bienvenido ${it.nombre}!", Toast.LENGTH_SHORT).show()
-            User.setLoggedInUser(requireActivity(), User(it.idUsuario, it.correoElectronico,""))
-            Log.d("josue", "nombre: " + it.idUsuario.toString())
+            Log.d("josue", "apellido: " + it.apellido)
             Log.d("josue", "nombre: " + it.nombre)
-            Log.d("josue", "tipoUsuario: " + it.tipoUsuario)
-            if (it.tipoUsuario == "U") {
-                val intent = Intent(requireContext(), UserHome::class.java)
-                startActivity(intent)
-            } else if (it.tipoUsuario == "A") {
-                val intent = Intent(requireContext(), AdminHome::class.java)
-                startActivity(intent)
-            }
+            val intent = Intent(requireContext(), UserHome::class.java)
+            intent.putExtra("id", it.id)
+            intent.putExtra("nombre", it.nombre)
+            startActivity(intent)
         }
         return binding.root
     }
@@ -69,22 +79,15 @@ class LoginFragment : Fragment() {
         binding.emailInput.error = ""
         binding.passwordInput.error = ""
         val email = binding.emailEdit.text.toString()
-//        if (!isValidEmail(email)){
-//            binding.emailInput.error = "Email is not valid!"
-//            return
-//        }
-
         val password = binding.passwordEdit.text.toString()
         if (password.isEmpty()) {
             binding.passwordInput.error = "Password is not valid!"
             return
         }
+        Log.d("login", "Probando login")
         Log.d("login", "email: $email")
         Log.d("login", "password: $password")
-        Log.d("login", "viewModel: 1")
-        viewModel.onLogin(AddLoginDTO(email, password))
-        Log.d("login", "viewModel: 2")
-        loginFragmentActions.onLoginFieldsValidated("josue@gmail.com", "12345678")
-        Log.d("login", "viewModel: 3")
+        binding.loginButton.isEnabled = false
+        viewModel.login(LoginRequest(email, password))
     }
 }

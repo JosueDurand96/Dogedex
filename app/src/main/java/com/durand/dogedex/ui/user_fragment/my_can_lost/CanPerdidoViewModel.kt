@@ -3,132 +3,55 @@
 package com.durand.dogedex.ui.user_fragment.my_can_lost
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.durand.dogedex.data.ApiResponseStatus
-import com.durand.dogedex.data.User
-import com.durand.dogedex.data.dto.AgregarMascotaPerdidaDTO
-import com.durand.dogedex.data.repository.NewRepository
-import com.durand.dogedex.data.response.consultar_mascotas.ConsultarDetalleMascota
+import com.durand.dogedex.data.repository.NewOficialRepository
+import com.durand.dogedex.data.request.oficial.RegisterCanPerdidoRequest
+import com.durand.dogedex.data.response.oficial.RegisterCanPerdidoResponse
 import kotlinx.coroutines.launch
 
 class CanPerdidoViewModel(
-    private val repository: NewRepository = NewRepository()
+    private val repository: NewOficialRepository = NewOficialRepository()
 ) : ViewModel() {
 
     private var latitude = ""
     private var longitude = ""
 
-    private val _list = MutableLiveData<List<ConsultarDetalleMascota>>(emptyList())
-    val list: LiveData<List<ConsultarDetalleMascota>> = _list
+    private val _list = MutableLiveData<RegisterCanPerdidoResponse>()
+    val list: LiveData<RegisterCanPerdidoResponse> = _list
 
-    val viewState = MutableLiveData<CanPerdidoEvent>()
-    val loading = MutableLiveData(false)
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
 
-    val estado = MutableLiveData("")
-    val fecha = MutableLiveData("")
-    val comentarios = MutableLiveData("")
-    val nombreMascota = MutableLiveData("")
 
-    private var user: User? = null
-
-    init {
-
-    }
-
-    fun setUserProfile(user: User?) {
-        this.user = user
-        executeConsultarMascotasPorId()
-    }
-
-    @SuppressLint("NullSafeMutableLiveData")
-    fun executeConsultarMascotasPorId() = viewModelScope.launch {
+    fun listar(registerCanRequest: RegisterCanPerdidoRequest) = viewModelScope.launch{
+        _isLoading.postValue(true)
         try {
-            loading.postValue(true)
-            when (val res: ApiResponseStatus<List<ConsultarDetalleMascota>> = repository.consultarMascotasPorId(user?.id ?: -1)) {
+            when (val res: ApiResponseStatus<RegisterCanPerdidoResponse> = repository.registerCanPerdido(registerCanRequest)) {
                 is ApiResponseStatus.Error -> {
-                    viewState.postValue(
-                        CanPerdidoEvent.Error(
-                            "No tiene mascotas registradas."
-                        )
-                    )
+                    Log.d("josue", "Mascota perdida Error")
+                    _isLoading.postValue(false)
+                }
+
+                is ApiResponseStatus.Loading -> {
+                    Log.d("josue", "Mascota perdida Loading")
+                    // Ya se setea en true arriba
                 }
 
                 is ApiResponseStatus.Success -> {
-                    _list.postValue(res!!.data)
-                }
-
-                else -> {
-                    viewState.postValue(CanPerdidoEvent.None)
+                    Log.d("josue", "Mascota perdida Success")
+                    _list.postValue(res.data)
+                    _isLoading.postValue(false)
                 }
             }
-        } finally {
-            loading.postValue(false)
+        } catch (e: Exception) {
+            Log.e("josue", "Login Exception: ${e.localizedMessage}")
+            _isLoading.postValue(false)
         }
     }
-
-    fun setCoordinates(latitude: String, longitude: String) {
-        this.latitude = latitude
-        this.longitude = longitude
-    }
-
-    fun executeAgregarMascotaPerdida() = viewModelScope.launch {
-        try {
-            loading.postValue(true)
-            val param = buildAgregarMascotaPerdidaDTO()
-            when (repository.agregarMascotaPerdida(param)) {
-                is ApiResponseStatus.Error -> {
-                    viewState.postValue(
-                        CanPerdidoEvent.Error(
-                            "Error al intentar agregar mascota"
-                        )
-                    )
-                }
-
-                is ApiResponseStatus.Success -> {
-                    cleanValues()
-                    viewState.postValue(
-                        CanPerdidoEvent.SuccessAgregarMascotaPerdida(
-                            "Se agregó la mascota perdida"
-                        )
-                    )
-                }
-
-                else -> {
-                    viewState.postValue(CanPerdidoEvent.None)
-                }
-            }
-        } finally {
-            loading.postValue(false)
-        }
-    }
-
-    private fun cleanValues() {
-        comentarios.value = ""
-        estado.value = ""
-        fecha.value = ""
-        nombreMascota.value = ""
-    }
-
-    private fun buildAgregarMascotaPerdidaDTO(): AgregarMascotaPerdidaDTO {
-        return AgregarMascotaPerdidaDTO(
-            descripcion = comentarios.value!!,
-            estado = estado.value!!,
-            fechaPerdida = fecha.value!!,
-            idMascota = _list.value!!.firstOrNull { it.nombre == nombreMascota.value!! }?.idMascota ?: 1,
-            idUsuario = user?.id ?: -1,
-            latitud = latitude,
-            longitud = longitude
-        )
-    }
-
-    sealed interface CanPerdidoEvent {
-        data class Error(val msg: String) : CanPerdidoEvent
-        data class SuccessAgregarMascotaPerdida(val msg: String) : CanPerdidoEvent
-        object None : CanPerdidoEvent
-    }
-
 
 }

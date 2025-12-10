@@ -4,7 +4,7 @@ package com.durand.dogedex.data
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.durand.dogedex.MyApplication
-import com.durand.dogedex.data.Request.*
+import com.durand.dogedex.data.request.*
 import com.durand.dogedex.data.dto.*
 import com.durand.dogedex.data.response.AddAgressionPetResponse
 import com.durand.dogedex.data.response.AddBreedResponse
@@ -20,7 +20,7 @@ import com.durand.dogedex.data.response.consultar_mascotas.ConsultarMascotasMast
 import com.durand.dogedex.data.response.dangerousdogs.DangerousPetListResponse
 import com.durand.dogedex.data.response.list_mascotas.ListMascotasMasterResponse
 import com.durand.dogedex.data.response.lostpetslist.LostPetsListResponse
-import com.durand.dogedex.data.response.registar_can.RegisterCanResponse
+import com.durand.dogedex.data.response.oficial.RegisterCanResponse
 import com.durand.dogedex.ui.ApiServiceInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
