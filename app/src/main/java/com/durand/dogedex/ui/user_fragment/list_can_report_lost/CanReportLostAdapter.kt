@@ -1,15 +1,20 @@
 package com.durand.dogedex.ui.user_fragment.list_can_report_lost
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.durand.dogedex.R
 import com.durand.dogedex.data.response.oficial.ListarCanPerdidoResponse
 
@@ -82,6 +87,30 @@ class CanReportLostAdapter(private val mList: List<ListarCanPerdidoResponse> = m
         )
         holder.direccionTextView.text = direccionSpannableString
 
+        // Cargar imagen desde Base64
+        if (model.foto.isNotEmpty()) {
+            try {
+                val imageBytes = Base64.decode(model.foto, Base64.DEFAULT)
+                val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                if (bitmap != null) {
+                    holder.canImageView.load(bitmap) {
+                        crossfade(true)
+                        placeholder(R.drawable.dog_logo) // Imagen por defecto mientras carga
+                        error(R.drawable.dog_logo) // Imagen de error si falla
+                    }
+                } else {
+                    Log.e("CanReportLostAdapter", "Error: bitmap es null para ${model.nombre}")
+                    holder.canImageView.setImageResource(R.drawable.dog_logo)
+                }
+            } catch (e: Exception) {
+                Log.e("CanReportLostAdapter", "Error al decodificar imagen Base64 para ${model.nombre}: ${e.message}", e)
+                holder.canImageView.setImageResource(R.drawable.dog_logo)
+            }
+        } else {
+            // Si no hay foto, mostrar imagen por defecto
+            holder.canImageView.setImageResource(R.drawable.dog_logo)
+        }
+
     }
 
     // return the number of the items in the list
@@ -95,5 +124,6 @@ class CanReportLostAdapter(private val mList: List<ListarCanPerdidoResponse> = m
         val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
         val direccionTextView: TextView = itemView.findViewById(R.id.direccionTextView)
         val fechaNacimientoTextView: TextView = itemView.findViewById(R.id.fechaNacimientoTextView)
+        val canImageView: ImageView = itemView.findViewById(R.id.canImageView)
     }
 }
