@@ -61,6 +61,250 @@
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />
 
+                            <!-- ImageView para la foto -->
+                            <ImageView
+                                    android:id="@+id/fotoImageView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="200dp"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:scaleType="centerCrop"
+                                    android:contentDescription="Foto de la mascota"
+                                    android:background="@android:color/darker_gray"
+                                    android:clickable="true"
+                                    android:focusable="true" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Nombre"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/nombreTextInputEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Especie"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/especieTextInputEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Género"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/generoTextInputEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Raza"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/razaTextInputEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Tamaño"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/tamanioTextInputEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Carácter"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/caracterTextInputEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Color"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/colorTextInputEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Pelaje"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/pelajeTextInputEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Nombre Usuario"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/nombreUsuarioTextInputEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="25dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginEnd="25dp"
+                                    android:hint="Apellido Usuario"
+                                    app:boxBackgroundColor="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/apellidoUsuarioTextInputEditText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:textColor="@color/black"
+                                        android:textSize="16sp"
+                                        android:textStyle="normal"
+                                        tools:ignore="LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
                             <Spinner
                                     android:id="@+id/mascota"
                                     android:layout_width="match_parent"

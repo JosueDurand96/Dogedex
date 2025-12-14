@@ -27,29 +27,36 @@ class CanPerdidoViewModel(
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _error = MutableLiveData<Int?>()
+    val error: LiveData<Int?> = _error
+
 
     fun listar(registerCanRequest: RegisterCanPerdidoRequest) = viewModelScope.launch{
         _isLoading.postValue(true)
         try {
             when (val res: ApiResponseStatus<RegisterCanPerdidoResponse> = repository.registerCanPerdido(registerCanRequest)) {
                 is ApiResponseStatus.Error -> {
-                    Log.d("josue", "Mascota perdida Error")
+                    Log.e("CanPerdidoViewModel", "Error al registrar mascota perdida: ${res.message}")
+                    _error.postValue(res.message)
                     _isLoading.postValue(false)
                 }
 
                 is ApiResponseStatus.Loading -> {
-                    Log.d("josue", "Mascota perdida Loading")
+                    Log.d("CanPerdidoViewModel", "Registrando mascota perdida...")
                     // Ya se setea en true arriba
                 }
 
                 is ApiResponseStatus.Success -> {
-                    Log.d("josue", "Mascota perdida Success")
+                    Log.d("CanPerdidoViewModel", "Mascota perdida registrada exitosamente")
                     _list.postValue(res.data)
+                    _error.postValue(null) // Limpiar errores previos
                     _isLoading.postValue(false)
                 }
             }
         } catch (e: Exception) {
-            Log.e("josue", "Login Exception: ${e.localizedMessage}")
+            Log.e("CanPerdidoViewModel", "Excepción al registrar mascota perdida: ${e.localizedMessage}", e)
+            // Para excepciones, usar un mensaje genérico o null
+            _error.postValue(null)
             _isLoading.postValue(false)
         }
     }
