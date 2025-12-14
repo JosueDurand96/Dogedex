@@ -90,9 +90,9 @@ interface NewApiOficialService {
         @Query("idUsuario") idUsuario: Long
     ): List<ListarCanResponse>
 
-    @GET("api/v1/Mascota/obtenerMascotaPerdida/{id}")
+    @GET("api/v1/Mascota/obtenerMascotaPerdida")
     suspend fun listarMascotaPerdida(
-        @Header("Content-Type") content_type: String,
+        @Header("Content-Type") content_type: String
     ): List<ListarCanPerdidoResponse>
 
     @POST("api/v1/CodigoVerificacion/registrarCodigo")

@@ -23,26 +23,32 @@ class CanReportLostViewModel(
 
     fun listar() = viewModelScope.launch {
         _isLoading.postValue(true)
+        Log.d("CanReportLostViewModel", "Iniciando listar mascotas perdidas")
         try {
             when (val res: ApiResponseStatus<List<ListarCanPerdidoResponse>> = repository.listarMascotaPerdida()) {
                 is ApiResponseStatus.Error -> {
-                    Log.d("josue", "Login Error")
+                    Log.e("CanReportLostViewModel", "Error al listar mascotas perdidas: ${res.message}")
+                    _list.postValue(emptyList())
                     _isLoading.postValue(false)
                 }
 
                 is ApiResponseStatus.Loading -> {
-                    Log.d("josue", "Login Loading")
+                    Log.d("CanReportLostViewModel", "Cargando lista de mascotas perdidas...")
                     // Ya se setea en true arriba
                 }
 
                 is ApiResponseStatus.Success -> {
-                    Log.d("josue", "Login Success")
+                    Log.d("CanReportLostViewModel", "Lista obtenida exitosamente: ${res.data.size} elementos")
+                    if (res.data.isNotEmpty()) {
+                        Log.d("CanReportLostViewModel", "Primer elemento: ${res.data[0].nombre}, Fecha pérdida: ${res.data[0].fechaPerdida}")
+                    }
                     _list.postValue(res.data)
                     _isLoading.postValue(false)
                 }
             }
         } catch (e: Exception) {
-            Log.e("josue", "Login Exception: ${e.localizedMessage}")
+            Log.e("CanReportLostViewModel", "Excepción al listar mascotas perdidas: ${e.message}", e)
+            _list.postValue(emptyList())
             _isLoading.postValue(false)
         }
     }

@@ -30,10 +30,28 @@ class CanReportLostFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
-        viewModel.list.observe(viewLifecycleOwner) {
-            binding.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            binding.canReportLostRecyclerView. adapter = CanReportLostAdapter(it)
+        viewModel.list.observe(viewLifecycleOwner) { list ->
+            Log.d("CanReportLostFragment", "=== Observer activado ===")
+            Log.d("CanReportLostFragment", "Lista recibida con ${list.size} elementos")
+            if (list.isNotEmpty()) {
+                Log.d("CanReportLostFragment", "Primer elemento: ${list[0].nombre}, Fecha pérdida: ${list[0].fechaPerdida}")
+                list.forEachIndexed { index, item ->
+                    Log.d("CanReportLostFragment", "  [$index] ${item.nombre} - ${item.lugarPerdida} - Fecha: ${item.fechaPerdida}")
+                }
+            } else {
+                Log.w("CanReportLostFragment", "La lista está vacía")
+            }
 
+            if (binding.canReportLostRecyclerView.layoutManager == null) {
+                binding.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                Log.d("CanReportLostFragment", "LayoutManager configurado")
+            }
+
+            binding.canReportLostRecyclerView.adapter = CanReportLostAdapter(list)
+            binding.canReportLostRecyclerView.invalidate()
+            binding.canReportLostRecyclerView.requestLayout()
+
+            Log.d("CanReportLostFragment", "Adapter actualizado con ${list.size} elementos")
         }
         return root
     }
