@@ -8,9 +8,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.graphics.BitmapFactory
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.util.Size
@@ -20,9 +23,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.content.FileProvider
+import coil.load
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.InputStream
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.*
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -46,8 +55,6 @@ import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.common.FileUtil
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -81,6 +88,9 @@ class RegisterCanFragment : Fragment() {
     private lateinit var imageCan: String
     private lateinit var dogCan: Dog
     private var isRegistrationComplete = false
+    private var fotoUri: Uri? = null
+    private var fotoBitmap: Bitmap? = null
+    private var cameraImageUri: Uri? = null
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -92,6 +102,39 @@ class RegisterCanFragment : Fragment() {
                 Toast.makeText(
                     requireContext(),
                     com.durand.dogedex.R.string.camera_permission,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+    // Launcher para seleccionar imagen de la galería
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            fotoUri = it
+            fotoBitmap = null
+            processImageFromUri(it)
+        }
+    }
+
+    // Launcher para tomar foto con la cámara
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success && cameraImageUri != null) {
+            fotoUri = cameraImageUri
+            fotoBitmap = null
+            processImageFromUri(cameraImageUri!!)
+        }
+    }
+
+    // Launcher para permisos de cámara (para tomar foto, no para preview)
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            openCameraForPhoto()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Se necesita permiso de cámara para tomar fotos",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -364,6 +407,28 @@ class RegisterCanFragment : Fragment() {
         // Configurar DatePickerDialog para el campo de fecha
         setupDatePicker()
 
+        // Configurar botón "Tomar foto" - muestra el PreviewView y captura foto
+        binding.tomarFotoButton.setOnClickListener {
+            // Si el PreviewView está visible, capturar una foto
+            if (binding.cameraPreview.visibility == View.VISIBLE && ::imageCapture.isInitialized) {
+                capturePhoto()
+            } else {
+                // Si el PreviewView no está visible, mostrarlo
+                binding.galleryImageView.visibility = View.GONE
+                binding.cameraPreview.visibility = View.VISIBLE
+                if (!isCameraReady) {
+                    requestCameraPermission()
+                }
+            }
+        }
+
+        // Configurar botón "Galería" - abre el selector de galería
+        binding.galeriaButton.setOnClickListener {
+            // Ocultar PreviewView y preparar para mostrar galleryImageView
+            binding.cameraPreview.visibility = View.GONE
+            openGallery()
+        }
+
         // Asegurar que el botón esté deshabilitado inicialmente
         binding.confirmAppCompatButton.isEnabled = false
 
@@ -611,7 +676,7 @@ class RegisterCanFragment : Fragment() {
                     distrito = distrito,
                     modoObtencion = modoObtencion,
                     razonTenencia = razonTenencia,
-                    foto = "imageCan",
+                    foto = imageCan,
                     idUsuario = currentIdUsuario
                 )
             )
@@ -815,12 +880,16 @@ class RegisterCanFragment : Fragment() {
                 .build()
                 .apply {
                     setAnalyzer(cameraExecutor) { imageProxy ->
+                        // Solo hacer reconocimiento en tiempo real, NO capturar foto
                         val bitmap = convertImageProxyToBitmap(imageProxy)
-                        if (bitmap != null) {
-                            getPhotoBitmap(bitmap)
-                            val dogRecognition = classifier.recognizeImage(bitmap).first()
-                            Log.d("RegisterCanFragment", "Reconocimiento: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
-                            enableTakePhotoButton(dogRecognition)
+                        if (bitmap != null && ::classifier.isInitialized) {
+                            try {
+                                val dogRecognition = classifier.recognizeImage(bitmap).first()
+                                Log.d("RegisterCanFragment", "Reconocimiento en tiempo real: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
+                                enableTakePhotoButton(dogRecognition)
+                            } catch (e: Exception) {
+                                Log.e("RegisterCanFragment", "Error en reconocimiento: ${e.message}")
+                            }
                         }
                         imageProxy.close()
                     }
@@ -830,11 +899,12 @@ class RegisterCanFragment : Fragment() {
                 // MUY IMPORTANTE
                 cameraProvider.unbindAll()
 
-                // Solo enlazamos preview + analysis
+                // Enlazamos preview + imageCapture + analysis (solo para reconocimiento)
                 cameraProvider.bindToLifecycle(
                     viewLifecycleOwner,
                     cameraSelector,
                     preview,
+                    imageCapture,
                     imageAnalysis
                 )
 
@@ -895,8 +965,19 @@ class RegisterCanFragment : Fragment() {
         photo.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
-        // Verificar formulario cuando se capture la imagen
-        checkFormAndEnableButton()
+        
+                // Las modificaciones de UI deben ejecutarse en el hilo principal
+                lifecycleScope.launch(Dispatchers.Main) {
+                    // Mostrar la imagen capturada en el galleryImageView
+                    binding.galleryImageView.visibility = View.VISIBLE
+                    binding.cameraPreview.visibility = View.GONE
+                    binding.galleryImageView.load(photo) {
+                        crossfade(true)
+                    }
+            
+            // Verificar formulario cuando se capture la imagen
+            checkFormAndEnableButton()
+        }
     }
 
 
@@ -1017,5 +1098,188 @@ class RegisterCanFragment : Fragment() {
         }
     }
 
+
+    private fun openCameraForPhoto() {
+        // Verificar permiso de cámara
+        val hasPermission = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasPermission) {
+            // Crear URI temporal para la foto
+            val photoFile = File.createTempFile(
+                "IMG_${System.currentTimeMillis()}",
+                ".jpg",
+                requireContext().cacheDir
+            )
+            cameraImageUri = FileProvider.getUriForFile(
+                requireContext(),
+                "${requireContext().packageName}.fileprovider",
+                photoFile
+            )
+            cameraLauncher.launch(cameraImageUri)
+        } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun openGallery() {
+        galleryLauncher.launch("image/*")
+    }
+
+    private fun capturePhoto() {
+        if (!::imageCapture.isInitialized) {
+            Toast.makeText(
+                requireContext(),
+                "La cámara no está lista. Por favor, espera un momento.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        // Crear archivo temporal para guardar la foto
+        val photoFile = File.createTempFile(
+            "IMG_${System.currentTimeMillis()}",
+            ".jpg",
+            requireContext().cacheDir
+        )
+
+        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        imageCapture.takePicture(
+            outputFileOptions,
+            cameraExecutor,
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exception: ImageCaptureException) {
+                    Log.e("RegisterCanFragment", "Error al capturar foto: ${exception.message}", exception)
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Error al capturar la foto: ${exception.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    val photoUri = outputFileResults.savedUri
+                    Log.d("RegisterCanFragment", "Foto capturada exitosamente: $photoUri")
+                    
+                    // Procesar la foto capturada
+                    photoUri?.let { uri ->
+                        processImageFromUri(uri)
+                    } ?: run {
+                        // Si no hay URI, intentar leer el archivo directamente
+                        val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+                        bitmap?.let {
+                            processCapturedBitmap(it)
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    private fun processCapturedBitmap(bitmap: Bitmap) {
+        try {
+            photo = bitmap
+            fotoBitmap = bitmap
+            
+            // Convertir a Base64
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
+            imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
+            
+            // Las modificaciones de UI deben ejecutarse en el hilo principal
+            lifecycleScope.launch(Dispatchers.Main) {
+                // Ocultar PreviewView y mostrar galleryImageView con la imagen capturada
+                binding.cameraPreview.visibility = View.GONE
+                binding.galleryImageView.visibility = View.VISIBLE
+                binding.galleryImageView.load(bitmap) {
+                    crossfade(true)
+                }
+                
+                // Realizar reconocimiento de perro
+                try {
+                    if (::classifier.isInitialized) {
+                        val dogRecognition = classifier.recognizeImage(bitmap).first()
+                        Log.d("RegisterCanFragment", "Reconocimiento de foto capturada: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
+                        enableTakePhotoButton(dogRecognition)
+                    } else {
+                        checkFormAndEnableButton()
+                    }
+                } catch (e: Exception) {
+                    Log.e("RegisterCanFragment", "Error al reconocer perro: ${e.message}")
+                    checkFormAndEnableButton()
+                }
+            }
+            
+            Log.d("RegisterCanFragment", "Foto procesada - longitud Base64: ${imageCan.length}")
+        } catch (e: Exception) {
+            Log.e("RegisterCanFragment", "Error al procesar foto capturada: ${e.message}", e)
+            lifecycleScope.launch(Dispatchers.Main) {
+                Toast.makeText(
+                    requireContext(),
+                    "Error al procesar la foto: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun processImageFromUri(uri: Uri) {
+        try {
+            val inputStream: InputStream? = requireContext().contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            
+            if (bitmap != null) {
+                fotoBitmap = bitmap
+                // Convertir a Base64 y actualizar imageCan
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+                val byteArray = byteArrayOutputStream.toByteArray()
+                imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                
+                // Las modificaciones de UI deben ejecutarse en el hilo principal
+                lifecycleScope.launch(Dispatchers.Main) {
+                    // Ocultar PreviewView y mostrar galleryImageView con la imagen seleccionada
+                    binding.cameraPreview.visibility = View.GONE
+                    binding.galleryImageView.visibility = View.VISIBLE
+                    binding.galleryImageView.load(bitmap) {
+                        crossfade(true)
+                    }
+                    
+                    // Realizar reconocimiento de perro si es posible
+                    try {
+                        if (::classifier.isInitialized) {
+                            val dogRecognition = classifier.recognizeImage(bitmap).first()
+                            Log.d("RegisterCanFragment", "Reconocimiento desde galería: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
+                            enableTakePhotoButton(dogRecognition)
+                        } else {
+                            Log.w("RegisterCanFragment", "Classifier no inicializado, saltando reconocimiento")
+                            checkFormAndEnableButton()
+                        }
+                    } catch (e: Exception) {
+                        Log.e("RegisterCanFragment", "Error al reconocer perro desde galería: ${e.message}")
+                        // Continuar sin reconocimiento
+                        checkFormAndEnableButton()
+                    }
+                }
+                
+                Log.d("RegisterCanFragment", "Imagen procesada desde URI - longitud Base64: ${imageCan.length}")
+            }
+        } catch (e: Exception) {
+            Log.e("RegisterCanFragment", "Error al procesar imagen desde URI: ${e.message}", e)
+            lifecycleScope.launch(Dispatchers.Main) {
+                Toast.makeText(
+                    requireContext(),
+                    "Error al procesar la imagen: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
 }
