@@ -22,28 +22,54 @@ class MyCanRegisterViewModel(
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun listar(id: Int) = viewModelScope.launch {
+    fun listar(id: Long) = viewModelScope.launch {
         _isLoading.postValue(true)
+        Log.d("MyCanRegisterViewModel", "=== listar INICIADO ===")
+        Log.d("MyCanRegisterViewModel", "idUsuario: $id")
         try {
-            when (val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarMascota(id)) {
+            Log.d("MyCanRegisterViewModel", "Llamando repository.listarMascota()")
+            val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarMascota(id)
+            Log.d("MyCanRegisterViewModel", "Respuesta recibida del repositorio: ${res.javaClass.simpleName}")
+            
+            when (res) {
                 is ApiResponseStatus.Error -> {
-                    Log.d("josue", "Login Error")
+                    Log.e("MyCanRegisterViewModel", "=== ERROR ===")
+                    Log.e("MyCanRegisterViewModel", "Error al listar mascotas: ${res.message}")
+                    Log.e("MyCanRegisterViewModel", "Tipo de mensaje: ${res.message.javaClass.simpleName}")
+                    _list.postValue(emptyList())
                     _isLoading.postValue(false)
                 }
 
                 is ApiResponseStatus.Loading -> {
-                    Log.d("josue", "Login Loading")
+                    Log.d("MyCanRegisterViewModel", "=== LOADING ===")
+                    Log.d("MyCanRegisterViewModel", "Cargando lista de mascotas...")
                     // Ya se setea en true arriba
                 }
 
                 is ApiResponseStatus.Success -> {
-                    Log.d("josue", "Login Success")
+                    Log.d("MyCanRegisterViewModel", "=== SUCCESS ===")
+                    Log.d("MyCanRegisterViewModel", "Lista obtenida exitosamente: ${res.data.size} elementos")
+                    if (res.data.isNotEmpty()) {
+                        Log.d("MyCanRegisterViewModel", "Primer elemento: ${res.data[0].nombre}, ID: ${res.data[0].id}")
+                        Log.d("MyCanRegisterViewModel", "Todos los elementos:")
+                        res.data.forEachIndexed { index, item ->
+                            Log.d("MyCanRegisterViewModel", "  [$index] ${item.nombre} - ${item.raza} - ID: ${item.id}")
+                        }
+                    } else {
+                        Log.w("MyCanRegisterViewModel", "La lista está vacía")
+                    }
+                    Log.d("MyCanRegisterViewModel", "Publicando lista en LiveData")
                     _list.postValue(res.data)
+                    Log.d("MyCanRegisterViewModel", "Lista publicada, isLoading = false")
                     _isLoading.postValue(false)
                 }
             }
+            Log.d("MyCanRegisterViewModel", "=== listar COMPLETADO ===")
         } catch (e: Exception) {
-            Log.e("josue", "Login Exception: ${e.localizedMessage}")
+            Log.e("MyCanRegisterViewModel", "=== EXCEPCIÓN ===")
+            Log.e("MyCanRegisterViewModel", "Excepción al listar mascotas: ${e.message}", e)
+            e.printStackTrace()
+            _list.postValue(emptyList())
             _isLoading.postValue(false)
         }
     }

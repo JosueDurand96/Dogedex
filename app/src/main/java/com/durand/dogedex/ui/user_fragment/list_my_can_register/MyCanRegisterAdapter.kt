@@ -14,8 +14,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.durand.dogedex.R
 import com.durand.dogedex.data.response.oficial.ListarCanResponse
 
-class MyCanRegisterAdapter(private val mList: List<ListarCanResponse> = mutableListOf()) :
+class MyCanRegisterAdapter(private var mList: List<ListarCanResponse> = mutableListOf()) :
     RecyclerView.Adapter<MyCanRegisterAdapter.ViewHolder>() {
+
+    fun updateList(newList: List<ListarCanResponse>) {
+        Log.d("MyCanRegisterAdapter", "=== updateList INICIADO ===")
+        Log.d("MyCanRegisterAdapter", "Lista anterior: ${mList.size} elementos")
+        Log.d("MyCanRegisterAdapter", "Nueva lista: ${newList.size} elementos")
+        
+        if (newList.isEmpty()) {
+            Log.w("MyCanRegisterAdapter", "La nueva lista está vacía")
+        } else {
+            Log.d("MyCanRegisterAdapter", "Primer elemento de nueva lista: ${newList[0].nombre}")
+        }
+        
+        mList = newList
+        Log.d("MyCanRegisterAdapter", "mList actualizado a ${mList.size} elementos")
+        
+        // Siempre notificar cambios
+        notifyDataSetChanged()
+        Log.d("MyCanRegisterAdapter", "notifyDataSetChanged() llamado")
+        Log.d("MyCanRegisterAdapter", "=== updateList COMPLETADO ===")
+    }
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,7 +50,13 @@ class MyCanRegisterAdapter(private val mList: List<ListarCanResponse> = mutableL
     // binds the list items to a view
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.d("MyCanRegisterAdapter", "onBindViewHolder llamado para posición $position, tamaño lista: ${mList.size}")
+        if (position >= mList.size) {
+            Log.e("MyCanRegisterAdapter", "Error: posición $position fuera de rango (tamaño: ${mList.size})")
+            return
+        }
         val model = mList[position]
+        Log.d("MyCanRegisterAdapter", "Binding item: ${model.nombre}, Raza: ${model.raza}")
 
         //NOMBRE
         val nombrePrefix = "Nombre: "
@@ -105,7 +131,9 @@ class MyCanRegisterAdapter(private val mList: List<ListarCanResponse> = mutableL
 
     // return the number of the items in the list
     override fun getItemCount(): Int {
-        return mList.size
+        val count = mList.size
+        Log.d("MyCanRegisterAdapter", "getItemCount: $count")
+        return count
     }
 
     // Holds the views for adding it to image and text
