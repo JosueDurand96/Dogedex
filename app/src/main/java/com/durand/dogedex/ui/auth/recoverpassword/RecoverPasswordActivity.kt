@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -26,46 +27,79 @@ class RecoverPasswordActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityRecoverPasswordBinding.inflate(layoutInflater)
-        setContentView(binding.root) // Use binding.root here
+        setContentView(binding.root)
         binding.otpContainer.visibility = View.GONE
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        
         validateCodViewModel = ViewModelProvider(this).get(ValidarCodigoViewModel::class.java)
         registrarCodViewModel = ViewModelProvider(this).get(RegistrarCodigoViewModel::class.java)
 
+        setupObservers()
+        setupClickListeners()
+    }
+
+    private fun setupObservers() {
         registrarCodViewModel.isLoading.observe(this) { isLoading ->
-           // binding.sendButton.isEnabled = !isLoading
+            binding.sendButton.isEnabled = !isLoading
             binding.progressBarEmail.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
-        binding.sendButton.setOnClickListener{
-            val email = binding.etEmail.text.toString()
-            Log.d("josue", "email: $email")
-
-            registrarCodViewModel.registrarCodigo(RegistrarCodigoRequest(correoUsuario = email))
-        }
-
-        registrarCodViewModel.list.observe(this) { it ->
+        registrarCodViewModel.list.observe(this) { response ->
             binding.otpContainer.visibility = View.VISIBLE
-            Log.d("josue", "HUBO EXITO: "+it.codigo)
+            Log.d("josue", "Código enviado - codigo: ${response.codigo}, mensaje: ${response.mensaje}")
+            Toast.makeText(this, response.mensaje, Toast.LENGTH_SHORT).show()
         }
 
-        validateCodViewModel.list.observe(this) { it ->
-            Log.d("josue", "HUBO EXITO: "+it.codigo)
+        validateCodViewModel.isLoading.observe(this) { isLoading ->
+            binding.verifyOtpButton.isEnabled = !isLoading
+            binding.progressBarEmail.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        validateCodViewModel.list.observe(this) { response ->
+            Log.d("josue", "Código validado - codigo: ${response.codigo}, mensaje: ${response.mensaje}")
+            Toast.makeText(this, response.mensaje, Toast.LENGTH_SHORT).show()
             val intent = Intent(this, ChangePasswordActivity::class.java)
             intent.putExtra("email", binding.etEmail.text.toString())
             startActivity(intent)
-        }
-
-        binding.verifyOtpButton.setOnClickListener {
-            validateCodViewModel.registrarCodigo(ValidarCodigoRequest(
-                correoUsuario = binding.etEmail.text.toString(),
-                codigo = binding.etOtpCode.text.toString()
-            ))
+            finish()
         }
     }
 
+    private fun setupClickListeners() {
+        binding.sendButton.setOnClickListener {
+            val email = binding.etEmail.text.toString().trim()
+            
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Por favor ingrese su correo electrónico", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            Log.d("josue", "Enviando código a email: $email")
+            binding.sendButton.isEnabled = false
+            registrarCodViewModel.registrarCodigo(RegistrarCodigoRequest(correoUsuario = email))
+        }
+
+        binding.verifyOtpButton.setOnClickListener {
+            val email = binding.etEmail.text.toString().trim()
+            val codigo = binding.etOtpCode.text.toString().trim()
+            
+            if (codigo.isEmpty()) {
+                Toast.makeText(this, "Por favor ingrese el código de verificación", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            Log.d("josue", "Validando código para email: $email, código: $codigo")
+            binding.verifyOtpButton.isEnabled = false
+            validateCodViewModel.registrarCodigo(
+                ValidarCodigoRequest(
+                    correoUsuario = email,
+                    codigo = codigo
+                )
+            )
+        }
+    }
 }

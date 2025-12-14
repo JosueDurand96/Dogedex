@@ -21,12 +21,17 @@ class LoginViewModel(
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _error = MutableLiveData<Int?>()
+    val error: LiveData<Int?> = _error
+
     fun login(loginRequest: LoginRequest) = viewModelScope.launch {
         _isLoading.postValue(true)
+        _error.postValue(null) // Limpiar error anterior
         try {
             when (val res: ApiResponseStatus<LoginResponse> = repository.login(loginRequest)) {
                 is ApiResponseStatus.Error -> {
-                    Log.d("josue", "Login Error")
+                    Log.d("josue", "Login Error: ${res.message}")
+                    _error.postValue(res.message)
                     _isLoading.postValue(false)
                 }
 

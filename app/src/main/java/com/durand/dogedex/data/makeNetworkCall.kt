@@ -11,14 +11,12 @@ suspend fun <T> makeNetworkCall(
 ): ApiResponseStatus<T> = withContext(Dispatchers.IO) {
     try {
         ApiResponseStatus.Success(call())
-    } catch (e: Exception) {
-        ApiResponseStatus.Error(R.string.error)
     } catch (e: UnknownHostException) {
         ApiResponseStatus.Error(R.string.error_internet)
-    }catch (e: HttpException){
-        val errorMessage = if (e.code() == 401){
+    } catch (e: HttpException) {
+        val errorMessage = if (e.code() == 401) {
             R.string.password_user_incorrect
-        }else{
+        } else {
             R.string.error_know
         }
         ApiResponseStatus.Error(errorMessage)

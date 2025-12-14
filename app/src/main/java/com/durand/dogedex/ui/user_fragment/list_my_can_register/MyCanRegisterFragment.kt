@@ -16,7 +16,7 @@ class MyCanRegisterFragment : Fragment() {
     private var _binding: FragmentMyCanRegisterBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: MyCanRegisterViewModel
-    private var idUsuario: Int? = 0
+    private var idUsuario: Long? = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,7 +24,7 @@ class MyCanRegisterFragment : Fragment() {
     ): View {
         viewModel = ViewModelProvider(this).get(MyCanRegisterViewModel::class.java)
         val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
-        idUsuario = sharedPref?.getInt("idUsuario", -1) // -1 es el valor por defecto si no existe
+        idUsuario = sharedPref?.getLong("idUsuario", -1) // -1 es el valor por defecto si no existe
 
         _binding = FragmentMyCanRegisterBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -34,7 +34,7 @@ class MyCanRegisterFragment : Fragment() {
         Log.d("josue", "onCreateView")
         Log.d("josue", "idUsuario: $idUsuario")
         Log.d("josue", "onViewCreated")
-        viewModel.listar(idUsuario!!)
+        viewModel.listar(idUsuario!!.toInt())
         viewModel.list.observe(viewLifecycleOwner) {
             binding.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // o `binding.root.context`
             binding.canReportLostRecyclerView.adapter = MyCanRegisterAdapter(it)

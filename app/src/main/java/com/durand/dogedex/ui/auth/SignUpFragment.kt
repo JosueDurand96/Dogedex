@@ -12,9 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.durand.dogedex.data.request.oficial.RegisterRequest
 import com.durand.dogedex.databinding.FragmentSignUpBinding
-import com.durand.dogedex.ui.auth.oficial.LoginViewModel
 import com.durand.dogedex.ui.auth.oficial.RegisterViewModel
-import com.durand.dogedex.ui.user_fragment.UserHome
 
 class SignUpFragment : Fragment() {
 
@@ -45,6 +43,22 @@ class SignUpFragment : Fragment() {
         binding.backImageView.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
+        
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.signUpButton.isEnabled = !isLoading
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+        
+        viewModel.register.observe(viewLifecycleOwner) {
+            binding.signUpButton.isEnabled = true
+            Log.d("josue", "codigo: " + it.codigo)
+            Log.d("josue", "mensaje: " + it.mensaje)
+            Toast.makeText(requireContext(), it.mensaje, Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
+        }
+        
         return binding.root
     }
 
@@ -78,18 +92,10 @@ class SignUpFragment : Fragment() {
 
         if (password != passwordConfirmation) {
             binding.passwordInput.error = "Passwords do not match!"
+            return
         }
-        viewModel.isLoading.observe(requireActivity()) { isLoading ->
-            binding.signUpButton.isEnabled = !isLoading
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-        viewModel.register.observe(requireActivity()) {
-            binding.signUpButton.isEnabled = true
-            Log.d("josue", "codigo: " + it.codigo)
-            Log.d("josue", "mensaje: " + it.mensaje)
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(intent)
-        }
+        
+        binding.signUpButton.isEnabled = false
         viewModel.registerUser(
             RegisterRequest(
                 nombre = binding.nameEdit.text.toString(),

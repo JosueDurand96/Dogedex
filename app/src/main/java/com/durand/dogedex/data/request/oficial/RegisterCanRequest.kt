@@ -32,5 +32,5 @@ data class RegisterCanRequest(
     @SerializedName("foto")
     var foto: String,
     @SerializedName("idUsuario")
-    var idUsuario: Int,
+    var idUsuario: Long,
 )

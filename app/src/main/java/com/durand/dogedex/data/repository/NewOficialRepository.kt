@@ -35,6 +35,7 @@ class NewOficialRepository {
 
     suspend fun registerCan(registerCanRequest: RegisterCanRequest): ApiResponseStatus<RegisterCanResponse> =
         makeNetworkCall {
+            Log.d("RegisterCanFragment", "registerCanRequest: $registerCanRequest")
             newApiOficialService.registrarMascota(registerCanRequest, "application/json")
         }
 
