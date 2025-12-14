@@ -71,7 +71,7 @@
                                     android:layout_marginEnd="25dp"
                                     android:scaleType="centerCrop"
                                     android:contentDescription="Foto de la mascota"
-                                    android:background="@android:color/darker_gray"
+                                    android:background="@drawable/baseline_add_to_photos_24"
                                     android:clickable="true"
                                     android:focusable="true" />
 
