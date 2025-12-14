@@ -9,6 +9,4 @@ data class RegisterCanPerdidoRequest(
     var lugarPerdida: String,
     @SerializedName("comentario")
     var comentario: String,
-    @SerializedName("idMascota")
-    var idMascota: Int,
 )

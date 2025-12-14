@@ -71,7 +71,6 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
                     fechaPerdida = date,
                     lugarPerdida = binding.lugarPerdidaTextInputEditText.text.toString(),
                     comentario   = binding.comentarioTextInputEditText.text.toString(),
-                    idMascota    = 31
                 )
             )
         }
