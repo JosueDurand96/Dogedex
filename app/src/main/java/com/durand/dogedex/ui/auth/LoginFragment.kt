@@ -16,6 +16,7 @@ import com.durand.dogedex.databinding.FragmentLoginBinding
 import com.durand.dogedex.ui.auth.oficial.LoginViewModel
 import com.durand.dogedex.ui.auth.recoverpassword.RecoverPasswordActivity
 import com.durand.dogedex.ui.user_fragment.UserHome
+import com.google.android.material.snackbar.Snackbar
 
 class LoginFragment : Fragment() {
 
@@ -53,14 +54,22 @@ class LoginFragment : Fragment() {
             binding.loginButton.isEnabled = !isLoading
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
+        
+        viewModel.error.observe(viewLifecycleOwner) { errorMessageId ->
+            errorMessageId?.let {
+                binding.loginButton.isEnabled = true
+                showErrorSnackbar(getString(it))
+            }
+        }
+        
         binding.forgotPassword.setOnClickListener{
             val intent = Intent(requireContext(), RecoverPasswordActivity::class.java)
             startActivity(intent)
         }
-        viewModel.login.observe(requireActivity()) {
+        viewModel.login.observe(viewLifecycleOwner) {
             val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
             val editor: SharedPreferences.Editor = sharedPref!!.edit()
-            editor.putInt("idUsuario", it.id)
+            editor.putLong("idUsuario", it.id)
             editor.apply()
             editor.commit()
             binding.loginButton.isEnabled = true
@@ -71,6 +80,7 @@ class LoginFragment : Fragment() {
             intent.putExtra("id", it.id)
             intent.putExtra("nombre", it.nombre)
             startActivity(intent)
+            requireActivity().finish()
         }
         return binding.root
     }
@@ -89,5 +99,11 @@ class LoginFragment : Fragment() {
         Log.d("login", "password: $password")
         binding.loginButton.isEnabled = false
         viewModel.login(LoginRequest(email, password))
+    }
+
+    private fun showErrorSnackbar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setAction("Cerrar") { }
+            .show()
     }
 }

@@ -49,7 +49,7 @@ private val okHttpClient = OkHttpClient
 
 private val retrofit = Retrofit.Builder()
     .client(okHttpClient)
-    .baseUrl("https://tesis2025appservices.azurewebsites.net/")
+    .baseUrl("https://dogedex-backend-tesis-2025.onrender.com/")
     .addConverterFactory(MoshiConverterFactory.create())
     .build()
 
@@ -59,13 +59,13 @@ val newApiOficialService: NewApiOficialService by lazy {
 
 interface NewApiOficialService {
 
-    @POST("api/v1/Autenticacion/iniciarSesion")
+    @POST("auth/login")
     suspend fun login(
         @Body loginRequest: LoginRequest,
         @Header("Content-Type") content_type: String
     ): LoginResponse
 
-    @POST("api/v1/Autenticacion/registrar")
+    @POST("auth/register")
     suspend fun registerUser(
         @Body registerRequest: RegisterRequest,
         @Header("Content-Type") content_type: String

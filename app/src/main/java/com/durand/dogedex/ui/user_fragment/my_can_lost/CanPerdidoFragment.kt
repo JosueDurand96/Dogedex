@@ -42,7 +42,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private val binding get() = _binding!!
     private lateinit var viewModel: CanPerdidoViewModel
-    private var idUsuario: Int? = 0
+    private var idUsuario: Long? = 0
 
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(requireContext())
@@ -61,7 +61,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
         val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
-        idUsuario = sharedPref?.getInt("idUsuario", -1) // -1 es el valor por defecto si no existe
+        idUsuario = sharedPref?.getLong("idUsuario", -1) // -1 es el valor por defecto si no existe
 
 
         binding.confirmAppCompatButton.setOnClickListener {

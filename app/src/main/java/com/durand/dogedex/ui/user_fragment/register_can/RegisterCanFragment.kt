@@ -94,7 +94,7 @@ class RegisterCanFragment : Fragment() {
     // This property is only valid between onCreateView and
     private val binding get() = _binding!!
     private var fusedLocationClient: FusedLocationProviderClient? = null
-    private var idUsuario: Int? = 0
+    private var idUsuario: Long? = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -107,7 +107,7 @@ class RegisterCanFragment : Fragment() {
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
         val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
-        idUsuario = sharedPref?.getInt("idUsuario", -1) // -1 es el valor por defecto si no existe
+        idUsuario = sharedPref?.getLong("idUsuario", -1) // -1 es el valor por defecto si no existe
 
         viewModel.dog.observe(requireActivity()) { dog ->
             dogCan = dog
@@ -127,7 +127,7 @@ class RegisterCanFragment : Fragment() {
                     modoObtencion = modoObtencion,
                     razonTenencia = razonTenencia,
                     foto = "imageCan",
-                    idUsuario = idUsuario!!
+                    idUsuario = idUsuario!!.toInt()
                 )
             )
         }

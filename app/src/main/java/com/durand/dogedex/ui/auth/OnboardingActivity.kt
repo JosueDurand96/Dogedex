@@ -1,7 +1,9 @@
 package com.durand.dogedex.ui.auth
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -26,8 +28,15 @@ class OnboardingActivity : AppCompatActivity() {
         mViewPager = findViewById(R.id.viewPager)
 
         btnCreateAccount.setOnClickListener {
+            // Guardar que ya se mostró el onboarding
+            val sharedPref = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPref.edit()
+            editor.putBoolean("has_seen_onboarding", true)
+            editor.apply()
+            
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         mViewPager.adapter = OnboardingViewPagerAdapter(this, this)
