@@ -71,7 +71,7 @@ interface NewApiOficialService {
         @Header("Content-Type") content_type: String
     ): RegisterResponse
 
-    @POST("api/v1/Mascota/registrarMascota")
+    @POST("api/v1/Can/registrarCan")
     suspend fun registrarMascota(
         @Body registerCanRequest: RegisterCanRequest,
         @Header("Content-Type") content_type: String

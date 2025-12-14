@@ -46,8 +46,8 @@ class DogDetailActivity : AppCompatActivity() {
         val distrito = intent?.extras?.getString("distrito")
         val modoObtencion = intent?.extras?.getString("modoObtencion")
         val razonTenencia = intent?.extras?.getString("razonTenencia")
-//        Log.d("josue","name: "+dog!!.name)
- //       Log.d("josue","imageUrl: "+dog!!.imageUrl)
+        Log.d("RegisterCanFragment","name: "+dog!!.name)
+        //Log.d("josue","imageUrl: "+dog!!.imageUrl)
 
 //        Log.d("josue", "nombreMacota: $nombreMacota")
 //        Log.d("josue", "fechaNacimiento: $fechaNacimiento")

@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.util.Size
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.response.Dog
 import com.durand.dogedex.databinding.FragmentRegisterCanBinding
@@ -46,6 +48,9 @@ import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.common.FileUtil
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -75,6 +80,7 @@ class RegisterCanFragment : Fragment() {
     private lateinit var photo: Bitmap
     private lateinit var imageCan: String
     private lateinit var dogCan: Dog
+    private var isRegistrationComplete = false
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -96,6 +102,7 @@ class RegisterCanFragment : Fragment() {
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var idUsuario: Long? = 0
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -105,59 +112,152 @@ class RegisterCanFragment : Fragment() {
         _binding = FragmentRegisterCanBinding.inflate(inflater, container, false)
         registerCanViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            // Deshabilitar el botón mientras se procesa la petición
+            if (isLoading) {
+                binding.confirmAppCompatButton.isEnabled = false
+            } else {
+                // Cuando termine la petición, verificar si el formulario está completo para habilitar el botón
+                checkFormAndEnableButton()
+            }
         }
+        // Obtener idUsuario guardado en LoginFragment
         val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
         idUsuario = sharedPref?.getLong("idUsuario", -1) // -1 es el valor por defecto si no existe
-
-        viewModel.dog.observe(requireActivity()) { dog ->
-            dogCan = dog
-            registerCanViewModel.listar(
-                RegisterCanRequest(
-                    nombre = binding.namePetTextInputEditText.text.toString(),
-                    fechaNacimiento = binding.fechaTextInputEditText.text.toString(),
-                    especie = especie,
-                    genero = genero,
-                    raza = raza,
-                    tamanio = tamano,
-                    caracter = caracter,
-                    color = color,
-                    pelaje = pelaje,
-                    esterilizado = esterelizado,
-                    distrito = distrito,
-                    modoObtencion = modoObtencion,
-                    razonTenencia = razonTenencia,
-                    foto = "imageCan",
-                    idUsuario = idUsuario!!.toInt()
-                )
-            )
+        Log.d("RegisterCanFragment", "idUsuario obtenido de SharedPreferences: $idUsuario")
+        
+        // Validar que el idUsuario sea válido
+        if (idUsuario == null || idUsuario == -1L) {
+            Log.e("RegisterCanFragment", "ERROR: idUsuario no válido o no encontrado en SharedPreferences")
+            Toast.makeText(
+                requireContext(),
+                "Error: Usuario no autenticado. Por favor, inicia sesión nuevamente.",
+                Toast.LENGTH_LONG
+            ).show()
+        } else {
+            Log.d("RegisterCanFragment", "idUsuario válido: $idUsuario (será convertido a Int: ${idUsuario!!.toInt()})")
         }
 
-        registerCanViewModel.list.observe(viewLifecycleOwner) {
-            if (dogCan != null) {
-                Log.d("josue", "HUBO EXITO")
-                val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
-                val editor: SharedPreferences.Editor = sharedPref!!.edit()
-                editor.putString("foto", imageCan)
-                editor.apply()
-                editor.commit()
+        viewModel.dog.observe(requireActivity()) { dog ->
+            if (dog != null) {
+            dogCan = dog
+                Log.d("RegisterCanFragment", "viewModel.dog recibido - isRegistrationComplete: $isRegistrationComplete, imageCan inicializado: ${::imageCan.isInitialized}")
+                
+                // Si ya se registró exitosamente, navegar a DogDetailActivity
+                // Similar a RegisterHocicoFragment
+                if (isRegistrationComplete) {
+                    if (::imageCan.isInitialized) {
+                        Log.d("RegisterCanFragment", "Navegando a DogDetailActivity después del registro exitoso desde observer de viewModel.dog")
+                        // Usar post para asegurar que se ejecute en el hilo principal
+                        binding.root.post {
+                            openDetailActivity(dog)
+                        }
+                    } else {
+                        Log.e("RegisterCanFragment", "Error: imageCan no está inicializado cuando se intenta navegar")
+                    }
+                } else {
+                    Log.d("RegisterCanFragment", "No se navega aún - isRegistrationComplete: $isRegistrationComplete (guardando dogCan para uso posterior)")
+                }
+            }
+        }
+        
+        // Observar también el status para detectar cuando se obtiene el perro exitosamente
+        viewModel.status.observe(requireActivity()) { status ->
+            Log.d("RegisterCanFragment", "viewModel.status recibido: ${status.javaClass.simpleName}, isRegistrationComplete: $isRegistrationComplete")
+            if (status is ApiResponseStatus.Success && isRegistrationComplete) {
+                // Si el status es Success y ya se registró, verificar si tenemos el perro
+                if (::dogCan.isInitialized && ::imageCan.isInitialized) {
+                    Log.d("RegisterCanFragment", "Status Success después del registro, navegando a DogDetailActivity desde observer de status")
+                    binding.root.post {
+                        openDetailActivity(dogCan)
+                    }
+                } else {
+                    Log.e("RegisterCanFragment", "Status Success pero dogCan o imageCan no están inicializados - dogCan: ${::dogCan.isInitialized}, imageCan: ${::imageCan.isInitialized}")
+                }
+            }
+        }
 
-                val intent = Intent(requireContext(), DogDetailActivity::class.java)
-                intent.putExtra(DogDetailActivity.DOG_KEY, dogCan)
-                intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
-                intent.putExtra("nombreMacota", binding.namePetTextInputEditText.text.toString())
-                intent.putExtra("fechaNacimiento", binding.fechaTextInputEditText.text.toString())
-                intent.putExtra("especie", especie)
-                intent.putExtra("genero", genero)
-                intent.putExtra("raza", raza)
-                intent.putExtra("tamano", tamano)
-                intent.putExtra("caracter", caracter)
-                intent.putExtra("color", color)
-                intent.putExtra("pelaje", pelaje)
-                intent.putExtra("esterelizado", esterelizado)
-                intent.putExtra("distrito", distrito)
-                intent.putExtra("modoObtencion", modoObtencion)
-                intent.putExtra("razonTenencia", razonTenencia)
-                startActivity(intent)
+        registerCanViewModel.list.observe(viewLifecycleOwner) { response ->
+            Log.d("RegisterCanFragment", "Respuesta recibida - Código: '${response.codigo}' (tipo: ${response.codigo.javaClass.simpleName}), Mensaje: '${response.mensaje}'")
+            
+            // Verificar que la respuesta sea exitosa (código 201 o 200)
+            // El código puede venir como string "201" o como número 201
+            val codigoStr = response.codigo.trim()
+            val codigoInt = codigoStr.toIntOrNull()
+            val isSuccess = codigoStr == "201" || codigoStr == "200" || 
+                           codigoInt == 201 || codigoInt == 200 ||
+                           response.mensaje.contains("registrado correctamente", ignoreCase = true) ||
+                           response.mensaje.contains("exitoso", ignoreCase = true)
+            
+            if (isSuccess) {
+                Log.d("RegisterCanFragment", "Registro exitoso - Código: ${response.codigo}, Mensaje: ${response.mensaje}")
+                isRegistrationComplete = true
+                Log.d("RegisterCanFragment", "isRegistrationComplete establecido a true")
+                
+                // Después de registrar exitosamente, obtener el perro usando el reconocimiento
+                // Similar a RegisterHocicoFragment
+                if (lastDogRecognition != null && lastDogRecognition!!.confidence > 80.0) {
+                    Log.d("RegisterCanFragment", "Obteniendo perro con ID: ${lastDogRecognition!!.id}")
+                    
+                    // Si ya tenemos el perro guardado (dogCan), navegar directamente
+                    if (::dogCan.isInitialized && ::imageCan.isInitialized) {
+                        Log.d("RegisterCanFragment", "Ya tenemos dogCan, navegando directamente a DogDetailActivity")
+                        binding.root.post {
+                            openDetailActivity(dogCan)
+                        }
+                    } else {
+                        // Si no tenemos el perro, obtenerlo usando el ID del reconocimiento
+                        // El observer de viewModel.dog se activará cuando se obtenga el perro
+                        viewModel.getDogByMlId(lastDogRecognition!!.id)
+                    }
+                } else {
+                    Log.d("RegisterCanFragment", "No hay reconocimiento válido (lastDogRecognition: $lastDogRecognition), creando Dog básico")
+                    // Si no hay reconocimiento válido, usar la raza del reconocimiento si existe, sino la del formulario
+                    val razaParaDog = if (lastDogRecognition != null) {
+                        val razaReconocida = extraerRazaDelReconocimiento(lastDogRecognition!!)
+                        Log.d("RegisterCanFragment", "Usando raza del reconocimiento: $razaReconocida (confianza: ${lastDogRecognition!!.confidence}%)")
+                        razaReconocida
+                    } else {
+                        Log.d("RegisterCanFragment", "No hay reconocimiento, usando raza del formulario: $raza")
+                        raza
+                    }
+                    
+                    // Si no hay reconocimiento, crear un Dog básico y navegar directamente
+                    if (::imageCan.isInitialized) {
+                        val dogToShow = Dog(
+                            id = 0L,
+                            index = 0,
+                            name = razaParaDog,
+                            type = especie,
+                            heightFemale = "",
+                            heightMale = "",
+                            imageUrl = "",
+                            lifeExpectancy = "",
+                            temperament = caracter,
+                            weightFemale = "",
+                            weightMale = "",
+                            inCollection = true
+                        )
+                        Log.d("RegisterCanFragment", "Navegando a DogDetailActivity con Dog básico - raza: $razaParaDog")
+                        binding.root.post {
+                            openDetailActivity(dogToShow)
+                        }
+                    } else {
+                        Log.e("RegisterCanFragment", "Error: No se puede navegar - imageCan no está inicializado")
+                        Toast.makeText(
+                            requireContext(),
+                            "Error: No se pudo capturar la imagen",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            } else {
+                // Si el código no es 201/200, mostrar error
+                Log.e("RegisterCanFragment", "Error en el registro - Código: '${response.codigo}', Mensaje: '${response.mensaje}'")
+                Toast.makeText(
+                    requireContext(),
+                    "Error al registrar: ${response.mensaje}",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
         //buttonRegistrarCan()
@@ -261,62 +361,261 @@ class RegisterCanFragment : Fragment() {
         _binding!!.razonDeTenenciaAutoCompleteTextView.setAdapter(adapterrazonDeTenencia)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
+        // Configurar DatePickerDialog para el campo de fecha
+        setupDatePicker()
+
+        // Asegurar que el botón esté deshabilitado inicialmente
+        binding.confirmAppCompatButton.isEnabled = false
+
         binding.especieAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             especie = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
         binding.generoAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             genero = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
         binding.razaCaninaAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             raza = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
         binding.tamanoAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             tamano = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
         binding.caracterAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             caracter = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
         binding.colorCanAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             color = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
         binding.pelajeAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             pelaje = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
         binding.esterilizadoAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             esterelizado = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
         binding.distritoDondeResideAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             distrito = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
         binding.modoDeObtencionAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             modoObtencion = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
         binding.razonDeTenenciaAutoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position)
             razonTenencia = selectedItem.toString()
+            checkFormAndEnableButton()
         }
 
+        // Configurar listener inicial del botón
+        binding.confirmAppCompatButton.setOnClickListener {
+            // Validar formulario primero
+            if (!validateForm()) {
+                // Mostrar mensaje específico sobre qué campos faltan
+                val missingFields = getMissingFields()
+                val message = if (missingFields.isNotEmpty()) {
+                    "Faltan completar los siguientes datos: $missingFields"
+                } else {
+                    "Por favor, completa todos los campos requeridos"
+                }
+                Toast.makeText(
+                    requireContext(),
+                    message,
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
+            
+            // Validar que se haya capturado una imagen
+            if (!::imageCan.isInitialized) {
+                Toast.makeText(
+                    requireContext(),
+                    "Por favor, asegúrate de que se haya capturado una imagen del perro",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
+            
+            // Si todo está completo, proceder enviando el formulario
+            // El botón se deshabilitará automáticamente cuando isLoading sea true
+            sendFormData()
+        }
+
+        // Validar formulario cuando cambien los campos
+        setupFormValidation()
+
         return binding.root
+    }
+
+    private fun checkFormAndEnableButton() {
+        // Asegurar que las modificaciones de UI se ejecuten en el hilo principal
+        // Esto es necesario porque esta función puede ser llamada desde hilos de fondo (ej: analizador de cámara)
+        lifecycleScope.launch(Dispatchers.Main) {
+            val isValid = validateForm() && ::imageCan.isInitialized
+            binding.confirmAppCompatButton.isEnabled = isValid
+        }
+    }
+
+    private fun validateForm(): Boolean {
+        return binding.namePetTextInputEditText.text.toString().trim().isNotEmpty()
+                && binding.fechaTextInputEditText.text.toString().trim().isNotEmpty()
+                && ::especie.isInitialized && especie.isNotEmpty()
+                && ::genero.isInitialized && genero.isNotEmpty()
+                && ::raza.isInitialized && raza.isNotEmpty()
+                && ::tamano.isInitialized && tamano.isNotEmpty()
+                && ::caracter.isInitialized && caracter.isNotEmpty()
+                && ::color.isInitialized && color.isNotEmpty()
+                && ::pelaje.isInitialized && pelaje.isNotEmpty()
+                && ::esterelizado.isInitialized && esterelizado.isNotEmpty()
+                && ::distrito.isInitialized && distrito.isNotEmpty()
+                && ::modoObtencion.isInitialized && modoObtencion.isNotEmpty()
+                && ::razonTenencia.isInitialized && razonTenencia.isNotEmpty()
+    }
+
+    private fun getMissingFields(): String {
+        val missingFields = mutableListOf<String>()
+        
+        if (binding.namePetTextInputEditText.text.toString().trim().isEmpty()) {
+            missingFields.add("Nombre de mascota")
+        }
+        if (binding.fechaTextInputEditText.text.toString().trim().isEmpty()) {
+            missingFields.add("Fecha de nacimiento")
+        }
+        if (!::especie.isInitialized || especie.isEmpty()) {
+            missingFields.add("Especie")
+        }
+        if (!::genero.isInitialized || genero.isEmpty()) {
+            missingFields.add("Género")
+        }
+        if (!::raza.isInitialized || raza.isEmpty()) {
+            missingFields.add("Raza Canina")
+        }
+        if (!::tamano.isInitialized || tamano.isEmpty()) {
+            missingFields.add("Tamaño")
+        }
+        if (!::caracter.isInitialized || caracter.isEmpty()) {
+            missingFields.add("Carácter")
+        }
+        if (!::color.isInitialized || color.isEmpty()) {
+            missingFields.add("Color del can")
+        }
+        if (!::pelaje.isInitialized || pelaje.isEmpty()) {
+            missingFields.add("Pelaje del can")
+        }
+        if (!::esterelizado.isInitialized || esterelizado.isEmpty()) {
+            missingFields.add("Esterilizado")
+        }
+        if (!::distrito.isInitialized || distrito.isEmpty()) {
+            missingFields.add("Distrito donde reside")
+        }
+        if (!::modoObtencion.isInitialized || modoObtencion.isEmpty()) {
+            missingFields.add("Modo de Obtención")
+        }
+        if (!::razonTenencia.isInitialized || razonTenencia.isEmpty()) {
+            missingFields.add("Razón de Tenencia")
+        }
+        
+        return if (missingFields.isEmpty()) {
+            ""
+        } else {
+            missingFields.joinToString(", ")
+        }
+    }
+
+    private fun setupFormValidation() {
+        // Agregar listeners a los campos para validar en tiempo real
+        binding.namePetTextInputEditText.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                checkFormAndEnableButton()
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+
+        binding.fechaTextInputEditText.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                checkFormAndEnableButton()
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+    }
+
+    private fun sendFormData() {
+        if (::imageCan.isInitialized && validateForm()) {
+            // Validar que el idUsuario sea válido antes de enviar
+            if (idUsuario == null || idUsuario == -1L) {
+                Log.e("RegisterCanFragment", "ERROR: idUsuario no válido antes de enviar")
+                Toast.makeText(
+                    requireContext(),
+                    "Error: Usuario no autenticado. Por favor, inicia sesión nuevamente.",
+                    Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+            
+            // Obtener el idUsuario guardado en LoginFragment desde SharedPreferences
+            val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
+            val currentIdUsuario = sharedPref?.getLong("idUsuario", -1) ?: -1
+            
+            if (currentIdUsuario == -1L) {
+                Log.e("RegisterCanFragment", "ERROR: No se pudo obtener idUsuario de SharedPreferences (guardado en LoginFragment)")
+                Toast.makeText(
+                    requireContext(),
+                    "Error: Usuario no autenticado. Por favor, inicia sesión nuevamente.",
+                    Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+            
+            Log.d("RegisterCanFragment", "Enviando formulario - idUsuario (Long): $currentIdUsuario, idUsuario (Int): ${currentIdUsuario.toInt()}")
+            
+            registerCanViewModel.listar(
+                RegisterCanRequest(
+                    nombre = binding.namePetTextInputEditText.text.toString().trim(),
+                    fechaNacimiento = binding.fechaTextInputEditText.text.toString().trim(),
+                    especie = especie,
+                    genero = genero,
+                    raza = raza,
+                    tamanio = tamano,
+                    caracter = caracter,
+                    color = color,
+                    pelaje = pelaje,
+                    esterilizado = esterelizado,
+                    distrito = distrito,
+                    modoObtencion = modoObtencion,
+                    razonTenencia = razonTenencia,
+                    foto = "imageCan",
+                    idUsuario = currentIdUsuario
+                )
+            )
+        }
     }
 
     @SuppressLint("UnsafeOptInUsageError")
@@ -341,14 +640,6 @@ class RegisterCanFragment : Fragment() {
         val imageBytes = out.toByteArray()
 
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-    }
-
-    private fun getPhotoBitmap(imageBytes: Bitmap) {
-        photo = imageBytes
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        photo.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-        val byteArray = byteArrayOutputStream.toByteArray()
-        imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
 
     private fun requestCameraPermission() {
@@ -528,6 +819,7 @@ class RegisterCanFragment : Fragment() {
                         if (bitmap != null) {
                             getPhotoBitmap(bitmap)
                             val dogRecognition = classifier.recognizeImage(bitmap).first()
+                            Log.d("RegisterCanFragment", "Reconocimiento: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
                             enableTakePhotoButton(dogRecognition)
                         }
                         imageProxy.close()
@@ -555,19 +847,56 @@ class RegisterCanFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
+    private var lastDogRecognition: DogRecognition? = null
+
+    /**
+     * Extrae el nombre de la raza desde el DogRecognition.id
+     * Ejemplo: "n02106550-rottweiler" -> "Rottweiler"
+     */
+    private fun extraerRazaDelReconocimiento(dogRecognition: DogRecognition): String {
+        val id = dogRecognition.id
+        if (id.isBlank()) return "Mestizo"
+        
+        // Extraer la parte después del último '-' o '_'
+        val raw = id.substringAfterLast('-').substringAfterLast('_')
+        if (raw.isBlank()) return "Mestizo"
+        
+        // Convertir a formato title case (primera letra mayúscula)
+        return raw.split('-', '_', ' ')
+            .filter { it.isNotBlank() }
+            .joinToString(" ") { it.lowercase().replaceFirstChar { c -> c.titlecase() } }
+    }
+
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
         lifecycleScope.launch(Dispatchers.Main) {
+            lastDogRecognition = dogRecognition
+            
+            // Si la confianza es alta, actualizar la raza del formulario con la raza reconocida
             if (dogRecognition.confidence > 80.0) {
-                binding.confirmAppCompatButton.isEnabled = true
-                binding.confirmAppCompatButton.setOnClickListener {
-                    binding.confirmAppCompatButton.isEnabled = false
-                    viewModel.getDogByMlId(dogRecognition.id)
+                val razaReconocida = extraerRazaDelReconocimiento(dogRecognition)
+                Log.d("RegisterCanFragment", "Raza reconocida: $razaReconocida (confianza: ${dogRecognition.confidence}%)")
+                
+                // Actualizar el campo de raza en el formulario si está vacío o es diferente
+                if (!::raza.isInitialized || raza.isEmpty() || raza == "Mestizo") {
+                    raza = razaReconocida
+                    binding.razaCaninaAutoCompleteTextView.setText(razaReconocida, false)
+                    Log.d("RegisterCanFragment", "Raza actualizada en el formulario: $razaReconocida")
                 }
-            } else {
-                binding.confirmAppCompatButton.isEnabled = false
-                binding.confirmAppCompatButton.setOnClickListener(null)
             }
+            
+            // Siempre verificar si se puede habilitar el botón cuando hay reconocimiento
+            checkFormAndEnableButton()
         }
+    }
+    
+    private fun getPhotoBitmap(imageBytes: Bitmap) {
+        photo = imageBytes
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        photo.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        val byteArray = byteArrayOutputStream.toByteArray()
+        imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
+        // Verificar formulario cuando se capture la imagen
+        checkFormAndEnableButton()
     }
 
 
@@ -585,6 +914,101 @@ class RegisterCanFragment : Fragment() {
 //            binding.confirmAppCompatButton.setOnClickListener(null)
 //        }
 //    }
+
+    private fun openDetailActivity(dog: Dog) {
+        try {
+            Log.d("RegisterCanFragment", "=== openDetailActivity INICIADO ===")
+            Log.d("RegisterCanFragment", "openDetailActivity llamado con dog: ${dog.name}, id: ${dog.id}")
+            
+            // Verificar que estamos en el hilo principal
+            if (android.os.Looper.myLooper() != android.os.Looper.getMainLooper()) {
+                Log.d("RegisterCanFragment", "No estamos en el hilo principal, usando post")
+                binding.root.post {
+                    openDetailActivity(dog)
+                }
+                return
+            }
+            
+            // Guardar la imagen en SharedPreferences (igual que RegisterHocicoFragment)
+            if (::imageCan.isInitialized) {
+                val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
+                val editor: SharedPreferences.Editor = sharedPref!!.edit()
+                editor.putString("foto", imageCan)
+                editor.apply()
+                editor.commit()
+                Log.d("RegisterCanFragment", "Imagen guardada en SharedPreferences - longitud: ${imageCan.length}")
+            } else {
+                Log.e("RegisterCanFragment", "Error: imageCan no está inicializado en openDetailActivity")
+                Toast.makeText(requireContext(), "Error: No se pudo capturar la imagen", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // Navegar a DogDetailActivity con todos los datos del formulario
+            val intent = Intent(requireContext(), DogDetailActivity::class.java)
+            intent.putExtra(DogDetailActivity.DOG_KEY, dog)
+            intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
+            intent.putExtra("nombreMacota", binding.namePetTextInputEditText.text.toString().trim())
+            intent.putExtra("fechaNacimiento", binding.fechaTextInputEditText.text.toString().trim())
+            intent.putExtra("especie", especie)
+            intent.putExtra("genero", genero)
+            intent.putExtra("raza", raza)
+            intent.putExtra("tamano", tamano)
+            intent.putExtra("caracter", caracter)
+            intent.putExtra("color", color)
+            intent.putExtra("pelaje", pelaje)
+            intent.putExtra("esterelizado", esterelizado)
+            intent.putExtra("distrito", distrito)
+            intent.putExtra("modoObtencion", modoObtencion)
+            intent.putExtra("razonTenencia", razonTenencia)
+            
+            Log.d("RegisterCanFragment", "Iniciando DogDetailActivity con Intent")
+            Log.d("RegisterCanFragment", "Datos enviados - nombreMacota: ${binding.namePetTextInputEditText.text.toString().trim()}, raza: $raza")
+            
+            startActivity(intent)
+            Log.d("RegisterCanFragment", "DogDetailActivity iniciado exitosamente")
+            Log.d("RegisterCanFragment", "=== openDetailActivity COMPLETADO ===")
+        } catch (e: Exception) {
+            Log.e("RegisterCanFragment", "Error al abrir DogDetailActivity: ${e.message}", e)
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun setupDatePicker() {
+        val calendar = Calendar.getInstance()
+        
+        // Deshabilitar la edición manual del campo
+        binding.fechaTextInputEditText.isFocusable = false
+        binding.fechaTextInputEditText.isClickable = true
+        
+        binding.fechaTextInputEditText.setOnClickListener {
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            
+            val datePickerDialog = android.app.DatePickerDialog(
+                requireContext(),
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    val selectedCalendar = Calendar.getInstance()
+                    selectedCalendar.set(selectedYear, selectedMonth, selectedDay)
+                    
+                    // Formatear la fecha en el formato que espera la API: YYYY-MM-DD
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val formattedDate = dateFormat.format(selectedCalendar.time)
+                    
+                    binding.fechaTextInputEditText.setText(formattedDate)
+                },
+                year,
+                month,
+                day
+            )
+            
+            // Establecer la fecha máxima como hoy (no se puede seleccionar fechas futuras)
+            datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+            
+            datePickerDialog.show()
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
