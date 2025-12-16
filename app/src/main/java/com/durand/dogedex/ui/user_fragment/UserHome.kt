@@ -21,6 +21,7 @@ import com.durand.dogedex.R
 import com.durand.dogedex.databinding.ActivityHomeBinding
 import com.durand.dogedex.ui.auth.LoginActivity
 import com.google.android.material.navigation.NavigationView
+import android.widget.TextView
 
 class UserHome : AppCompatActivity() {
 
@@ -49,6 +50,9 @@ class UserHome : AppCompatActivity() {
         
         // Configurar navegación normal primero
         navView.setupWithNavController(navController)
+        
+        // Actualizar el nombre del usuario en el header del drawer
+        updateUserNameInDrawer(navView)
         
         // Luego, sobrescribir el listener para manejar "Salir" manualmente
         navView.setNavigationItemSelectedListener { menuItem ->
@@ -98,6 +102,7 @@ class UserHome : AppCompatActivity() {
 
 
     override fun onBackPressed() {
+        super.onBackPressed()
         if (doubleBackToExitPressedOnce) {
             val builder = AlertDialog.Builder(this)
             builder.setMessage("¿Desea volver al Inicio?")
@@ -145,6 +150,19 @@ class UserHome : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("UserHome", "Error al cerrar sesión: ${e.message}", e)
             Toast.makeText(this, "Error al cerrar sesión", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    private fun updateUserNameInDrawer(navView: NavigationView) {
+        val sharedPref = getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
+        val nombreUsuario = sharedPref.getString("nombreUsuario", null)
+        
+        if (nombreUsuario != null) {
+            val headerView = navView.getHeaderView(0)
+            val txtNombreUsuario = headerView.findViewById<TextView>(R.id.txtNombreUsuario)
+            // Limpiar espacios en blanco del nombre y mostrar con mensaje de bienvenida
+            val nombreLimpio = nombreUsuario.trim()
+            txtNombreUsuario?.text = nombreLimpio
         }
     }
 }
