@@ -53,7 +53,7 @@
                                     android:id="@+id/map"
                                     android:name="com.google.android.gms.maps.SupportMapFragment"
                                     android:layout_width="match_parent"
-                                    android:layout_height="200dp"
+                                    android:layout_height="450dp"
                                     android:layout_marginStart="25dp"
                                     android:layout_marginTop="25dp"
                                     android:layout_marginEnd="25dp"
@@ -62,18 +62,45 @@
                                     app:layout_constraintTop_toTopOf="parent" />
 
                             <!-- ImageView para la foto -->
-                            <ImageView
-                                    android:id="@+id/fotoImageView"
+                            <FrameLayout
+                                    android:id="@+id/photoContainer"
                                     android:layout_width="match_parent"
                                     android:layout_height="200dp"
                                     android:layout_marginStart="25dp"
                                     android:layout_marginTop="20dp"
                                     android:layout_marginEnd="25dp"
-                                    android:scaleType="centerCrop"
-                                    android:contentDescription="Foto de la mascota"
-                                    android:background="@drawable/baseline_add_to_photos_24"
+                                    android:background="@drawable/photo_placeholder_background"
                                     android:clickable="true"
-                                    android:focusable="true" />
+                                    android:focusable="true">
+                                
+                                <ImageView
+                                        android:id="@+id/fotoImageView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:scaleType="centerCrop"
+                                        android:contentDescription="Foto de la mascota" />
+                                
+                                <!-- Icono placeholder (solo visible cuando no hay imagen) -->
+                                <ImageView
+                                        android:id="@+id/placeholderIcon"
+                                        android:layout_width="80dp"
+                                        android:layout_height="80dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/photo_placeholder_icon"
+                                        android:contentDescription="Agregar foto" />
+                                
+                                <!-- Texto indicativo -->
+                                <TextView
+                                        android:id="@+id/placeholderText"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center|bottom"
+                                        android:layout_marginBottom="20dp"
+                                        android:text="Toca para agregar foto"
+                                        android:textColor="#9E9E9E"
+                                        android:textSize="14sp"
+                                        android:textStyle="normal" />
+                            </FrameLayout>
 
                             <com.google.android.material.textfield.TextInputLayout
                                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

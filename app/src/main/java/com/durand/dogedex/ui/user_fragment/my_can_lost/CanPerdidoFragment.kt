@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -24,6 +25,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -40,6 +42,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
@@ -58,6 +61,8 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
     private var idUsuario: Long? = 0
     private var fotoUri: Uri? = null
     private var fotoBitmap: Bitmap? = null
+    private var selectedMarker: Marker? = null
+    private var selectedLocation: LatLng? = null
 
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(requireContext())
@@ -169,7 +174,8 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
                     "Mascota perdida registrada exitosamente",
                     Toast.LENGTH_SHORT
                 ).show()
-                // Opcional: limpiar el formulario o navegar a otra pantalla
+                // Redirigir a la pantalla de mascotas perdidas
+                findNavController().navigate(com.durand.dogedex.R.id.action_nav_my_can_lost_to_nav_can_report_lost)
             }
         }
         return root
@@ -187,10 +193,87 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-12.014190, -77.030687)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Hola"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        
+        // Habilitar controles de zoom y desplazamiento
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.uiSettings.isZoomGesturesEnabled = true
+        mMap.uiSettings.isScrollGesturesEnabled = true
+        mMap.uiSettings.isRotateGesturesEnabled = true
+        mMap.uiSettings.isTiltGesturesEnabled = true
+        mMap.uiSettings.isMyLocationButtonEnabled = true
+        
+        // Habilitar el botón de ubicación actual
+        try {
+            mMap.isMyLocationEnabled = true
+        } catch (e: SecurityException) {
+            Log.e("CanPerdidoFragment", "Error al habilitar ubicación: ${e.message}")
+        }
+        
+        // Configurar ubicación inicial (Lima, Perú)
+        val defaultLocation = LatLng(-12.0464, -77.0428)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 13f))
+        
+        // Permitir al usuario hacer clic en el mapa para seleccionar ubicación
+        mMap.setOnMapClickListener { latLng ->
+            // Eliminar marcador anterior si existe
+            selectedMarker?.remove()
+            
+            // Agregar nuevo marcador en la ubicación seleccionada
+            selectedMarker = mMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title("Ubicación seleccionada")
+                    .draggable(true) // Permitir arrastrar el marcador
+            )
+            
+            selectedLocation = latLng
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+            
+            // Actualizar el campo de texto con la dirección
+            updateLocationText(latLng)
+        }
+        
+        // Permitir arrastrar el marcador
+        mMap.setOnMarkerDragListener(object : GoogleMap.OnMarkerDragListener {
+            override fun onMarkerDragStart(marker: Marker) {}
+            
+            override fun onMarkerDrag(marker: Marker) {}
+            
+            override fun onMarkerDragEnd(marker: Marker) {
+                selectedLocation = marker.position
+                updateLocationText(marker.position)
+            }
+        })
+        
+        // Obtener ubicación actual si hay permisos
+        checkPermissions()
+    }
+    
+    private fun updateLocationText(latLng: LatLng) {
+        try {
+            if (Geocoder.isPresent()) {
+                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                
+                // Usar getFromLocation de forma asíncrona si es necesario
+                val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+                
+                if (addresses != null && addresses.isNotEmpty()) {
+                    val address = addresses[0]
+                    val addressText = address.getAddressLine(0) ?: "${latLng.latitude}, ${latLng.longitude}"
+                    binding.lugarPerdidaTextInputEditText.setText(addressText)
+                } else {
+                    // Si no se puede obtener la dirección, mostrar coordenadas
+                    binding.lugarPerdidaTextInputEditText.setText("${latLng.latitude}, ${latLng.longitude}")
+                }
+            } else {
+                // Si Geocoder no está disponible, mostrar coordenadas
+                binding.lugarPerdidaTextInputEditText.setText("${latLng.latitude}, ${latLng.longitude}")
+            }
+        } catch (e: Exception) {
+            Log.e("CanPerdidoFragment", "Error al obtener dirección: ${e.message}")
+            // Si hay error, mostrar coordenadas
+            binding.lugarPerdidaTextInputEditText.setText("${latLng.latitude}, ${latLng.longitude}")
+        }
     }
 
     override fun onDestroyView() {
@@ -234,6 +317,8 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
             binding.fotoImageView.load(it) {
                 crossfade(true)
             }
+            // Ocultar el placeholder cuando hay una imagen
+            hidePlaceholder()
         }
     }
 
@@ -248,7 +333,19 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
             binding.fotoImageView.load(cameraImageUri) {
                 crossfade(true)
             }
+            // Ocultar el placeholder cuando hay una imagen
+            hidePlaceholder()
         }
+    }
+    
+    private fun hidePlaceholder() {
+        binding.root.findViewById<android.widget.ImageView>(com.durand.dogedex.R.id.placeholderIcon)?.visibility = android.view.View.GONE
+        binding.root.findViewById<android.widget.TextView>(com.durand.dogedex.R.id.placeholderText)?.visibility = android.view.View.GONE
+    }
+    
+    private fun showPlaceholder() {
+        binding.root.findViewById<android.widget.ImageView>(com.durand.dogedex.R.id.placeholderIcon)?.visibility = android.view.View.VISIBLE
+        binding.root.findViewById<android.widget.TextView>(com.durand.dogedex.R.id.placeholderText)?.visibility = android.view.View.VISIBLE
     }
 
     // Launcher para permisos de cámara
@@ -302,10 +399,22 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         location?.let {
             val currentLatLng = LatLng(it.latitude, it.longitude)
 
-            mMap.clear() // Limpia otros marcadores
-            mMap.addMarker(MarkerOptions().position(currentLatLng).title("Tu ubicación"))
+            // Eliminar marcador anterior si existe
+            selectedMarker?.remove()
+            
+            // Agregar marcador en la ubicación actual
+            selectedMarker = mMap.addMarker(
+                MarkerOptions()
+                    .position(currentLatLng)
+                    .title("Tu ubicación actual")
+                    .draggable(true) // Permitir arrastrar el marcador
+            )
+            
+            selectedLocation = currentLatLng
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
-          //  vm.setCoordinates(latitude = it.latitude.toString(), longitude = it.longitude.toString())
+            
+            // Actualizar el campo de texto con la dirección
+            updateLocationText(currentLatLng)
         }
     }
 

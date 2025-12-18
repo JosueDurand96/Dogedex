@@ -39,6 +39,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.response.Dog
@@ -46,7 +47,6 @@ import com.durand.dogedex.databinding.FragmentRegisterCanBinding
 import com.durand.dogedex.domain.Classifier
 import com.durand.dogedex.domain.DogRecognition
 import com.durand.dogedex.ui.auth.LoginActivity
-import com.durand.dogedex.ui.dogdetail.DogDetailActivity
 import com.durand.dogedex.ui.forget_password.MainViewModel
 import com.durand.dogedex.util.LABEL_PATH
 import com.durand.dogedex.util.MODEL_PATH
@@ -86,7 +86,6 @@ class RegisterCanFragment : Fragment() {
     private lateinit var razonTenencia: String
     private lateinit var photo: Bitmap
     private lateinit var imageCan: String
-    private lateinit var dogCan: Dog
     private var isRegistrationComplete = false
     private var fotoUri: Uri? = null
     private var fotoBitmap: Bitmap? = null
@@ -180,44 +179,8 @@ class RegisterCanFragment : Fragment() {
             Log.d("RegisterCanFragment", "idUsuario válido: $idUsuario (será convertido a Int: ${idUsuario!!.toInt()})")
         }
 
-        viewModel.dog.observe(requireActivity()) { dog ->
-            if (dog != null) {
-            dogCan = dog
-                Log.d("RegisterCanFragment", "viewModel.dog recibido - isRegistrationComplete: $isRegistrationComplete, imageCan inicializado: ${::imageCan.isInitialized}")
-                
-                // Si ya se registró exitosamente, navegar a DogDetailActivity
-                // Similar a RegisterHocicoFragment
-                if (isRegistrationComplete) {
-                    if (::imageCan.isInitialized) {
-                        Log.d("RegisterCanFragment", "Navegando a DogDetailActivity después del registro exitoso desde observer de viewModel.dog")
-                        // Usar post para asegurar que se ejecute en el hilo principal
-                        binding.root.post {
-                            openDetailActivity(dog)
-                        }
-                    } else {
-                        Log.e("RegisterCanFragment", "Error: imageCan no está inicializado cuando se intenta navegar")
-                    }
-                } else {
-                    Log.d("RegisterCanFragment", "No se navega aún - isRegistrationComplete: $isRegistrationComplete (guardando dogCan para uso posterior)")
-                }
-            }
-        }
-        
-        // Observar también el status para detectar cuando se obtiene el perro exitosamente
-        viewModel.status.observe(requireActivity()) { status ->
-            Log.d("RegisterCanFragment", "viewModel.status recibido: ${status.javaClass.simpleName}, isRegistrationComplete: $isRegistrationComplete")
-            if (status is ApiResponseStatus.Success && isRegistrationComplete) {
-                // Si el status es Success y ya se registró, verificar si tenemos el perro
-                if (::dogCan.isInitialized && ::imageCan.isInitialized) {
-                    Log.d("RegisterCanFragment", "Status Success después del registro, navegando a DogDetailActivity desde observer de status")
-                    binding.root.post {
-                        openDetailActivity(dogCan)
-                    }
-                } else {
-                    Log.e("RegisterCanFragment", "Status Success pero dogCan o imageCan no están inicializados - dogCan: ${::dogCan.isInitialized}, imageCan: ${::imageCan.isInitialized}")
-                }
-            }
-        }
+        // Observadores de viewModel.dog y viewModel.status ya no son necesarios
+        // ya que navegaremos directamente a "Mis canes registrados" después del registro exitoso
 
         registerCanViewModel.list.observe(viewLifecycleOwner) { response ->
             Log.d("RegisterCanFragment", "Respuesta recibida - Código: '${response.codigo}' (tipo: ${response.codigo.javaClass.simpleName}), Mensaje: '${response.mensaje}'")
@@ -236,62 +199,26 @@ class RegisterCanFragment : Fragment() {
                 isRegistrationComplete = true
                 Log.d("RegisterCanFragment", "isRegistrationComplete establecido a true")
                 
-                // Después de registrar exitosamente, obtener el perro usando el reconocimiento
-                // Similar a RegisterHocicoFragment
-                if (lastDogRecognition != null && lastDogRecognition!!.confidence > 80.0) {
-                    Log.d("RegisterCanFragment", "Obteniendo perro con ID: ${lastDogRecognition!!.id}")
-                    
-                    // Si ya tenemos el perro guardado (dogCan), navegar directamente
-                    if (::dogCan.isInitialized && ::imageCan.isInitialized) {
-                        Log.d("RegisterCanFragment", "Ya tenemos dogCan, navegando directamente a DogDetailActivity")
-                        binding.root.post {
-                            openDetailActivity(dogCan)
-                        }
-                    } else {
-                        // Si no tenemos el perro, obtenerlo usando el ID del reconocimiento
-                        // El observer de viewModel.dog se activará cuando se obtenga el perro
-                        viewModel.getDogByMlId(lastDogRecognition!!.id)
+                // Mostrar mensaje de éxito
+                Toast.makeText(
+                    requireContext(),
+                    "Can registrado exitosamente",
+                    Toast.LENGTH_SHORT
+                ).show()
+                
+                // Navegar a "Mis canes registrados" después del registro exitoso
+                try {
+                    Log.d("RegisterCanFragment", "Navegando a Mis canes registrados")
+                    binding.root.post {
+                        findNavController().navigate(com.durand.dogedex.R.id.nav_my_can_register)
                     }
-                } else {
-                    Log.d("RegisterCanFragment", "No hay reconocimiento válido (lastDogRecognition: $lastDogRecognition), creando Dog básico")
-                    // Si no hay reconocimiento válido, usar la raza del reconocimiento si existe, sino la del formulario
-                    val razaParaDog = if (lastDogRecognition != null) {
-                        val razaReconocida = extraerRazaDelReconocimiento(lastDogRecognition!!)
-                        Log.d("RegisterCanFragment", "Usando raza del reconocimiento: $razaReconocida (confianza: ${lastDogRecognition!!.confidence}%)")
-                        razaReconocida
-                    } else {
-                        Log.d("RegisterCanFragment", "No hay reconocimiento, usando raza del formulario: $raza")
-                        raza
-                    }
-                    
-                    // Si no hay reconocimiento, crear un Dog básico y navegar directamente
-                    if (::imageCan.isInitialized) {
-                        val dogToShow = Dog(
-                            id = 0L,
-                            index = 0,
-                            name = razaParaDog,
-                            type = especie,
-                            heightFemale = "",
-                            heightMale = "",
-                            imageUrl = "",
-                            lifeExpectancy = "",
-                            temperament = caracter,
-                            weightFemale = "",
-                            weightMale = "",
-                            inCollection = true
-                        )
-                        Log.d("RegisterCanFragment", "Navegando a DogDetailActivity con Dog básico - raza: $razaParaDog")
-                        binding.root.post {
-                            openDetailActivity(dogToShow)
-                        }
-                    } else {
-                        Log.e("RegisterCanFragment", "Error: No se puede navegar - imageCan no está inicializado")
-                        Toast.makeText(
-                            requireContext(),
-                            "Error: No se pudo capturar la imagen",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                } catch (e: Exception) {
+                    Log.e("RegisterCanFragment", "Error al navegar: ${e.message}", e)
+                    Toast.makeText(
+                        requireContext(),
+                        "Error al navegar: ${e.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } else {
                 // Si el código no es 201/200, mostrar error
@@ -409,11 +336,14 @@ class RegisterCanFragment : Fragment() {
 
         // Configurar botón "Tomar foto" - muestra el PreviewView y captura foto
         binding.tomarFotoButton.setOnClickListener {
-            // Si el PreviewView está visible, capturar una foto
-            if (binding.cameraPreview.visibility == View.VISIBLE && ::imageCapture.isInitialized) {
+            // Si el PreviewView está visible dentro del photoFrameLayout, capturar una foto
+            if (binding.photoFrameLayout.visibility == View.VISIBLE && 
+                binding.cameraPreview.visibility == View.VISIBLE && 
+                ::imageCapture.isInitialized) {
                 capturePhoto()
             } else {
-                // Si el PreviewView no está visible, mostrarlo
+                // Si el PreviewView no está visible, mostrarlo dentro del photoFrameLayout
+                binding.photoFrameLayout.visibility = View.VISIBLE
                 binding.galleryImageView.visibility = View.GONE
                 binding.cameraPreview.visibility = View.VISIBLE
                 if (!isCameraReady) {
@@ -424,7 +354,8 @@ class RegisterCanFragment : Fragment() {
 
         // Configurar botón "Galería" - abre el selector de galería
         binding.galeriaButton.setOnClickListener {
-            // Ocultar PreviewView y preparar para mostrar galleryImageView
+            // Ocultar PreviewView y photoFrameLayout, preparar para mostrar galleryImageView
+            binding.photoFrameLayout.visibility = View.GONE
             binding.cameraPreview.visibility = View.GONE
             openGallery()
         }
@@ -959,6 +890,7 @@ class RegisterCanFragment : Fragment() {
         }
     }
     
+    @SuppressLint("SuspiciousIndentation")
     private fun getPhotoBitmap(imageBytes: Bitmap) {
         photo = imageBytes
         val byteArrayOutputStream = ByteArrayOutputStream()
@@ -968,7 +900,8 @@ class RegisterCanFragment : Fragment() {
         
                 // Las modificaciones de UI deben ejecutarse en el hilo principal
                 lifecycleScope.launch(Dispatchers.Main) {
-                    // Mostrar la imagen capturada en el galleryImageView
+                    // Mostrar photoFrameLayout con la imagen capturada
+                    binding.photoFrameLayout.visibility = View.VISIBLE
                     binding.galleryImageView.visibility = View.VISIBLE
                     binding.cameraPreview.visibility = View.GONE
                     binding.galleryImageView.load(photo) {
@@ -996,64 +929,6 @@ class RegisterCanFragment : Fragment() {
 //        }
 //    }
 
-    private fun openDetailActivity(dog: Dog) {
-        try {
-            Log.d("RegisterCanFragment", "=== openDetailActivity INICIADO ===")
-            Log.d("RegisterCanFragment", "openDetailActivity llamado con dog: ${dog.name}, id: ${dog.id}")
-            
-            // Verificar que estamos en el hilo principal
-            if (android.os.Looper.myLooper() != android.os.Looper.getMainLooper()) {
-                Log.d("RegisterCanFragment", "No estamos en el hilo principal, usando post")
-                binding.root.post {
-                    openDetailActivity(dog)
-                }
-                return
-            }
-            
-            // Guardar la imagen en SharedPreferences (igual que RegisterHocicoFragment)
-            if (::imageCan.isInitialized) {
-                val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
-                val editor: SharedPreferences.Editor = sharedPref!!.edit()
-                editor.putString("foto", imageCan)
-                editor.apply()
-                editor.commit()
-                Log.d("RegisterCanFragment", "Imagen guardada en SharedPreferences - longitud: ${imageCan.length}")
-            } else {
-                Log.e("RegisterCanFragment", "Error: imageCan no está inicializado en openDetailActivity")
-                Toast.makeText(requireContext(), "Error: No se pudo capturar la imagen", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            // Navegar a DogDetailActivity con todos los datos del formulario
-            val intent = Intent(requireContext(), DogDetailActivity::class.java)
-            intent.putExtra(DogDetailActivity.DOG_KEY, dog)
-            intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
-            intent.putExtra("nombreMacota", binding.namePetTextInputEditText.text.toString().trim())
-            intent.putExtra("fechaNacimiento", binding.fechaTextInputEditText.text.toString().trim())
-            intent.putExtra("especie", especie)
-            intent.putExtra("genero", genero)
-            intent.putExtra("raza", raza)
-            intent.putExtra("tamano", tamano)
-            intent.putExtra("caracter", caracter)
-            intent.putExtra("color", color)
-            intent.putExtra("pelaje", pelaje)
-            intent.putExtra("esterelizado", esterelizado)
-            intent.putExtra("distrito", distrito)
-            intent.putExtra("modoObtencion", modoObtencion)
-            intent.putExtra("razonTenencia", razonTenencia)
-            
-            Log.d("RegisterCanFragment", "Iniciando DogDetailActivity con Intent")
-            Log.d("RegisterCanFragment", "Datos enviados - nombreMacota: ${binding.namePetTextInputEditText.text.toString().trim()}, raza: $raza")
-            
-            startActivity(intent)
-            Log.d("RegisterCanFragment", "DogDetailActivity iniciado exitosamente")
-            Log.d("RegisterCanFragment", "=== openDetailActivity COMPLETADO ===")
-        } catch (e: Exception) {
-            Log.e("RegisterCanFragment", "Error al abrir DogDetailActivity: ${e.message}", e)
-            e.printStackTrace()
-            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-    }
 
     private fun setupDatePicker() {
         val calendar = Calendar.getInstance()
@@ -1194,7 +1069,8 @@ class RegisterCanFragment : Fragment() {
             
             // Las modificaciones de UI deben ejecutarse en el hilo principal
             lifecycleScope.launch(Dispatchers.Main) {
-                // Ocultar PreviewView y mostrar galleryImageView con la imagen capturada
+                // Mostrar photoFrameLayout y ocultar PreviewView
+                binding.photoFrameLayout.visibility = View.VISIBLE
                 binding.cameraPreview.visibility = View.GONE
                 binding.galleryImageView.visibility = View.VISIBLE
                 binding.galleryImageView.load(bitmap) {
@@ -1244,7 +1120,8 @@ class RegisterCanFragment : Fragment() {
                 
                 // Las modificaciones de UI deben ejecutarse en el hilo principal
                 lifecycleScope.launch(Dispatchers.Main) {
-                    // Ocultar PreviewView y mostrar galleryImageView con la imagen seleccionada
+                    // Mostrar photoFrameLayout y ocultar PreviewView
+                    binding.photoFrameLayout.visibility = View.VISIBLE
                     binding.cameraPreview.visibility = View.GONE
                     binding.galleryImageView.visibility = View.VISIBLE
                     binding.galleryImageView.load(bitmap) {

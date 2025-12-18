@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -22,6 +23,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.InputStream
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.User
 import com.durand.dogedex.databinding.FragmentRegisterHocicoBinding
@@ -297,6 +303,13 @@ class RegisterHocicoFragment : Fragment() {
             }
         }
 
+    // Launcher para seleccionar imagen de la galería
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            processImageFromUri(it)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -340,9 +353,94 @@ class RegisterHocicoFragment : Fragment() {
             }
         }
 
+        // Agregar botón flotante o modificar el comportamiento del botón existente
+        // Por ahora, usaremos long click para acceder a la galería
+        binding.takePhotoFab.setOnLongClickListener {
+            showImageSourceDialog()
+            true
+        }
+
         requestCameraPermission()
 
         return binding.root
+    }
+
+    private fun showImageSourceDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Seleccionar imagen")
+            .setMessage("¿Desde dónde deseas cargar la imagen?")
+            .setPositiveButton("Galería") { _, _ ->
+                galleryLauncher.launch("image/*")
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun processImageFromUri(uri: Uri) {
+        try {
+            val inputStream: InputStream? = requireContext().contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            
+            if (bitmap != null) {
+                // Convertir a Base64 y actualizar imageCan
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+                val byteArray = byteArrayOutputStream.toByteArray()
+                imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                
+                // Actualizar la foto para reconocimiento
+                photo = bitmap
+                
+                // Las modificaciones de UI deben ejecutarse en el hilo principal
+                lifecycleScope.launch(Dispatchers.Main) {
+                    // Ocultar la preview de cámara temporalmente
+                    binding.cameraPreview.visibility = View.GONE
+                    
+                    // Realizar reconocimiento de perro
+                    try {
+                        if (::classifier.isInitialized) {
+                            val dogRecognition = classifier.recognizeImage(bitmap).first()
+                            val preds = classifier.recognizeImage(bitmap)
+                                .sortedByDescending { it.confidence }
+                                .take(3)
+                            
+                            logAnaliticaInferencia(preds)
+                            logInferencia(dogRecognition)
+                            
+                            // Configurar el botón para navegar a "Mis canes registrados"
+                            binding.takePhotoFab.isEnabled = true
+                            binding.takePhotoFab.setOnClickListener {
+                                // Navegar a "Mis canes registrados"
+                                try {
+                                    findNavController().navigate(com.durand.dogedex.R.id.nav_my_can_register)
+                                } catch (e: Exception) {
+                                    Log.e("RegisterHocicoFragment", "Error al navegar: ${e.message}", e)
+                                    Toast.makeText(requireContext(), "Error al navegar", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            
+                            Toast.makeText(requireContext(), "Imagen cargada correctamente. Presiona el botón para identificar la raza.", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(requireContext(), "Error: Classifier no inicializado", Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        Log.e("RegisterHocicoFragment", "Error al reconocer perro desde galería: ${e.message}", e)
+                        Toast.makeText(requireContext(), "Error al procesar la imagen: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                
+                Log.d("RegisterHocicoFragment", "Imagen procesada desde URI - longitud Base64: ${imageCan.length}")
+            }
+        } catch (e: Exception) {
+            Log.e("RegisterHocicoFragment", "Error al procesar imagen desde URI: ${e.message}", e)
+            lifecycleScope.launch(Dispatchers.Main) {
+                Toast.makeText(
+                    requireContext(),
+                    "Error al procesar la imagen: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -506,16 +604,13 @@ class RegisterHocicoFragment : Fragment() {
 
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
         binding.takePhotoFab.setOnClickListener {
-            binding.takePhotoFab.isEnabled = false
-            binding.loadingWheel.visibility = View.VISIBLE
-            val labels = FileUtil.loadLabels(requireContext(), LABEL_PATH)
-            classifier = Classifier(
-                FileUtil.loadMappedFile(requireContext(), MODEL_PATH),
-                labels
-            )
-            logMarcoTeoricoTensorFlow(labels.size) // <-- marco teórico en logs
-            logResumenIndicador()                  // <-- tu indicador 5 (39/45 ≈ 86%)
-            viewModel.getDogByMlId(dogRecognition.id)
+            // Navegar a "Mis canes registrados"
+            try {
+                findNavController().navigate(com.durand.dogedex.R.id.nav_my_can_register)
+            } catch (e: Exception) {
+                Log.e("RegisterHocicoFragment", "Error al navegar: ${e.message}", e)
+                Toast.makeText(requireContext(), "Error al navegar", Toast.LENGTH_SHORT).show()
+            }
         }
 //        if (dogRecognition.confidence > 80.0) {
 //            // binding.takePhotoFab.alpha = 1f

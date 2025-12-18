@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_nav_register_can_to_nav_register_can_can_raza"
             app:destination="@id/nav_register_can_can_raza" />
+        <action
+            android:id="@+id/action_nav_register_can_to_nav_my_can_register"
+            app:destination="@id/nav_my_can_register" />
     </fragment>
 
     <fragment
@@ -27,7 +30,11 @@
     <fragment
             android:id="@+id/nav_my_can_lost"
             android:name="com.durand.dogedex.ui.user_fragment.my_can_lost.CanPerdidoFragment"
-            tools:layout="@layout/fragment_can_perdido" />
+            tools:layout="@layout/fragment_can_perdido">
+        <action
+            android:id="@+id/action_nav_my_can_lost_to_nav_can_report_lost"
+            app:destination="@id/nav_can_report_lost" />
+    </fragment>
 
     <fragment
             android:id="@+id/nav_my_can_register"

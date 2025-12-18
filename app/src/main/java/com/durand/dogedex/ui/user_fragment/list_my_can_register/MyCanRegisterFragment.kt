@@ -97,4 +97,18 @@ class MyCanRegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Recargar datos cuando se vuelve a esta pantalla para mostrar canes recién registrados
+        val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
+        val currentIdUsuario = sharedPref?.getLong("idUsuario", -1) ?: -1
+        
+        if (currentIdUsuario != -1L) {
+            Log.d("MyCanRegisterFragment", "onResume - Recargando datos para idUsuario: $currentIdUsuario")
+            viewModel.listar(currentIdUsuario)
+        } else {
+            Log.e("MyCanRegisterFragment", "onResume - Error: idUsuario no válido: $currentIdUsuario")
+        }
+    }
+
 }
