@@ -19,8 +19,10 @@ import coil.load
 import com.durand.dogedex.R
 import com.durand.dogedex.data.response.oficial.ListarCanResponse
 
-class MyCanRegisterAdapter(private var mList: List<ListarCanResponse> = mutableListOf()) :
-    RecyclerView.Adapter<MyCanRegisterAdapter.ViewHolder>() {
+class MyCanRegisterAdapter(
+    private var mList: List<ListarCanResponse> = mutableListOf(),
+    private val onItemClick: (ListarCanResponse) -> Unit = {}
+) : RecyclerView.Adapter<MyCanRegisterAdapter.ViewHolder>() {
 
     fun updateList(newList: List<ListarCanResponse>) {
         Log.d("MyCanRegisterAdapter", "=== updateList INICIADO ===")
@@ -155,6 +157,10 @@ class MyCanRegisterAdapter(private var mList: List<ListarCanResponse> = mutableL
             holder.canImageView.setImageResource(R.drawable.dog_logo)
         }
 
+        // Click listener para el item completo
+        holder.itemView.setOnClickListener {
+            onItemClick(model)
+        }
     }
 
     // return the number of the items in the list

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.durand.dogedex.databinding.FragmentMyCanRegisterBinding
 
@@ -66,7 +67,16 @@ class MyCanRegisterFragment : Fragment() {
             
             // SOLUCIÓN: Recrear el adapter con la nueva lista en lugar de actualizar
             Log.d("MyCanRegisterFragment", "Recreando adapter con ${list.size} elementos")
-            adapter = MyCanRegisterAdapter(list)
+            adapter = MyCanRegisterAdapter(list) { can ->
+                // Navegar al fragment de detalle
+                val bundle = Bundle().apply {
+                    putSerializable("can", can)
+                }
+                findNavController().navigate(
+                    com.durand.dogedex.R.id.action_nav_my_can_register_to_nav_my_can_register_detail,
+                    bundle
+                )
+            }
             binding.canReportLostRecyclerView.adapter = adapter
             
             Log.d("MyCanRegisterFragment", "Adapter recreado y asignado")

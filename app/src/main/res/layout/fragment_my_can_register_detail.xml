@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Imagen del can -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/image_border"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:id="@+id/canImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/photo_placeholder_background"
+                        android:contentDescription="Foto del can registrado" />
+                </FrameLayout>
+
+                <!-- Mapa de Google Maps -->
+                <FrameLayout
+                    android:id="@+id/mapContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/image_border"
+                    android:padding="8dp">
+
+                    <fragment
+                        android:id="@+id/map"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </FrameLayout>
+
+                <!-- Contenido -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Nombre destacado -->
+                    <TextView
+                        android:id="@+id/nombreTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        android:text="Nombre: Max"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        tools:text="Nombre: Max" />
+
+                    <!-- Sección: Datos del can -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Datos del can"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Raza con icono -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/dog_logo"
+                            android:contentDescription="Raza"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:id="@+id/razaTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Raza: Labrador"
+                            android:textColor="@color/text_black"
+                            android:textSize="16sp"
+                            tools:text="Raza: Labrador" />
+                    </LinearLayout>
+
+                    <!-- Especie -->
+                    <TextView
+                        android:id="@+id/especieTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="Especie: Perro"
+                        android:textColor="@color/text_black"
+                        android:textSize="16sp"
+                        tools:text="Especie: Perro" />
+
+                    <!-- Género con icono -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/gender"
+                            android:contentDescription="Género"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:id="@+id/generoTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Género: Macho"
+                            android:textColor="@color/text_black"
+                            android:textSize="16sp"
+                            tools:text="Género: Macho" />
+                    </LinearLayout>
+
+                    <!-- Tamaño con icono -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/tamano"
+                            android:contentDescription="Tamaño"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:id="@+id/tamanioTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tamaño: Grande"
+                            android:textColor="@color/text_black"
+                            android:textSize="16sp"
+                            tools:text="Tamaño: Grande" />
+                    </LinearLayout>
+
+                    <!-- Color con icono -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/baseline_color_lens_24"
+                            android:contentDescription="Color"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:id="@+id/colorTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Color: Dorado"
+                            android:textColor="@color/text_black"
+                            android:textSize="16sp"
+                            tools:text="Color: Dorado" />
+                    </LinearLayout>
+
+                    <!-- Pelaje -->
+                    <TextView
+                        android:id="@+id/pelajeTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="Pelaje: Corto"
+                        android:textColor="@color/text_black"
+                        android:textSize="16sp"
+                        tools:text="Pelaje: Corto" />
+
+                    <!-- Carácter -->
+                    <TextView
+                        android:id="@+id/caracterTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="Carácter: Sociable"
+                        android:textColor="@color/text_black"
+                        android:textSize="16sp"
+                        tools:text="Carácter: Sociable" />
+
+                    <!-- Esterilizado -->
+                    <TextView
+                        android:id="@+id/esterilizadoTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="Esterilizado: Sí"
+                        android:textColor="@color/text_black"
+                        android:textSize="16sp"
+                        tools:text="Esterilizado: Sí" />
+
+                    <!-- Distrito -->
+                    <TextView
+                        android:id="@+id/distritoTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="Distrito: Lima"
+                        android:textColor="@color/text_black"
+                        android:textSize="16sp"
+                        tools:text="Distrito: Lima" />
+
+                    <!-- Obtención -->
+                    <TextView
+                        android:id="@+id/obtencionTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="Obtención: Comprado"
+                        android:textColor="@color/text_black"
+                        android:textSize="16sp"
+                        tools:text="Obtención: Comprado" />
+
+                    <!-- Tenencia -->
+                    <TextView
+                        android:id="@+id/tenenciaTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="Tenencia: Propio"
+                        android:textColor="@color/text_black"
+                        android:textSize="16sp"
+                        tools:text="Tenencia: Propio" />
+
+                    <!-- Fecha de nacimiento con icono -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/baseline_calendar_month_24"
+                            android:contentDescription="Fecha"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:id="@+id/fechaNacimientoTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Fecha de nacimiento: 2020-01-15"
+                            android:textColor="@color/text_black"
+                            android:textSize="16sp"
+                            tools:text="Fecha de nacimiento: 2020-01-15" />
+                    </LinearLayout>
+
+                    <!-- Sección: Datos del propietario -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Datos del propietario"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Propietario -->
+                    <TextView
+                        android:id="@+id/propietarioTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="32dp"
+                        android:text="Propietario: Juan Pérez"
+                        android:textColor="@color/text_black"
+                        android:textSize="16sp"
+                        tools:text="Propietario: Juan Pérez" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- Botón de retroceso -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_margin="16dp"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:contentDescription="Volver"
+            app:tint="@color/white"
+            app:backgroundTint="@color/color_primary"
+            app:elevation="4dp" />
+
+    </FrameLayout>
+
+</layout>
