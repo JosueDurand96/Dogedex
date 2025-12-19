@@ -53,7 +53,6 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
         <item name="postSplashScreenTheme">@style/Theme.ProjectTesisUpc</item>
-        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="31">@drawable/logo</item>
     </style>
 
     <style name="Theme.ProjectTesisUpc.NoActionBar">

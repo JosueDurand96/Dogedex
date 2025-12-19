@@ -4,126 +4,126 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    app:cardElevation="6dp">
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="12dp"
+    app:cardBackgroundColor="@color/white">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <LinearLayout
-                android:id="@+id/contentPanelFirst"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:orientation="vertical">
-
-            <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/dog_logo"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
-
-            <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/location"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
-            <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/note"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
-
-            <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/baseline_calendar_month_24"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/secondLinearLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
-                app:layout_constraintStart_toEndOf="@+id/contentPanelFirst"
-                android:orientation="vertical">
-
-            <TextView
-                    android:id="@+id/titleTextView"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Nombre: Luly"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
-
-            <TextView
-                    android:id="@+id/direccionTextView"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Dirección: Av. alcazar"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                    android:id="@+id/detalleTextView"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Detalle: sssss"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-
-            <TextView
-                    android:id="@+id/fechaNacimientoTextView"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Fecha de agresion: 24/08/1996"
-                    android:layout_marginBottom="10dp"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"/>
-        </LinearLayout>
-
+        <!-- Imagen del can -->
         <ImageView
             android:id="@+id/canImageView"
-            app:layout_constraintTop_toBottomOf="@+id/secondLinearLayout"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_marginBottom="16dp"
             android:scaleType="centerCrop"
-            android:contentDescription="Foto del can perdido"/>
+            android:background="@drawable/photo_placeholder_background"
+            android:contentDescription="Foto del can perdido" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Nombre del can -->
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Nombre: Luly"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <!-- Dirección con icono -->
+        <LinearLayout
+            android:id="@+id/direccionLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/location"
+                android:contentDescription="Ubicación"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/direccionTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Dirección: Av. alcazar"
+                android:textColor="@color/text_black"
+                android:textSize="14sp"
+                android:maxLines="2"
+                android:ellipsize="end" />
+        </LinearLayout>
+
+        <!-- Fecha con icono -->
+        <LinearLayout
+            android:id="@+id/fechaLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/baseline_calendar_month_24"
+                android:contentDescription="Fecha"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/fechaNacimientoTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Fecha de agresión: 24/08/1996"
+                android:textColor="@color/text_black"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+        </LinearLayout>
+
+        <!-- Detalle/Comentario con icono -->
+        <LinearLayout
+            android:id="@+id/detalleLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/note"
+                android:contentDescription="Detalle"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/detalleTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Detalle: sssss"
+                android:textColor="@color/text_black"
+                android:textSize="14sp"
+                android:maxLines="3"
+                android:ellipsize="end" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

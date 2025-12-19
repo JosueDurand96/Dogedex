@@ -95,7 +95,31 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
         idUsuario = sharedPref?.getLong("idUsuario", -1) // -1 es el valor por defecto si no existe
 
-        // Configurar click listener para el ImageView de foto
+        // Configurar adapters para dropdowns
+        setupDropdowns()
+        
+        // Configurar botones de foto
+        binding.btnTomarFoto.setOnClickListener {
+            openCamera()
+        }
+        binding.btnSubirFoto.setOnClickListener {
+            openGallery()
+        }
+        
+        // Configurar botones de ubicación
+        binding.btnUsarMiUbicacion.setOnClickListener {
+            getCurrentPosition()
+        }
+        binding.btnMarcarEnMapa.setOnClickListener {
+            // El mapa ya permite hacer clic, solo mostrar instrucciones
+            Toast.makeText(
+                requireContext(),
+                "Toca en el mapa para seleccionar la ubicación",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        
+        // Configurar click listener para el ImageView de foto (alternativa)
         binding.fotoImageView.setOnClickListener {
             showImagePickerDialog()
         }
@@ -145,15 +169,24 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
                 return@setOnClickListener
             }
 
+            // Obtener tamaño seleccionado de RadioButtons
+            val checkedId = binding.tamanioRadioGroup.checkedRadioButtonId
+            val tamanio = when (checkedId) {
+                com.durand.dogedex.R.id.radioPequeño -> "Pequeño"
+                com.durand.dogedex.R.id.radioMediano -> "Mediano"
+                com.durand.dogedex.R.id.radioGrande -> "Grande"
+                else -> ""
+            }
+            
             // Crear el request con todos los campos
             val request = RegisterCanPerdidoRequest(
                 nombre = binding.nombreTextInputEditText.text.toString().trim(),
-                especie = binding.especieTextInputEditText.text.toString().trim(),
-                genero = binding.generoTextInputEditText.text.toString().trim(),
-                raza = binding.razaTextInputEditText.text.toString().trim(),
-                tamanio = binding.tamanioTextInputEditText.text.toString().trim(),
+                especie = binding.especieAutoCompleteTextView.text.toString().trim(),
+                genero = binding.generoAutoCompleteTextView.text.toString().trim(),
+                raza = binding.razaAutoCompleteTextView.text.toString().trim(),
+                tamanio = tamanio,
                 caracter = binding.caracterTextInputEditText.text.toString().trim(),
-                color = binding.colorTextInputEditText.text.toString().trim(),
+                color = binding.colorAutoCompleteTextView.text.toString().trim(),
                 pelaje = binding.pelajeTextInputEditText.text.toString().trim(),
                 foto = fotoBase64,
                 idUsuario = idUsuarioValue.toInt(),
@@ -498,19 +531,74 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun setupDropdowns() {
+        // Adapter para Especie
+        val itemsEspecie = listOf("Perro", "Gato", "Otro")
+        val adapterEspecie = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            itemsEspecie
+        )
+        binding.especieAutoCompleteTextView.setAdapter(adapterEspecie)
+        
+        // Adapter para Género
+        val itemsGenero = listOf("Macho", "Hembra")
+        val adapterGenero = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            itemsGenero
+        )
+        binding.generoAutoCompleteTextView.setAdapter(adapterGenero)
+        
+        // Adapter para Raza
+        val itemsRaza = listOf(
+            "Labrador",
+            "Pugs",
+            "Pitbull",
+            "Mestizo",
+            "Doberman",
+            "Boxer",
+            "Rottweiler",
+            "Staffordshire Bullterrier",
+            "Gran Danés",
+            "Bullmastiff",
+            "American Staffordshire Terrier",
+            "Pastor Alemán",
+            "Chihuahua",
+            "Bulldog",
+            "Otro"
+        )
+        val adapterRaza = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            itemsRaza
+        )
+        binding.razaAutoCompleteTextView.setAdapter(adapterRaza)
+        
+        // Adapter para Color
+        val itemsColor = listOf("Negro", "Blanco", "Caramelo", "Mostaza", "Marrón", "Gris", "Multicolor", "Otro")
+        val adapterColor = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            itemsColor
+        )
+        binding.colorAutoCompleteTextView.setAdapter(adapterColor)
+    }
+    
     private fun validateForm(): Boolean {
+        val tamanioSelected = binding.tamanioRadioGroup.checkedRadioButtonId != -1
         return binding.nombreTextInputEditText.text.toString().trim().isNotEmpty() &&
-                binding.especieTextInputEditText.text.toString().trim().isNotEmpty() &&
-                binding.generoTextInputEditText.text.toString().trim().isNotEmpty() &&
-                binding.razaTextInputEditText.text.toString().trim().isNotEmpty() &&
-                binding.tamanioTextInputEditText.text.toString().trim().isNotEmpty() &&
+                binding.especieAutoCompleteTextView.text.toString().trim().isNotEmpty() &&
+                binding.generoAutoCompleteTextView.text.toString().trim().isNotEmpty() &&
+                binding.razaAutoCompleteTextView.text.toString().trim().isNotEmpty() &&
+                tamanioSelected &&
                 binding.caracterTextInputEditText.text.toString().trim().isNotEmpty() &&
-                binding.colorTextInputEditText.text.toString().trim().isNotEmpty() &&
+                binding.colorAutoCompleteTextView.text.toString().trim().isNotEmpty() &&
                 binding.pelajeTextInputEditText.text.toString().trim().isNotEmpty() &&
                 binding.nombreUsuarioTextInputEditText.text.toString().trim().isNotEmpty() &&
                 binding.apellidoUsuarioTextInputEditText.text.toString().trim().isNotEmpty() &&
-                binding.lugarPerdidaTextInputEditText.text.toString().trim().isNotEmpty() &&
-                binding.comentarioTextInputEditText.text.toString().trim().isNotEmpty()
+                binding.lugarPerdidaTextInputEditText.text.toString().trim().isNotEmpty()
+                // Comentario es opcional, no se valida
     }
 
 }

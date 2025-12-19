@@ -4,446 +4,442 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
                 name="vm"
                 type="com.durand.dogedex.ui.user_fragment.my_can_lost.CanPerdidoViewModel" />
     </data>
+    
     <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <RelativeLayout
+        
+        <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context=".ui.user_fragment.my_can_lost.CanPerdidoFragment">
+                android:fillViewport="true">
 
-            <ScrollView
+            <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <RelativeLayout
+                <!-- Título principal -->
+                <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:text="Reportar mi can perdido"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginBottom="24dp" />
 
-                    <androidx.cardview.widget.CardView
+                <!-- Sección: Datos del can -->
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Datos del can"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                <!-- Nombre del can -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nombre del can"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@color/white">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/nombreTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="25dp"
-                            android:layout_marginEnd="25dp"
-                            android:elevation="15dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent">
+                            android:inputType="text"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="Mascota perdida"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
+                <!-- Foto del can -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Foto del can"
+                        android:textColor="@color/text_black"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp" />
 
-                        <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="25dp"
-                                android:orientation="vertical">
+                <FrameLayout
+                        android:id="@+id/photoContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/photo_placeholder_background"
+                        android:clickable="true"
+                        android:focusable="true">
+                    
+                    <ImageView
+                            android:id="@+id/fotoImageView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="Foto de la mascota" />
+                    
+                    <ImageView
+                            android:id="@+id/placeholderIcon"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/photo_placeholder_icon"
+                            android:contentDescription="Agregar foto" />
+                    
+                    <TextView
+                            android:id="@+id/placeholderText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center|bottom"
+                            android:layout_marginBottom="20dp"
+                            android:text="Toca para agregar foto"
+                            android:textColor="#9E9E9E"
+                            android:textSize="14sp" />
+                </FrameLayout>
 
-                            <fragment
-                                    android:id="@+id/map"
-                                    android:name="com.google.android.gms.maps.SupportMapFragment"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="450dp"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="25dp"
-                                    android:layout_marginEnd="25dp"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent" />
+                <!-- Botones de foto -->
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
 
-                            <!-- ImageView para la foto -->
-                            <FrameLayout
-                                    android:id="@+id/photoContainer"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="200dp"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:background="@drawable/photo_placeholder_background"
-                                    android:clickable="true"
-                                    android:focusable="true">
-                                
-                                <ImageView
-                                        android:id="@+id/fotoImageView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:scaleType="centerCrop"
-                                        android:contentDescription="Foto de la mascota" />
-                                
-                                <!-- Icono placeholder (solo visible cuando no hay imagen) -->
-                                <ImageView
-                                        android:id="@+id/placeholderIcon"
-                                        android:layout_width="80dp"
-                                        android:layout_height="80dp"
-                                        android:layout_gravity="center"
-                                        android:src="@drawable/photo_placeholder_icon"
-                                        android:contentDescription="Agregar foto" />
-                                
-                                <!-- Texto indicativo -->
-                                <TextView
-                                        android:id="@+id/placeholderText"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center|bottom"
-                                        android:layout_marginBottom="20dp"
-                                        android:text="Toca para agregar foto"
-                                        android:textColor="#9E9E9E"
-                                        android:textSize="14sp"
-                                        android:textStyle="normal" />
-                            </FrameLayout>
+                    <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnTomarFoto"
+                            style="@style/Widget.AppCompat.Button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            android:text="Tomar foto"
+                            android:textAllCaps="false" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Nombre"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnSubirFoto"
+                            style="@style/Widget.AppCompat.Button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            android:text="Subir foto"
+                            android:textAllCaps="false" />
+                </LinearLayout>
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/nombreTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="text"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                <!-- Raza (Dropdown) -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Raza"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@color/white">
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Especie"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <AutoCompleteTextView
+                            android:id="@+id/razaAutoCompleteTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/especieTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="text"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                <!-- Tamaño (RadioButtons) -->
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tamaño"
+                        android:textColor="@color/text_black"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Género"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <RadioGroup
+                        android:id="@+id/tamanioRadioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/generoTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="text"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                    <RadioButton
+                            android:id="@+id/radioPequeño"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Pequeño"
+                            android:textColor="@color/black" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Raza"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <RadioButton
+                            android:id="@+id/radioMediano"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Mediano"
+                            android:textColor="@color/black" />
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/razaTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="text"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                    <RadioButton
+                            android:id="@+id/radioGrande"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Grande"
+                            android:textColor="@color/black" />
+                </RadioGroup>
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Tamaño"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Color principal (Dropdown) -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Color principal"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/tamanioTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="text"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                    <AutoCompleteTextView
+                            android:id="@+id/colorAutoCompleteTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Carácter"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Especie (Dropdown) -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Especie"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/caracterTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="text"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                    <AutoCompleteTextView
+                            android:id="@+id/especieAutoCompleteTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Color"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Género (Dropdown) -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Género"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/colorTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="text"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                    <AutoCompleteTextView
+                            android:id="@+id/generoAutoCompleteTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Pelaje"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Carácter -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Carácter"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/pelajeTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="text"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/caracterTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Nombre Usuario"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Pelaje -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Pelaje"
+                        android:layout_marginBottom="24dp"
+                        app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/nombreUsuarioTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="text"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/pelajeTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Apellido Usuario"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Sección: Datos de la pérdida -->
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Datos de la pérdida"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/apellidoUsuarioTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="text"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Última ubicación vista"
+                        android:textColor="@color/text_black"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="12dp" />
 
-                            <Spinner
-                                    android:id="@+id/mascota"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="15dp"
-                                    android:layout_marginTop="20dp"
-                                    android:visibility="invisible"
-                                    android:layout_marginEnd="25dp"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    android:inputType="none" />
+                <!-- Botones de ubicación -->
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Lugar de perdida"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnUsarMiUbicacion"
+                            style="@style/Widget.AppCompat.Button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            android:text="Usar mi ubicación"
+                            android:textAllCaps="false" />
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/lugarPerdidaTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        tools:ignore="LabelFor" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                    <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnMarcarEnMapa"
+                            style="@style/Widget.AppCompat.Button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            android:text="Marcar en el mapa"
+                            android:textAllCaps="false" />
+                </LinearLayout>
 
+                <!-- Mapa -->
+                <fragment
+                        android:id="@+id/map"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:layout_marginBottom="16dp" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Fecha de perdida"
-                                    android:visibility="gone"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/textView2">
+                <!-- Lugar de pérdida -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Lugar de pérdida"
+                        android:layout_marginBottom="24dp"
+                        app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/fechaPerdidaEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="date"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/lugarPerdidaTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Comentarios"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/textView2">
+                <!-- Sección: Contacto del propietario -->
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Contacto del propietario"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/comentarioTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="textAutoComplete"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                <!-- Nombre del propietario -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nombre del propietario"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@color/white">
 
-                            <androidx.cardview.widget.CardView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="25dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:layout_marginBottom="25dp"
-                                    android:elevation="15dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/nombreUsuarioTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPersonName"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                <androidx.appcompat.widget.AppCompatButton
-                                        android:id="@+id/confirmAppCompatButton"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="50dp"
-                                        android:background="@drawable/btn_blue_selector"
-                                        android:elevation="15dp"
-                                        android:text="Confirmar"
-                                        android:textAllCaps="false"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:textStyle="bold"
-                                        app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        app:layout_constraintTop_toBottomOf="@+id/userTextInputLayout" />
-                            </androidx.cardview.widget.CardView>
+                <!-- Apellido del propietario -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Apellido del propietario"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@color/white">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/apellidoUsuarioTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPersonName"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        </LinearLayout>
+                <!-- Comentarios -->
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Comentarios (opcional)"
+                        android:layout_marginBottom="24dp"
+                        app:boxBackgroundColor="@color/white">
 
-                    </androidx.cardview.widget.CardView>
-                </RelativeLayout>
-            </ScrollView>
-        </RelativeLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/comentarioTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine"
+                            android:lines="3"
+                            android:gravity="top|start"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Botón Enviar reporte -->
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/confirmAppCompatButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/btn_blue_selector"
+                        android:elevation="4dp"
+                        android:text="Enviar reporte"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="24dp" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- ProgressBar -->
         <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyleLarge"

@@ -113,35 +113,45 @@
                                 android:textStyle="normal" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                             android:id="@+id/login_button"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:background="@drawable/btn_blue_selector"
-                            android:text="Iniciar Sesión"
-                            android:layout_marginTop="15dp"
+                            android:layout_height="56dp"
+                            android:backgroundTint="@color/color_primary"
+                            android:text="INICIAR SESIÓN"
+                            android:layout_marginTop="24dp"
                             android:layout_marginStart="25dp"
                             android:layout_marginEnd="25dp"
-                            android:elevation="15dp"
-                            android:textSize="18sp"
+                            android:elevation="4dp"
+                            android:stateListAnimator="@null"
+                            app:cornerRadius="16dp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:textAllCaps="true"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/black"
+                            android:letterSpacing="0.05"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                             android:id="@+id/loginRegisterButton"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:layout_marginTop="15dp"
+                            android:layout_height="56dp"
+                            android:layout_marginTop="16dp"
                             android:layout_marginStart="25dp"
                             android:layout_marginEnd="25dp"
-                            android:elevation="15dp"
-                            android:background="@drawable/btn_blue_selector"
-                            android:text="Registrate!"
-                            android:textSize="18sp"
+                            android:elevation="4dp"
+                            android:stateListAnimator="@null"
+                            android:backgroundTint="@color/color_primary"
+                            app:cornerRadius="16dp"
+                            android:text="REGISTRATE!"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:textAllCaps="true"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/black"
+                            android:letterSpacing="0.05"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp" />
 
                     <TextView
                             android:id="@+id/forgotPassword"

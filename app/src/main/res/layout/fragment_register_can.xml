@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="vm"
             type="com.durand.dogedex.ui.user_fragment.register_can.RegisterCanViewModel" />
@@ -14,424 +13,388 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.user_fragment.register_can.RegisterCanFragment">
+            android:fillViewport="true">
 
-            <ScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <RelativeLayout
+                <!-- Título principal -->
+                <TextView
+                    android:id="@+id/textView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:text="Registrar can"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="24dp" />
 
-                    <LinearLayout
+                <!-- Sección: Datos básicos del can -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Datos básicos del can"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Nombre de mascota -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/namePetTextInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre de mascota"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/namePetTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        tools:ignore="UselessParent">
+                        android:inputType="textPersonName"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                <!-- Foto del can -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Foto del can"
+                    android:textColor="@color/text_black"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="8dp" />
 
-                            <ProgressBar
-                                android:id="@+id/loadingWheel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:indeterminate="true"
-                                android:visibility="gone"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                <FrameLayout
+                    android:id="@+id/photoFrameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/photo_placeholder_background"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:ignore="UselessParent">
+                    <androidx.camera.view.PreviewView
+                        android:id="@+id/camera_preview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
 
-                                <TextView
-                                    android:id="@+id/textView"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
-                                    android:gravity="center"
-                                    android:text="Registrar can"
-                                    android:textColor="@color/black"
-                                    android:textSize="28.5sp"
-                                    android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/galleryImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Imagen seleccionada"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+                </FrameLayout>
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    android:id="@+id/namePetTextInputLayout"
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Nombre de mascota"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/textView2">
+                <!-- Botones de foto -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="24dp">
 
-                                    <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/namePetTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="textAutoComplete"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/tomarFotoButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:text="Tomar foto"
+                        android:textAllCaps="false"
+                        app:cornerRadius="12dp"
+                        app:strokeColor="@color/color_primary" />
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    android:id="@+id/nameTextInputLayout"
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Fecha de nacimiento"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/textView2"
-                                    app:placeholderText="ej. 2023/06/04">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/galeriaButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="Galería"
+                        android:textAllCaps="false"
+                        app:cornerRadius="12dp"
+                        app:strokeColor="@color/color_primary" />
+                </LinearLayout>
 
-                                    <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/fechaTextInputEditText"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:clickable="true"
-                                        android:focusable="false"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.date}"
-                                        android:textColor="@color/black"
-                                        android:textSize="16sp"
-                                        android:textStyle="normal" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Fecha de nacimiento -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nameTextInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Fecha de nacimiento"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white"
+                    app:startIconDrawable="@android:drawable/ic_menu_my_calendar">
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    android:id="@+id/especieTextInputLayout"
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Especie"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/fechaTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:text="@={vm.formState.date}"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/especieAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.specie}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Raza -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Raza"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Genero"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <AutoCompleteTextView
+                        android:id="@+id/razaCaninaAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.race}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/generoAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.gender}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Color -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Color principal"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Raza Canina"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <AutoCompleteTextView
+                        android:id="@+id/colorCanAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.color}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/razaCaninaAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.race}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Especie -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/especieTextInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Especie"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white">
 
+                    <AutoCompleteTextView
+                        android:id="@+id/especieAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.specie}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Tamaño"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Género -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Género"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white">
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/tamanoAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.size}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                    <AutoCompleteTextView
+                        android:id="@+id/generoAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.gender}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Caracter"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Tamaño -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Tamaño"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white">
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/caracterAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.character}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                    <AutoCompleteTextView
+                        android:id="@+id/tamanoAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.size}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Color del can"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Pelaje -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Pelaje"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white">
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/colorCanAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.color}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                    <AutoCompleteTextView
+                        android:id="@+id/pelajeAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.coat}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Pelaje del can"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Carácter -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Carácter"
+                    android:layout_marginBottom="24dp"
+                    app:boxBackgroundColor="@color/white">
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/pelajeAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.coat}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                    <AutoCompleteTextView
+                        android:id="@+id/caracterAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.character}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Esterilizado"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                <!-- Sección: Información adicional -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Información adicional"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/esterilizadoAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.sterilized}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Esterilizado -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Esterilizado"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Distrito donde reside"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <AutoCompleteTextView
+                        android:id="@+id/esterilizadoAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.sterilized}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/distritoDondeResideAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.district}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Distrito donde reside -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Distrito donde reside"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Modo de Obtención"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <AutoCompleteTextView
+                        android:id="@+id/distritoDondeResideAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.district}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/modoDeObtencionAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.obtainMode}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Modo de obtención -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Modo de obtención"
+                    android:layout_marginBottom="16dp"
+                    app:boxBackgroundColor="@color/white">
 
-                                <com.google.android.material.textfield.TextInputLayout
-                                    android:id="@+id/razonDeTenenciaTextInputLayout"
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="20dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:hint="Razón de Tenencia"
-                                    app:boxBackgroundColor="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <AutoCompleteTextView
+                        android:id="@+id/modoDeObtencionAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.obtainMode}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                    <AutoCompleteTextView
-                                        android:id="@+id/razonDeTenenciaAutoCompleteTextView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="none"
-                                        android:text="@={vm.formState.tenancyReason}" />
-                                </com.google.android.material.textfield.TextInputLayout>
+                <!-- Razón de tenencia -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/razonDeTenenciaTextInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Razón de tenencia"
+                    android:layout_marginBottom="24dp"
+                    app:boxBackgroundColor="@color/white">
 
-                                <FrameLayout
-                                    android:id="@+id/photoFrameLayout"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="420dp"
-                                    android:layout_marginStart="50dp"
-                                    android:layout_marginEnd="50dp"
-                                    android:layout_marginTop="50dp"
-                                    android:visibility="gone"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent">
+                    <AutoCompleteTextView
+                        android:id="@+id/razonDeTenenciaAutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text="@={vm.formState.tenancyReason}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                                    <androidx.camera.view.PreviewView
-                                        android:id="@+id/camera_preview"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:visibility="gone" />
+                <!-- Botón Confirmar -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/confirmAppCompatButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:backgroundTint="@color/color_primary"
+                    android:elevation="4dp"
+                    android:stateListAnimator="@null"
+                    app:cornerRadius="16dp"
+                    android:text="REGISTRAR CAN"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:letterSpacing="0.05"
+                    android:layout_marginBottom="24dp" />
 
-                                    <ImageView
-                                        android:id="@+id/galleryImageView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:contentDescription="Imagen seleccionada"
-                                        android:scaleType="centerCrop"
-                                        android:visibility="gone" />
-                                </FrameLayout>
+            </LinearLayout>
+        </ScrollView>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="50dp"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_marginEnd="50dp"
-                                    android:gravity="center"
-                                    android:orientation="horizontal">
-
-                                    <androidx.appcompat.widget.AppCompatButton
-                                        android:id="@+id/tomarFotoButton"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginEnd="5dp"
-                                        android:layout_weight="1"
-                                        android:background="@drawable/btn_blue_selector"
-                                        android:text="Tomar foto"
-                                        android:textAllCaps="false"
-                                        android:textColor="@color/black"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
-
-                                    <androidx.appcompat.widget.AppCompatButton
-                                        android:id="@+id/galeriaButton"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginStart="5dp"
-                                        android:layout_weight="1"
-                                        android:background="@drawable/btn_blue_selector"
-                                        android:text="Galería"
-                                        android:textAllCaps="false"
-                                        android:textColor="@color/black"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
-                                </LinearLayout>
-
-                                <androidx.appcompat.widget.AppCompatButton
-                                    android:id="@+id/confirmAppCompatButton"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="50dp"
-                                    android:layout_marginStart="25dp"
-                                    android:layout_marginTop="25dp"
-                                    android:layout_marginEnd="25dp"
-                                    android:layout_marginBottom="25dp"
-                                    android:background="@drawable/btn_blue_selector"
-                                    android:elevation="15dp"
-                                    android:text="Continuar"
-                                    android:textAllCaps="false"
-                                    android:textColor="@color/black"
-                                    android:textSize="15sp"
-                                    android:textStyle="bold"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/userTextInputLayout" />
-                            </LinearLayout>
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </LinearLayout>
-                </RelativeLayout>
-            </ScrollView>
-        </RelativeLayout>
-
+        <!-- ProgressBar -->
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleLarge"
@@ -439,6 +402,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminateTint="@color/color_primary"
+            android:visibility="gone" />
+
+        <!-- LoadingWheel (usado por el reconocimiento de imagen) -->
+        <ProgressBar
+            android:id="@+id/loadingWheel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
             android:visibility="gone" />
     </FrameLayout>
 
