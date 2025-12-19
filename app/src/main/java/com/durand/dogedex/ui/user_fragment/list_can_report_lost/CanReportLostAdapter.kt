@@ -18,8 +18,10 @@ import coil.load
 import com.durand.dogedex.R
 import com.durand.dogedex.data.response.oficial.ListarCanPerdidoResponse
 
-class CanReportLostAdapter(private val mList: List<ListarCanPerdidoResponse> = mutableListOf()) :
-    RecyclerView.Adapter<CanReportLostAdapter.ViewHolder>() {
+class CanReportLostAdapter(
+    private val mList: List<ListarCanPerdidoResponse> = mutableListOf(),
+    private val onItemClick: (ListarCanPerdidoResponse) -> Unit = {}
+) : RecyclerView.Adapter<CanReportLostAdapter.ViewHolder>() {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -111,6 +113,10 @@ class CanReportLostAdapter(private val mList: List<ListarCanPerdidoResponse> = m
             holder.canImageView.setImageResource(R.drawable.dog_logo)
         }
 
+        // Click listener para el item completo
+        holder.itemView.setOnClickListener {
+            onItemClick(model)
+        }
     }
 
     // return the number of the items in the list

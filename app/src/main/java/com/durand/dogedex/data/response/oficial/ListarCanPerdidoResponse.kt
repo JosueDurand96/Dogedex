@@ -1,6 +1,7 @@
 package com.durand.dogedex.data.response.oficial
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class ListarCanPerdidoResponse(
     @SerializedName("nombre")
@@ -43,4 +44,4 @@ data class ListarCanPerdidoResponse(
     var lugarPerdida: String,
     @SerializedName("comentario")
     var comentario: String,
-)
+) : Serializable

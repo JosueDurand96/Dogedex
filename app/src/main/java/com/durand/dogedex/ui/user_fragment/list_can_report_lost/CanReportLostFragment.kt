@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
 import com.durand.dogedex.databinding.FragmentCanReportLostBinding
 
 class CanReportLostFragment : Fragment() {
@@ -47,7 +48,16 @@ class CanReportLostFragment : Fragment() {
                 Log.d("CanReportLostFragment", "LayoutManager configurado")
             }
 
-            binding.canReportLostRecyclerView.adapter = CanReportLostAdapter(list)
+            binding.canReportLostRecyclerView.adapter = CanReportLostAdapter(list) { canPerdido ->
+                // Navegar al fragment de detalle
+                val bundle = Bundle().apply {
+                    putSerializable("canPerdido", canPerdido)
+                }
+                findNavController().navigate(
+                    com.durand.dogedex.R.id.action_nav_can_report_lost_to_nav_can_report_lost_detail,
+                    bundle
+                )
+            }
             binding.canReportLostRecyclerView.invalidate()
             binding.canReportLostRecyclerView.requestLayout()
 

@@ -44,7 +44,20 @@
     <fragment
             android:id="@+id/nav_can_report_lost"
             android:name="com.durand.dogedex.ui.user_fragment.list_can_report_lost.CanReportLostFragment"
-            tools:layout="@layout/fragment_can_report_lost" />
+            tools:layout="@layout/fragment_can_report_lost">
+        <action
+            android:id="@+id/action_nav_can_report_lost_to_nav_can_report_lost_detail"
+            app:destination="@id/nav_can_report_lost_detail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_can_report_lost_detail"
+            android:name="com.durand.dogedex.ui.user_fragment.list_can_report_lost.CanReportLostDetailFragment"
+            tools:layout="@layout/fragment_can_report_lost_detail" />
 
     <fragment
             android:id="@+id/nav_close"
