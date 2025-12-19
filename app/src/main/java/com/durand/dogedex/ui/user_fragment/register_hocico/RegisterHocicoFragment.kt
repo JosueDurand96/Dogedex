@@ -32,7 +32,11 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
 import java.io.InputStream
+import android.util.Size
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.User
 import com.durand.dogedex.databinding.FragmentRegisterHocicoBinding
@@ -60,6 +64,14 @@ class RegisterHocicoFragment : Fragment() {
         private const val LOG_TAG = "IndicadorDeExito5"
         private const val UMBRAL_INDICADOR_MIN = 85.0      // umbral oficial del indicador (>=85%)
         private const val UMBRAL_LOG_CUMPLE_86 = 86.0      // para marcar "CUMPLE 86%+"
+        
+        // Optimizaciones de rendimiento
+        private const val MAX_IMAGE_WIDTH = 1024           // Ancho máximo para procesamiento
+        private const val MAX_IMAGE_HEIGHT = 1024         // Alto máximo para procesamiento
+        private const val ANALYSIS_TARGET_WIDTH = 640      // Resolución optimizada para análisis
+        private const val ANALYSIS_TARGET_HEIGHT = 480     // Resolución optimizada para análisis
+        private const val JPEG_QUALITY = 80                // Calidad JPEG para compresión
+        private const val ANALYSIS_THROTTLE_MS = 200L      // Throttle para análisis (5 FPS máximo)
     }
 
     // Puedes ajustar estos valores si cambian tus resultados de validación
@@ -288,16 +300,22 @@ class RegisterHocicoFragment : Fragment() {
 
     private var _binding: FragmentRegisterHocicoBinding? = null
     private lateinit var imageCapture: ImageCapture
-    private lateinit var cameraExecutor: ExecutorService
+    private var cameraExecutor: ExecutorService? = null
     private var isCameraReady = false
     private lateinit var classifier: Classifier
 
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var photo: Bitmap
+    private var photo: Bitmap? = null
     private lateinit var imageCan: String
     private var selectedImageUri: Uri? = null
     private var currentDogRecognition: DogRecognition? = null
+    private var hasStoredPhoto = false // Flag para indicar si hay una foto guardada (de galería o capturada)
+    
+    // Optimizaciones: cache y throttling
+    private var lastAnalysisTime = 0L
+    private var recognitionJob: Job? = null
+    private var cameraProvider: ProcessCameraProvider? = null
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -375,6 +393,9 @@ class RegisterHocicoFragment : Fragment() {
                 binding.galleryImageView.visibility = View.GONE
                 binding.cameraPreview.visibility = View.VISIBLE
                 
+                // Resetear el flag para permitir análisis en tiempo real cuando se activa la cámara
+                hasStoredPhoto = false
+                
                 // Verificar permisos y activar la cámara
                 if (ContextCompat.checkSelfPermission(
                         requireContext(),
@@ -420,7 +441,26 @@ class RegisterHocicoFragment : Fragment() {
             // Leer la orientación EXIF antes de decodificar
             val orientation = getImageOrientation(uri)
             
-            val bitmap = BitmapFactory.decodeStream(inputStream)
+            // Decodificar con opciones optimizadas para reducir memoria
+            val options = BitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+            }
+            BitmapFactory.decodeStream(inputStream, null, options)
+            inputStream?.close()
+            
+            // Calcular inSampleSize para reducir resolución si es muy grande
+            options.inSampleSize = calculateInSampleSize(
+                options.outWidth, 
+                options.outHeight, 
+                MAX_IMAGE_WIDTH, 
+                MAX_IMAGE_HEIGHT
+            )
+            options.inJustDecodeBounds = false
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888 // Mejor calidad para foto final
+            
+            // Volver a abrir el stream para decodificar
+            inputStream = requireContext().contentResolver.openInputStream(uri)
+            var bitmap = BitmapFactory.decodeStream(inputStream, null, options)
             
             if (bitmap == null) {
                 lifecycleScope.launch(Dispatchers.Main) {
@@ -431,16 +471,26 @@ class RegisterHocicoFragment : Fragment() {
             
             // Rotar el bitmap según la orientación EXIF
             val rotatedBitmap = rotateBitmapIfNeeded(bitmap, orientation)
+            
+            // Liberar bitmap original si fue rotado
+            if (rotatedBitmap != bitmap) {
+                bitmap.recycle()
+            }
+            
+            // Liberar foto anterior si existe
+            photo?.recycle()
+            
             // IMPORTANTE: Guardar la foto para usarla cuando se haga clic en "Identificar raza"
             photo = rotatedBitmap
+            hasStoredPhoto = true // Marcar que hay una foto guardada
             
             // Convertir a Base64 y actualizar imageCan (usar el bitmap rotado)
             val byteArrayOutputStream = ByteArrayOutputStream()
-            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, byteArrayOutputStream)
             val byteArray = byteArrayOutputStream.toByteArray()
             imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
             
-            Log.d("RegisterHocicoFragment", "Foto guardada para reconocimiento - tamaño: ${rotatedBitmap.width}x${rotatedBitmap.height}, Base64 length: ${imageCan.length}")
+            Log.d("RegisterHocicoFragment", "Foto guardada para reconocimiento - tamaño: ${rotatedBitmap.width}x${rotatedBitmap.height}, Base64 length: ${imageCan.length}, hasStoredPhoto=true")
                 
                 // Las modificaciones de UI deben ejecutarse en el hilo principal
                 lifecycleScope.launch(Dispatchers.Main) {
@@ -455,27 +505,44 @@ class RegisterHocicoFragment : Fragment() {
                 // Mostrar indicador de carga mientras se procesa el reconocimiento
                 binding.loadingWheel.visibility = View.VISIBLE
                 
-                // Realizar reconocimiento de perro si es posible (usar el bitmap rotado)
-                    try {
-                        if (::classifier.isInitialized) {
-                        val dogRecognition = classifier.recognizeImage(rotatedBitmap).first()
-                        val preds = classifier.recognizeImage(rotatedBitmap)
-                                .sortedByDescending { it.confidence }
-                                .take(3)
-                            
-                            logAnaliticaInferencia(preds)
-                            logInferencia(dogRecognition)
-                            
-                        Log.d("RegisterHocicoFragment", "Reconocimiento desde galería: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
-                        currentDogRecognition = dogRecognition
+                // Realizar reconocimiento de perro si es posible (usar el bitmap rotado) en background
+                    val photoForRecognition = rotatedBitmap // Capturar referencia local
+                    lifecycleScope.launch(Dispatchers.Default) {
+                        try {
+                            if (::classifier.isInitialized && isActive) {
+                                val dogRecognition = classifier.recognizeImage(photoForRecognition).first()
+                                val preds = classifier.recognizeImage(photoForRecognition)
+                                    .sortedByDescending { it.confidence }
+                                    .take(3)
+                                
+                                // Log solo en modo debug
+                                if (Log.isLoggable(LOG_TAG, Log.DEBUG)) {
+                                    logAnaliticaInferencia(preds)
+                                    logInferencia(dogRecognition)
+                                }
+                                
+                                Log.d("RegisterHocicoFragment", "Reconocimiento desde galería: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
+                                
+                                if (isActive) {
+                                    launch(Dispatchers.Main) {
+                                        currentDogRecognition = dogRecognition
+                                        enableIdentifyRaceButton()
+                                    }
+                                }
+                            } else {
+                                launch(Dispatchers.Main) {
+                                    enableIdentifyRaceButton()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e("RegisterHocicoFragment", "Error al reconocer perro desde galería: ${e.message}", e)
+                            if (isActive) {
+                                launch(Dispatchers.Main) {
+                                    // Aún así habilitar el botón para que el usuario pueda intentar identificar
+                                    enableIdentifyRaceButton()
+                                }
+                            }
                         }
-                        
-                        // Habilitar el botón después de procesar la imagen (con o sin reconocimiento)
-                        enableIdentifyRaceButton()
-                    } catch (e: Exception) {
-                        Log.e("RegisterHocicoFragment", "Error al reconocer perro desde galería: ${e.message}", e)
-                        // Aún así habilitar el botón para que el usuario pueda intentar identificar
-                        enableIdentifyRaceButton()
                     }
                 }
                 
@@ -616,23 +683,63 @@ class RegisterHocicoFragment : Fragment() {
 
     @SuppressLint("UnsafeOptInUsageError")
     private fun convertImageProxyToBitmap(imageProxy: ImageProxy): Bitmap? {
-        val image = imageProxy.image ?: return null
-        val yBuffer = image.planes[0].buffer
-        val uBuffer = image.planes[1].buffer
-        val vBuffer = image.planes[2].buffer
-        val ySize = yBuffer.remaining()
-        val uSize = uBuffer.remaining()
-        val vSize = vBuffer.remaining()
-        val nv21 = ByteArray(ySize + uSize + vSize)
-        // U y V están intercambiados
-        yBuffer.get(nv21, 0, ySize)
-        vBuffer.get(nv21, ySize, vSize)
-        uBuffer.get(nv21, ySize + vSize, uSize)
-        val yuvImage = YuvImage(nv21, ImageFormat.NV21, image.width, image.height, null)
-        val out = ByteArrayOutputStream()
-        yuvImage.compressToJpeg(Rect(0, 0, yuvImage.width, yuvImage.height), 100, out)
-        val imageBytes = out.toByteArray()
-        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        return try {
+            val image = imageProxy.image ?: return null
+            val yBuffer = image.planes[0].buffer
+            val uBuffer = image.planes[1].buffer
+            val vBuffer = image.planes[2].buffer
+            val ySize = yBuffer.remaining()
+            val uSize = uBuffer.remaining()
+            val vSize = vBuffer.remaining()
+            val nv21 = ByteArray(ySize + uSize + vSize)
+            
+            // U y V están intercambiados
+            yBuffer.get(nv21, 0, ySize)
+            vBuffer.get(nv21, ySize, vSize)
+            uBuffer.get(nv21, ySize + vSize, uSize)
+            
+            val yuvImage = YuvImage(nv21, ImageFormat.NV21, image.width, image.height, null)
+            val out = ByteArrayOutputStream()
+            
+            // Reducir calidad para análisis en tiempo real (más rápido)
+            yuvImage.compressToJpeg(
+                Rect(0, 0, yuvImage.width, yuvImage.height), 
+                75, // Calidad reducida para análisis
+                out
+            )
+            val imageBytes = out.toByteArray()
+            
+            // Decodificar con opciones optimizadas
+            val options = BitmapFactory.Options().apply {
+                inSampleSize = calculateInSampleSize(image.width, image.height, ANALYSIS_TARGET_WIDTH, ANALYSIS_TARGET_HEIGHT)
+                inPreferredConfig = Bitmap.Config.RGB_565 // Usar menos memoria
+            }
+            
+            BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size, options)
+        } catch (e: Exception) {
+            Log.e("RegisterHocicoFragment", "Error al convertir ImageProxy: ${e.message}", e)
+            null
+        }
+    }
+    
+    /**
+     * Calcula el inSampleSize para reducir la resolución de la imagen
+     */
+    private fun calculateInSampleSize(
+        width: Int,
+        height: Int,
+        reqWidth: Int,
+        reqHeight: Int
+    ): Int {
+        var inSampleSize = 1
+        if (height > reqHeight || width > reqWidth) {
+            val halfHeight = height / 2
+            val halfWidth = width / 2
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+        return inSampleSize
     }
 
     private fun requestCameraPermission() {
@@ -669,7 +776,12 @@ class RegisterHocicoFragment : Fragment() {
             imageCapture = ImageCapture.Builder()
                 .setTargetRotation(binding.cameraPreview.display.rotation)
                 .build()
-            cameraExecutor = Executors.newSingleThreadExecutor()
+            
+            // Reutilizar executor si ya existe
+            if (cameraExecutor == null) {
+                cameraExecutor = Executors.newFixedThreadPool(2) // Pool de 2 hilos para mejor rendimiento
+            }
+            
             startCamera()
             isCameraReady = true
         }
@@ -702,7 +814,8 @@ class RegisterHocicoFragment : Fragment() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         cameraProviderFuture.addListener(
             {
-                val cameraProvider = cameraProviderFuture.get()
+                cameraProvider = cameraProviderFuture.get()
+                val cameraProvider = this.cameraProvider ?: return@addListener
 
                 val preview = Preview.Builder().build()
                 preview.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
@@ -716,36 +829,67 @@ class RegisterHocicoFragment : Fragment() {
                         .build()
                 }
 
+                // Optimizar ImageAnalysis: reducir resolución y usar estrategia eficiente
                 val imageAnalysis = ImageAnalysis.Builder()
+                    .setTargetResolution(Size(ANALYSIS_TARGET_WIDTH, ANALYSIS_TARGET_HEIGHT))
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
                     .build()
 
-                imageAnalysis.setAnalyzer(cameraExecutor) { imageProxy ->
+                imageAnalysis.setAnalyzer(cameraExecutor ?: return@addListener) { imageProxy ->
                     try {
-                    val bitmap = convertImageProxyToBitmap(imageProxy)
+                        // IMPORTANTE: Si ya hay una foto guardada (de galería o capturada), NO hacer análisis en tiempo real
+                        if (hasStoredPhoto) {
+                            imageProxy.close()
+                            return@setAnalyzer
+                        }
+                        
+                        // Throttling: procesar solo cada ANALYSIS_THROTTLE_MS milisegundos
+                        val currentTime = System.currentTimeMillis()
+                        if (currentTime - lastAnalysisTime < ANALYSIS_THROTTLE_MS) {
+                            imageProxy.close()
+                            return@setAnalyzer
+                        }
+                        lastAnalysisTime = currentTime
+                        
+                        // Cancelar trabajo anterior si existe
+                        recognitionJob?.cancel()
+                        
+                        val bitmap = convertImageProxyToBitmap(imageProxy)
                         if (bitmap != null && ::classifier.isInitialized) {
-                        getPhotoBitmap(bitmap)
-                        val dogRecognition = classifier.recognizeImage(bitmap).first()
-                        // Obtén top-3 (si tu Classifier devuelve lista ordenable)
-                        val preds = classifier.recognizeImage(bitmap)
-                            .sortedByDescending { it.confidence }
-                            .take(3)
+                            // Procesar en background thread
+                            recognitionJob = lifecycleScope.launch(Dispatchers.Default) {
+                                if (!isActive) return@launch
+                                
+                                try {
+                                    val dogRecognition = classifier.recognizeImage(bitmap).first()
+                                    val preds = classifier.recognizeImage(bitmap)
+                                        .sortedByDescending { it.confidence }
+                                        .take(3)
 
-                        // Log analítico por frame (softmax/argmax/margen/θ/CE teórica)
-                        logAnaliticaInferencia(preds)
-                        logInferencia(dogRecognition)
+                                    // Log analítico por frame (solo en debug)
+                                    if (Log.isLoggable(LOG_TAG, Log.DEBUG)) {
+                                        logAnaliticaInferencia(preds)
+                                        logInferencia(dogRecognition)
+                                    }
 
-                            // Actualizar UI en hilo principal
-                            lifecycleScope.launch(Dispatchers.Main) {
-                        currentDogRecognition = dogRecognition
-                        // Solo actualizar el reconocimiento, pero no habilitar el botón aquí
-                        // El botón se habilitará cuando se capture la foto
-                    }
+                                    // Actualizar UI en hilo principal solo si el job sigue activo
+                                    if (isActive) {
+                                        launch(Dispatchers.Main) {
+                                            currentDogRecognition = dogRecognition
+                                        }
+                                    }
+                                } catch (e: Exception) {
+                                    if (isActive) {
+                                        Log.e("RegisterHocicoFragment", "Error en reconocimiento: ${e.message}", e)
+                                    }
+                                }
+                            }
                         }
                     } catch (e: Exception) {
                         Log.e("RegisterHocicoFragment", "Error en análisis de imagen: ${e.message}", e)
                     } finally {
-                    imageProxy.close()
+                        imageProxy.close()
                     }
                 }
 
@@ -754,10 +898,10 @@ class RegisterHocicoFragment : Fragment() {
                     cameraProvider.unbindAll()
                     
                     // Vincular preview, imageCapture y imageAnalysis
-                cameraProvider.bindToLifecycle(
+                    cameraProvider.bindToLifecycle(
                         viewLifecycleOwner, cameraSelector,
-                    preview, imageCapture, imageAnalysis
-                )
+                        preview, imageCapture, imageAnalysis
+                    )
                     
                     Log.d("RegisterHocicoFragment", "Cámara iniciada correctamente")
                 } catch (exc: Exception) {
@@ -771,7 +915,7 @@ class RegisterHocicoFragment : Fragment() {
     private fun getPhotoBitmap(imageBytes: Bitmap) {
         photo = imageBytes
         val byteArrayOutputStream = ByteArrayOutputStream()
-        photo.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        photo?.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
@@ -797,7 +941,7 @@ class RegisterHocicoFragment : Fragment() {
 
         imageCapture.takePicture(
             outputFileOptions,
-            cameraExecutor,
+            cameraExecutor!!,
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exception: ImageCaptureException) {
                     Log.e("RegisterHocicoFragment", "Error al capturar foto: ${exception.message}", exception)
@@ -842,16 +986,35 @@ class RegisterHocicoFragment : Fragment() {
 
     private fun processCapturedBitmap(bitmap: Bitmap) {
         try {
+            // Reducir tamaño si es muy grande para optimizar memoria
+            val processedBitmap = if (bitmap.width > MAX_IMAGE_WIDTH || bitmap.height > MAX_IMAGE_HEIGHT) {
+                val scale = minOf(
+                    MAX_IMAGE_WIDTH.toFloat() / bitmap.width,
+                    MAX_IMAGE_HEIGHT.toFloat() / bitmap.height
+                )
+                val newWidth = (bitmap.width * scale).toInt()
+                val newHeight = (bitmap.height * scale).toInt()
+                Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true).also {
+                    bitmap.recycle() // Liberar bitmap original
+                }
+            } else {
+                bitmap
+            }
+            
+            // Liberar foto anterior si existe
+            photo?.recycle()
+            
             // IMPORTANTE: Guardar la foto para usarla cuando se haga clic en "Identificar raza"
-            photo = bitmap
+            photo = processedBitmap
+            hasStoredPhoto = true // Marcar que hay una foto guardada
             
             // Convertir a Base64 y actualizar imageCan
             val byteArrayOutputStream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+            processedBitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, byteArrayOutputStream)
             val byteArray = byteArrayOutputStream.toByteArray()
             imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
             
-            Log.d("RegisterHocicoFragment", "Foto guardada para reconocimiento - tamaño: ${bitmap.width}x${bitmap.height}, Base64 length: ${imageCan.length}")
+            Log.d("RegisterHocicoFragment", "Foto guardada para reconocimiento - tamaño: ${processedBitmap.width}x${processedBitmap.height}, Base64 length: ${imageCan.length}, hasStoredPhoto=true")
             
             // Las modificaciones de UI deben ejecutarse en el hilo principal
             lifecycleScope.launch(Dispatchers.Main) {
@@ -863,27 +1026,43 @@ class RegisterHocicoFragment : Fragment() {
                     crossfade(true)
                 }
                 
-                // Realizar reconocimiento de perro
-                try {
-                    if (::classifier.isInitialized) {
-                        val dogRecognition = classifier.recognizeImage(bitmap).first()
-                        val preds = classifier.recognizeImage(bitmap)
-                            .sortedByDescending { it.confidence }
-                            .take(3)
-                        
-                        logAnaliticaInferencia(preds)
-                        logInferencia(dogRecognition)
-                        
-                        Log.d("RegisterHocicoFragment", "Reconocimiento de foto capturada: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
-                        currentDogRecognition = dogRecognition
+                // Realizar reconocimiento de perro en background
+                lifecycleScope.launch(Dispatchers.Default) {
+                    try {
+                        if (::classifier.isInitialized && isActive) {
+                            val dogRecognition = classifier.recognizeImage(processedBitmap).first()
+                            val preds = classifier.recognizeImage(processedBitmap)
+                                .sortedByDescending { it.confidence }
+                                .take(3)
+                            
+                            // Log solo en modo debug
+                            if (Log.isLoggable(LOG_TAG, Log.DEBUG)) {
+                                logAnaliticaInferencia(preds)
+                                logInferencia(dogRecognition)
+                            }
+                            
+                            Log.d("RegisterHocicoFragment", "Reconocimiento de foto capturada: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
+                            
+                            if (isActive) {
+                                launch(Dispatchers.Main) {
+                                    currentDogRecognition = dogRecognition
+                                    enableIdentifyRaceButton()
+                                }
+                            }
+                        } else {
+                            launch(Dispatchers.Main) {
+                                enableIdentifyRaceButton()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("RegisterHocicoFragment", "Error al reconocer perro: ${e.message}")
+                        if (isActive) {
+                            launch(Dispatchers.Main) {
+                                // Aún así habilitar el botón para que el usuario pueda intentar identificar
+                                enableIdentifyRaceButton()
+                            }
+                        }
                     }
-                    
-                    // Habilitar el botón después de procesar la imagen (con o sin reconocimiento)
-                    enableIdentifyRaceButton()
-                } catch (e: Exception) {
-                    Log.e("RegisterHocicoFragment", "Error al reconocer perro: ${e.message}")
-                    // Aún así habilitar el botón para que el usuario pueda intentar identificar
-                    enableIdentifyRaceButton()
                 }
             }
             
@@ -939,14 +1118,15 @@ class RegisterHocicoFragment : Fragment() {
         lifecycleScope.launch(Dispatchers.Main) {
             try {
                 // Verificar que hay una imagen guardada (como en RegisterCanFragment)
-                if (!::photo.isInitialized || !::imageCan.isInitialized) {
+                val currentPhoto = photo
+                if (currentPhoto == null || !::imageCan.isInitialized) {
                     binding.loadingWheel.visibility = View.GONE
                     binding.identifyRaceButton.isEnabled = true
                     Toast.makeText(requireContext(), "Por favor, toma una foto o selecciona una imagen de la galería", Toast.LENGTH_SHORT).show()
                     return@launch
                 }
                 
-                Log.d("RegisterHocicoFragment", "Usando foto guardada para reconocimiento - tamaño: ${photo.width}x${photo.height}, Base64 length: ${imageCan.length}")
+                Log.d("RegisterHocicoFragment", "Usando foto guardada para reconocimiento - tamaño: ${currentPhoto.width}x${currentPhoto.height}, Base64 length: ${imageCan.length}")
                 
                 // Hacer reconocimiento con la imagen guardada en background
                 lifecycleScope.launch(Dispatchers.IO) {
@@ -962,8 +1142,9 @@ class RegisterHocicoFragment : Fragment() {
                         
                         // IMPORTANTE: Hacer reconocimiento con la foto guardada (NO capturar nueva foto)
                         // Usa la variable 'photo' que se guardó cuando se tomó/seleccionó la imagen
-                        val dogRecognition = classifier.recognizeImage(photo).first()
-                        val preds = classifier.recognizeImage(photo)
+                        val currentPhoto = photo ?: return@launch
+                        val dogRecognition = classifier.recognizeImage(currentPhoto).first()
+                        val preds = classifier.recognizeImage(currentPhoto)
                             .sortedByDescending { it.confidence }
                             .take(3)
                         
@@ -996,10 +1177,29 @@ class RegisterHocicoFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        
+        // Cancelar trabajos pendientes
+        recognitionJob?.cancel()
+        
+        // Liberar recursos de cámara
+        cameraProvider?.unbindAll()
+        cameraProvider = null
+        
+        // Liberar bitmap
+        photo?.recycle()
+        photo = null
+        
+        // Cerrar executor
+        cameraExecutor?.shutdown()
+        cameraExecutor = null
+        
+        _binding = null
+    }
+    
     override fun onDestroy() {
         super.onDestroy()
-        if (::cameraExecutor.isInitialized) {
-            cameraExecutor.shutdown()
-        }
+        // Limpieza adicional si es necesaria
     }
 }
