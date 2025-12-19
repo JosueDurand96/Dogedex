@@ -9,6 +9,8 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -1041,14 +1043,25 @@ class RegisterCanFragment : Fragment() {
                     val photoUri = outputFileResults.savedUri
                     Log.d("RegisterCanFragment", "Foto capturada exitosamente: $photoUri")
                     
-                    // Procesar la foto capturada
+                    // Procesar la foto capturada - siempre usar processImageFromUri para manejar orientación EXIF
                     photoUri?.let { uri ->
                         processImageFromUri(uri)
                     } ?: run {
-                        // Si no hay URI, intentar leer el archivo directamente
-                        val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
-                        bitmap?.let {
-                            processCapturedBitmap(it)
+                        // Si no hay URI, intentar leer el archivo directamente y crear un URI temporal
+                        try {
+                            val fileUri = FileProvider.getUriForFile(
+                                requireContext(),
+                                "${requireContext().packageName}.fileprovider",
+                                photoFile
+                            )
+                            processImageFromUri(fileUri)
+                        } catch (e: Exception) {
+                            Log.e("RegisterCanFragment", "Error al crear URI desde archivo: ${e.message}", e)
+                            // Fallback: leer bitmap directamente (sin corrección de orientación)
+                            val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+                            bitmap?.let {
+                                processCapturedBitmap(it)
+                            }
                         }
                     }
                 }
@@ -1106,47 +1119,61 @@ class RegisterCanFragment : Fragment() {
     }
 
     private fun processImageFromUri(uri: Uri) {
+        var inputStream: InputStream? = null
         try {
-            val inputStream: InputStream? = requireContext().contentResolver.openInputStream(uri)
+            inputStream = requireContext().contentResolver.openInputStream(uri)
+            
+            // Leer la orientación EXIF antes de decodificar
+            val orientation = getImageOrientation(uri)
+            
             val bitmap = BitmapFactory.decodeStream(inputStream)
             
-            if (bitmap != null) {
-                fotoBitmap = bitmap
-                // Convertir a Base64 y actualizar imageCan
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
-                val byteArray = byteArrayOutputStream.toByteArray()
-                imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
-                
-                // Las modificaciones de UI deben ejecutarse en el hilo principal
+            if (bitmap == null) {
                 lifecycleScope.launch(Dispatchers.Main) {
-                    // Mostrar photoFrameLayout y ocultar PreviewView
-                    binding.photoFrameLayout.visibility = View.VISIBLE
-                    binding.cameraPreview.visibility = View.GONE
-                    binding.galleryImageView.visibility = View.VISIBLE
-                    binding.galleryImageView.load(bitmap) {
-                        crossfade(true)
-                    }
-                    
-                    // Realizar reconocimiento de perro si es posible
-                    try {
-                        if (::classifier.isInitialized) {
-                            val dogRecognition = classifier.recognizeImage(bitmap).first()
-                            Log.d("RegisterCanFragment", "Reconocimiento desde galería: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
-                            enableTakePhotoButton(dogRecognition)
-                        } else {
-                            Log.w("RegisterCanFragment", "Classifier no inicializado, saltando reconocimiento")
-                            checkFormAndEnableButton()
-                        }
-                    } catch (e: Exception) {
-                        Log.e("RegisterCanFragment", "Error al reconocer perro desde galería: ${e.message}")
-                        // Continuar sin reconocimiento
-                        checkFormAndEnableButton()
-                    }
+                    Toast.makeText(requireContext(), "Error: No se pudo cargar la imagen", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+            
+            // Rotar el bitmap según la orientación EXIF
+            val rotatedBitmap = rotateBitmapIfNeeded(bitmap, orientation)
+            photo = rotatedBitmap
+            fotoBitmap = rotatedBitmap
+            
+            // Convertir a Base64 y actualizar imageCan (usar el bitmap rotado)
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
+            imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
+            
+            // Las modificaciones de UI deben ejecutarse en el hilo principal
+            lifecycleScope.launch(Dispatchers.Main) {
+                // Mostrar photoFrameLayout y ocultar PreviewView
+                binding.photoFrameLayout.visibility = View.VISIBLE
+                binding.cameraPreview.visibility = View.GONE
+                binding.galleryImageView.visibility = View.VISIBLE
+                binding.galleryImageView.load(rotatedBitmap) {
+                    crossfade(true)
                 }
                 
-                Log.d("RegisterCanFragment", "Imagen procesada desde URI - longitud Base64: ${imageCan.length}")
+                // Realizar reconocimiento de perro si es posible (usar el bitmap rotado)
+                try {
+                    if (::classifier.isInitialized) {
+                        val dogRecognition = classifier.recognizeImage(rotatedBitmap).first()
+                        Log.d("RegisterCanFragment", "Reconocimiento desde galería: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
+                        enableTakePhotoButton(dogRecognition)
+                    } else {
+                        Log.w("RegisterCanFragment", "Classifier no inicializado, saltando reconocimiento")
+                        checkFormAndEnableButton()
+                    }
+                } catch (e: Exception) {
+                    Log.e("RegisterCanFragment", "Error al reconocer perro desde galería: ${e.message}")
+                    // Continuar sin reconocimiento
+                    checkFormAndEnableButton()
+                }
             }
+            
+            Log.d("RegisterCanFragment", "Imagen procesada desde URI - longitud Base64: ${imageCan.length}")
         } catch (e: Exception) {
             Log.e("RegisterCanFragment", "Error al procesar imagen desde URI: ${e.message}", e)
             lifecycleScope.launch(Dispatchers.Main) {
@@ -1156,7 +1183,88 @@ class RegisterCanFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        } finally {
+            try {
+                inputStream?.close()
+            } catch (e: Exception) {
+                Log.e("RegisterCanFragment", "Error al cerrar inputStream: ${e.message}", e)
+            }
         }
+    }
+    
+    /**
+     * Obtiene la orientación EXIF de una imagen desde su URI
+     */
+    private fun getImageOrientation(uri: Uri): Int {
+        var inputStream: InputStream? = null
+        return try {
+            inputStream = requireContext().contentResolver.openInputStream(uri)
+            if (inputStream != null) {
+                val exif = ExifInterface(inputStream)
+                exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+                )
+            } else {
+                ExifInterface.ORIENTATION_NORMAL
+            }
+        } catch (e: Exception) {
+            Log.e("RegisterCanFragment", "Error al leer orientación EXIF: ${e.message}", e)
+            ExifInterface.ORIENTATION_NORMAL
+        } finally {
+            try {
+                inputStream?.close()
+            } catch (e: Exception) {
+                Log.e("RegisterCanFragment", "Error al cerrar inputStream en getImageOrientation: ${e.message}", e)
+            }
+        }
+    }
+    
+    /**
+     * Rota un bitmap según su orientación EXIF
+     */
+    private fun rotateBitmapIfNeeded(bitmap: Bitmap, orientation: Int): Bitmap {
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateBitmap(bitmap, 90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateBitmap(bitmap, 180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateBitmap(bitmap, 270f)
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flipBitmap(bitmap, horizontal = true, vertical = false)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flipBitmap(bitmap, horizontal = false, vertical = true)
+            ExifInterface.ORIENTATION_TRANSPOSE -> {
+                val rotated = rotateBitmap(bitmap, 90f)
+                flipBitmap(rotated, horizontal = true, vertical = false)
+            }
+            ExifInterface.ORIENTATION_TRANSVERSE -> {
+                val rotated = rotateBitmap(bitmap, 270f)
+                flipBitmap(rotated, horizontal = true, vertical = false)
+            }
+            else -> bitmap // ORIENTATION_NORMAL o desconocida
+        }
+    }
+    
+    /**
+     * Rota un bitmap en grados
+     */
+    private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap {
+        val matrix = Matrix().apply {
+            postRotate(degrees)
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+    
+    /**
+     * Voltea un bitmap horizontal o verticalmente
+     */
+    private fun flipBitmap(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap {
+        val matrix = Matrix().apply {
+            if (horizontal) {
+                postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
+            }
+            if (vertical) {
+                postScale(1f, -1f, bitmap.width / 2f, bitmap.height / 2f)
+            }
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
 }

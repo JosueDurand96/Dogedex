@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,6 +14,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
+import coil.load
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.InputStream
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -47,6 +53,7 @@ class RegisterCanDangerousFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private var isCameraReady = false
     private lateinit var classifier: Classifier
+    private var selectedImageUri: Uri? = null
 
     private val binding get() = _binding!!
     private val viewModel: MainViewModel by viewModels()
@@ -61,6 +68,15 @@ class RegisterCanDangerousFragment : Fragment() {
                 Toast.makeText(requireContext(), com.durand.dogedex.R.string.camera_permission, Toast.LENGTH_SHORT).show()
             }
         }
+    
+    // Launcher para seleccionar imagen de la galería
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            selectedImageUri = it
+            // Procesar la imagen para reconocimiento (esto también mostrará la imagen)
+            processGalleryImage(it)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,7 +91,7 @@ class RegisterCanDangerousFragment : Fragment() {
 //            Log.d("josue", "authenticationToken: " + user.authenticationToken)
 //            ApiServiceInterceptor.setSessionToken(user.authenticationToken)
 //        }
-        viewModel.status.observe(requireActivity()) { status ->
+        viewModel.status.observe(viewLifecycleOwner) { status ->
             when (status) {
                 is ApiResponseStatus.Error -> {
                     binding.loadingWheel.visibility = View.GONE
@@ -84,24 +100,136 @@ class RegisterCanDangerousFragment : Fragment() {
                 is ApiResponseStatus.Loading -> binding.loadingWheel.visibility = View.VISIBLE
                 is ApiResponseStatus.Success -> {
                     binding.loadingWheel.visibility = View.GONE
-                    Toast.makeText(requireContext(), "Se cargaron los datos correctamente!", Toast.LENGTH_SHORT)
-                        .show()
+                    // No mostrar toast aquí, ya que se abrirá DogDetailActivity
                 }
             }
         }
 
 
-        viewModel.dog.observe(requireActivity()) { dog ->
+        viewModel.dog.observe(viewLifecycleOwner) { dog ->
             if (dog != null) {
+                Log.d("RegisterCanDangerousFragment", "Perro obtenido: ${dog.name}, abriendo DogDetailActivity")
                 openDetailActivity(dog)
             }
         }
+        
+        // Configurar botón de galería
+        binding.galleryButton.setOnClickListener {
+            openGallery()
+        }
+        
         requestCameraPermission()
 
 
         val root: View = binding.root
 
         return root
+    }
+    
+    private fun openGallery() {
+        galleryLauncher.launch("image/*")
+    }
+    
+    private fun processGalleryImage(uri: Uri) {
+        var inputStream: InputStream? = null
+        try {
+            inputStream = requireContext().contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            
+            if (bitmap == null) {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    binding.loadingWheel.visibility = View.GONE
+                    Toast.makeText(requireContext(), "Error: No se pudo cargar la imagen", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+            
+            // Mostrar imagen de galería INMEDIATAMENTE (en hilo principal)
+            lifecycleScope.launch(Dispatchers.Main) {
+                try {
+                    Log.d("RegisterCanDangerousFragment", "Mostrando imagen de galería - Bitmap: ${bitmap.width}x${bitmap.height}")
+                    
+                    // Asegurar que el contenedor esté visible (igual que RegisterCanFragment)
+                    binding.imageContainer.visibility = View.VISIBLE
+                    
+                    // Primero ocultar la cámara
+                    binding.cameraPreview.visibility = View.GONE
+                    
+                    // Luego mostrar y cargar la imagen usando coil (igual que RegisterCanFragment)
+                    binding.galleryImageView.visibility = View.VISIBLE
+                    binding.galleryImageView.load(bitmap) {
+                        crossfade(true)
+                    }
+                    
+                    Log.d("RegisterCanDangerousFragment", "ImageView visibility: ${binding.galleryImageView.visibility}")
+                    Log.d("RegisterCanDangerousFragment", "ImageContainer visibility: ${binding.imageContainer.visibility}")
+                    
+                    // Mostrar indicador de carga
+                    binding.loadingWheel.visibility = View.VISIBLE
+                } catch (e: Exception) {
+                    Log.e("RegisterCanDangerousFragment", "Error al mostrar imagen: ${e.message}", e)
+                    Toast.makeText(requireContext(), "Error al mostrar la imagen: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+            
+            if (::classifier.isInitialized) {
+                // Procesar reconocimiento en hilo de fondo
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        val dogRecognition = classifier.recognizeImage(bitmap).first()
+                        
+                        // Actualizar UI en hilo principal
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            binding.loadingWheel.visibility = View.GONE
+                            
+                            // Habilitar botón siempre que haya una imagen (sin importar la confianza)
+                            binding.identifyRaceButton.isEnabled = true
+                            binding.identifyRaceButton.text = "Identificar raza"
+                            binding.identifyRaceButton.setOnClickListener {
+                                Log.d("RegisterCanDangerousFragment", "Click en botón - llamando getDogByMlId con id: ${dogRecognition.id}")
+                                binding.loadingWheel.visibility = View.VISIBLE
+                                viewModel.getDogByMlId(dogRecognition.id)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("RegisterCanDangerousFragment", "Error al procesar reconocimiento: ${e.message}", e)
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            binding.loadingWheel.visibility = View.GONE
+                            Toast.makeText(
+                                requireContext(),
+                                "Error al procesar el reconocimiento: ${e.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            } else {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    binding.loadingWheel.visibility = View.GONE
+                    Toast.makeText(
+                        requireContext(),
+                        "Error: Classifier no inicializado",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("RegisterCanDangerousFragment", "Error al procesar imagen de galería: ${e.message}", e)
+            lifecycleScope.launch(Dispatchers.Main) {
+                binding.loadingWheel.visibility = View.GONE
+                Toast.makeText(
+                    requireContext(),
+                    "Error al procesar la imagen: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } finally {
+            try {
+                inputStream?.close()
+            } catch (e: Exception) {
+                Log.e("RegisterCanDangerousFragment", "Error al cerrar inputStream: ${e.message}", e)
+            }
+        }
     }
 
 
@@ -192,6 +320,11 @@ class RegisterCanDangerousFragment : Fragment() {
     }
 
     private fun takePhoto() {
+        // Ocultar imagen de galería y mostrar preview de cámara
+        binding.galleryImageView.visibility = View.GONE
+        binding.cameraPreview.visibility = View.VISIBLE
+        selectedImageUri = null
+        
         val outputFileOptions = ImageCapture.OutputFileOptions.Builder(getOutputPhotoFile()).build()
         imageCapture.takePicture(outputFileOptions, cameraExecutor,
             object : ImageCapture.OnImageSavedCallback {
@@ -264,14 +397,13 @@ class RegisterCanDangerousFragment : Fragment() {
     }
 
     private fun enableTakePhotoButton(dogRecognition: DogRecognition) {
-        if (dogRecognition.confidence > 80.0){
-            //binding.takePhotoFab.alpha = 1f
-            binding.takePhotoFab.setOnClickListener {
-                viewModel.getDogByMlId(dogRecognition.id)
-            }
-        }else{
-            // binding.takePhotoFab.alpha = 0.2f
-            binding.takePhotoFab.setOnClickListener(null)
+        // Habilitar botón siempre que haya reconocimiento (sin importar la confianza)
+        binding.identifyRaceButton.isEnabled = true
+        binding.identifyRaceButton.text = "Identificar raza"
+        binding.identifyRaceButton.setOnClickListener {
+            Log.d("RegisterCanDangerousFragment", "Click en botón - llamando getDogByMlId con id: ${dogRecognition.id}")
+            binding.loadingWheel.visibility = View.VISIBLE
+            viewModel.getDogByMlId(dogRecognition.id)
         }
     }
 
