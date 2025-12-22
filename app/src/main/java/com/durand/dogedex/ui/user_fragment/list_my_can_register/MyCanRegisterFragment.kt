@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.durand.dogedex.databinding.FragmentMyCanRegisterBinding
 
@@ -17,6 +18,8 @@ class MyCanRegisterFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: MyCanRegisterViewModel
     private var idUsuario: Long? = 0
+
+    private lateinit var adapter: MyCanRegisterAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,16 +31,73 @@ class MyCanRegisterFragment : Fragment() {
 
         _binding = FragmentMyCanRegisterBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        
+        // Configurar RecyclerView una sola vez
+        adapter = MyCanRegisterAdapter(emptyList())
+        binding.canReportLostRecyclerView.adapter = adapter
+        
+        // Asegurar que el layoutManager esté configurado (aunque esté en XML, a veces es necesario configurarlo en código)
+        if (binding.canReportLostRecyclerView.layoutManager == null) {
+            binding.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            Log.d("MyCanRegisterFragment", "LayoutManager configurado manualmente")
+        }
+        
+        Log.d("MyCanRegisterFragment", "RecyclerView configurado")
+        Log.d("MyCanRegisterFragment", "  - adapter: ${binding.canReportLostRecyclerView.adapter}")
+        Log.d("MyCanRegisterFragment", "  - layoutManager: ${binding.canReportLostRecyclerView.layoutManager}")
+        Log.d("MyCanRegisterFragment", "  - visibility: ${binding.canReportLostRecyclerView.visibility}")
+        Log.d("MyCanRegisterFragment", "  - width: ${binding.canReportLostRecyclerView.width}, height: ${binding.canReportLostRecyclerView.height}")
+        
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
-        Log.d("josue", "onCreateView")
-        Log.d("josue", "idUsuario: $idUsuario")
-        Log.d("josue", "onViewCreated")
-        viewModel.listar(idUsuario!!.toInt())
-        viewModel.list.observe(viewLifecycleOwner) {
-            binding.canReportLostRecyclerView.layoutManager = LinearLayoutManager(requireContext()) // o `binding.root.context`
-            binding.canReportLostRecyclerView.adapter = MyCanRegisterAdapter(it)
+        
+        viewModel.list.observe(viewLifecycleOwner) { list ->
+            Log.d("MyCanRegisterFragment", "=== Observer activado ===")
+            Log.d("MyCanRegisterFragment", "Lista recibida con ${list} elementos")
+            if (list.isNotEmpty()) {
+                Log.d("MyCanRegisterFragment", "Primer elemento: ${list[0].nombre}, Raza: ${list[0].raza}")
+                Log.d("MyCanRegisterFragment", "Todos los elementos:")
+                list.forEachIndexed { index, item ->
+                    Log.d("MyCanRegisterFragment", "  [$index] ${item.nombre} - ${item.raza} - ID: ${item.id}")
+                }
+            } else {
+                Log.w("MyCanRegisterFragment", "La lista está vacía")
+            }
+            
+            // SOLUCIÓN: Recrear el adapter con la nueva lista en lugar de actualizar
+            Log.d("MyCanRegisterFragment", "Recreando adapter con ${list.size} elementos")
+            adapter = MyCanRegisterAdapter(list) { can ->
+                // Navegar al fragment de detalle
+                val bundle = Bundle().apply {
+                    putSerializable("can", can)
+                }
+                findNavController().navigate(
+                    com.durand.dogedex.R.id.action_nav_my_can_register_to_nav_my_can_register_detail,
+                    bundle
+                )
+            }
+            binding.canReportLostRecyclerView.adapter = adapter
+            
+            Log.d("MyCanRegisterFragment", "Adapter recreado y asignado")
+            Log.d("MyCanRegisterFragment", "RecyclerView adapter: ${binding.canReportLostRecyclerView.adapter}")
+            Log.d("MyCanRegisterFragment", "RecyclerView itemCount: ${binding.canReportLostRecyclerView.adapter?.itemCount}")
+            Log.d("MyCanRegisterFragment", "RecyclerView visibility: ${binding.canReportLostRecyclerView.visibility}")
+            Log.d("MyCanRegisterFragment", "RecyclerView layoutManager: ${binding.canReportLostRecyclerView.layoutManager}")
+            
+            // Forzar invalidación del layout
+            binding.canReportLostRecyclerView.invalidate()
+            binding.canReportLostRecyclerView.requestLayout()
+            Log.d("MyCanRegisterFragment", "RecyclerView invalidado y layout solicitado")
+        }
+        
+        Log.d("MyCanRegisterFragment", "onCreateView - idUsuario: $idUsuario")
+        
+        // Cargar datos solo si idUsuario es válido
+        if (idUsuario != null && idUsuario != -1L) {
+            viewModel.listar(idUsuario!!)
+        } else {
+            Log.e("MyCanRegisterFragment", "Error: idUsuario no válido: $idUsuario")
         }
 
         return root
@@ -45,6 +105,20 @@ class MyCanRegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Recargar datos cuando se vuelve a esta pantalla para mostrar canes recién registrados
+        val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
+        val currentIdUsuario = sharedPref?.getLong("idUsuario", -1) ?: -1
+        
+        if (currentIdUsuario != -1L) {
+            Log.d("MyCanRegisterFragment", "onResume - Recargando datos para idUsuario: $currentIdUsuario")
+            viewModel.listar(currentIdUsuario)
+        } else {
+            Log.e("MyCanRegisterFragment", "onResume - Error: idUsuario no válido: $currentIdUsuario")
+        }
     }
 
 }

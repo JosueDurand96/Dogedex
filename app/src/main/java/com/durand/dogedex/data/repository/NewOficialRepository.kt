@@ -44,14 +44,26 @@ class NewOficialRepository {
             newApiOficialService.registrarMascotaPerdida(registerCanRequest, "application/json")
         }
 
-    suspend fun listarMascota(id: Int): ApiResponseStatus<List<ListarCanResponse>> =
+    suspend fun listarMascota(idUsuario: Long): ApiResponseStatus<List<ListarCanResponse>> =
         makeNetworkCall {
-            Log.d("josue", "makeNetworkCall")
-            Log.d("josue", "id: $id")
-            newApiOficialService.listarMascota(
-                content_type = "application/json",
-                mascotaId = id,
-            )
+            Log.d("NewOficialRepository", "=== listarMascota INICIADO ===")
+            Log.d("NewOficialRepository", "idUsuario: $idUsuario")
+            try {
+                val response = newApiOficialService.listarMascota(
+                    content_type = "application/json",
+                    idUsuario = idUsuario
+                )
+                Log.d("NewOficialRepository", "Respuesta recibida: ${response.size} elementos")
+                if (response.isNotEmpty()) {
+                    Log.d("NewOficialRepository", "Primer elemento: ${response[0].nombre}, ID: ${response[0].id}")
+                }
+                Log.d("NewOficialRepository", "=== listarMascota EXITOSO ===")
+                response
+            } catch (e: Exception) {
+                Log.e("NewOficialRepository", "ERROR en listarMascota: ${e.message}", e)
+                e.printStackTrace()
+                throw e
+            }
         }
 
     suspend fun listarMascotaPerdida(): ApiResponseStatus<List<ListarCanPerdidoResponse>> =

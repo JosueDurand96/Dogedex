@@ -5,7 +5,7 @@ import java.io.Serializable
 
 data class ListarCanResponse(
     @SerializedName("id")
-    var id: Int,
+    var id: Long,
     @SerializedName("nombre")
     var nombre: String,
     @SerializedName("fechaNacimiento")
@@ -35,7 +35,7 @@ data class ListarCanResponse(
     @SerializedName("foto")
     var foto: String,
     @SerializedName("idUsuario")
-    var idUsuario: Int,
+    var idUsuario: Long,
     @SerializedName("nombreUsuario")
     var nombreUsuario: String,
     @SerializedName("apellidoUsuario")

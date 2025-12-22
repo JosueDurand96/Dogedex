@@ -8,9 +8,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.util.Size
@@ -20,9 +25,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.content.FileProvider
+import coil.load
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.InputStream
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.*
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -30,6 +41,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.durand.dogedex.data.ApiResponseStatus
 import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.response.Dog
@@ -37,7 +49,6 @@ import com.durand.dogedex.databinding.FragmentRegisterCanBinding
 import com.durand.dogedex.domain.Classifier
 import com.durand.dogedex.domain.DogRecognition
 import com.durand.dogedex.ui.auth.LoginActivity
-import com.durand.dogedex.ui.dogdetail.DogDetailActivity
 import com.durand.dogedex.ui.forget_password.MainViewModel
 import com.durand.dogedex.util.LABEL_PATH
 import com.durand.dogedex.util.MODEL_PATH
@@ -46,8 +57,6 @@ import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.common.FileUtil
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -79,8 +88,10 @@ class RegisterCanFragment : Fragment() {
     private lateinit var razonTenencia: String
     private lateinit var photo: Bitmap
     private lateinit var imageCan: String
-    private lateinit var dogCan: Dog
     private var isRegistrationComplete = false
+    private var fotoUri: Uri? = null
+    private var fotoBitmap: Bitmap? = null
+    private var cameraImageUri: Uri? = null
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -92,6 +103,39 @@ class RegisterCanFragment : Fragment() {
                 Toast.makeText(
                     requireContext(),
                     com.durand.dogedex.R.string.camera_permission,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+    // Launcher para seleccionar imagen de la galería
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            fotoUri = it
+            fotoBitmap = null
+            processImageFromUri(it)
+        }
+    }
+
+    // Launcher para tomar foto con la cámara
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success && cameraImageUri != null) {
+            fotoUri = cameraImageUri
+            fotoBitmap = null
+            processImageFromUri(cameraImageUri!!)
+        }
+    }
+
+    // Launcher para permisos de cámara (para tomar foto, no para preview)
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            openCameraForPhoto()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Se necesita permiso de cámara para tomar fotos",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -137,44 +181,8 @@ class RegisterCanFragment : Fragment() {
             Log.d("RegisterCanFragment", "idUsuario válido: $idUsuario (será convertido a Int: ${idUsuario!!.toInt()})")
         }
 
-        viewModel.dog.observe(requireActivity()) { dog ->
-            if (dog != null) {
-            dogCan = dog
-                Log.d("RegisterCanFragment", "viewModel.dog recibido - isRegistrationComplete: $isRegistrationComplete, imageCan inicializado: ${::imageCan.isInitialized}")
-                
-                // Si ya se registró exitosamente, navegar a DogDetailActivity
-                // Similar a RegisterHocicoFragment
-                if (isRegistrationComplete) {
-                    if (::imageCan.isInitialized) {
-                        Log.d("RegisterCanFragment", "Navegando a DogDetailActivity después del registro exitoso desde observer de viewModel.dog")
-                        // Usar post para asegurar que se ejecute en el hilo principal
-                        binding.root.post {
-                            openDetailActivity(dog)
-                        }
-                    } else {
-                        Log.e("RegisterCanFragment", "Error: imageCan no está inicializado cuando se intenta navegar")
-                    }
-                } else {
-                    Log.d("RegisterCanFragment", "No se navega aún - isRegistrationComplete: $isRegistrationComplete (guardando dogCan para uso posterior)")
-                }
-            }
-        }
-        
-        // Observar también el status para detectar cuando se obtiene el perro exitosamente
-        viewModel.status.observe(requireActivity()) { status ->
-            Log.d("RegisterCanFragment", "viewModel.status recibido: ${status.javaClass.simpleName}, isRegistrationComplete: $isRegistrationComplete")
-            if (status is ApiResponseStatus.Success && isRegistrationComplete) {
-                // Si el status es Success y ya se registró, verificar si tenemos el perro
-                if (::dogCan.isInitialized && ::imageCan.isInitialized) {
-                    Log.d("RegisterCanFragment", "Status Success después del registro, navegando a DogDetailActivity desde observer de status")
-                    binding.root.post {
-                        openDetailActivity(dogCan)
-                    }
-                } else {
-                    Log.e("RegisterCanFragment", "Status Success pero dogCan o imageCan no están inicializados - dogCan: ${::dogCan.isInitialized}, imageCan: ${::imageCan.isInitialized}")
-                }
-            }
-        }
+        // Observadores de viewModel.dog y viewModel.status ya no son necesarios
+        // ya que navegaremos directamente a "Mis canes registrados" después del registro exitoso
 
         registerCanViewModel.list.observe(viewLifecycleOwner) { response ->
             Log.d("RegisterCanFragment", "Respuesta recibida - Código: '${response.codigo}' (tipo: ${response.codigo.javaClass.simpleName}), Mensaje: '${response.mensaje}'")
@@ -193,62 +201,26 @@ class RegisterCanFragment : Fragment() {
                 isRegistrationComplete = true
                 Log.d("RegisterCanFragment", "isRegistrationComplete establecido a true")
                 
-                // Después de registrar exitosamente, obtener el perro usando el reconocimiento
-                // Similar a RegisterHocicoFragment
-                if (lastDogRecognition != null && lastDogRecognition!!.confidence > 80.0) {
-                    Log.d("RegisterCanFragment", "Obteniendo perro con ID: ${lastDogRecognition!!.id}")
-                    
-                    // Si ya tenemos el perro guardado (dogCan), navegar directamente
-                    if (::dogCan.isInitialized && ::imageCan.isInitialized) {
-                        Log.d("RegisterCanFragment", "Ya tenemos dogCan, navegando directamente a DogDetailActivity")
-                        binding.root.post {
-                            openDetailActivity(dogCan)
-                        }
-                    } else {
-                        // Si no tenemos el perro, obtenerlo usando el ID del reconocimiento
-                        // El observer de viewModel.dog se activará cuando se obtenga el perro
-                        viewModel.getDogByMlId(lastDogRecognition!!.id)
+                // Mostrar mensaje de éxito
+                Toast.makeText(
+                    requireContext(),
+                    "Can registrado exitosamente",
+                    Toast.LENGTH_SHORT
+                ).show()
+                
+                // Navegar a "Mis canes registrados" después del registro exitoso
+                try {
+                    Log.d("RegisterCanFragment", "Navegando a Mis canes registrados")
+                    binding.root.post {
+                        findNavController().navigate(com.durand.dogedex.R.id.nav_my_can_register)
                     }
-                } else {
-                    Log.d("RegisterCanFragment", "No hay reconocimiento válido (lastDogRecognition: $lastDogRecognition), creando Dog básico")
-                    // Si no hay reconocimiento válido, usar la raza del reconocimiento si existe, sino la del formulario
-                    val razaParaDog = if (lastDogRecognition != null) {
-                        val razaReconocida = extraerRazaDelReconocimiento(lastDogRecognition!!)
-                        Log.d("RegisterCanFragment", "Usando raza del reconocimiento: $razaReconocida (confianza: ${lastDogRecognition!!.confidence}%)")
-                        razaReconocida
-                    } else {
-                        Log.d("RegisterCanFragment", "No hay reconocimiento, usando raza del formulario: $raza")
-                        raza
-                    }
-                    
-                    // Si no hay reconocimiento, crear un Dog básico y navegar directamente
-                    if (::imageCan.isInitialized) {
-                        val dogToShow = Dog(
-                            id = 0L,
-                            index = 0,
-                            name = razaParaDog,
-                            type = especie,
-                            heightFemale = "",
-                            heightMale = "",
-                            imageUrl = "",
-                            lifeExpectancy = "",
-                            temperament = caracter,
-                            weightFemale = "",
-                            weightMale = "",
-                            inCollection = true
-                        )
-                        Log.d("RegisterCanFragment", "Navegando a DogDetailActivity con Dog básico - raza: $razaParaDog")
-                        binding.root.post {
-                            openDetailActivity(dogToShow)
-                        }
-                    } else {
-                        Log.e("RegisterCanFragment", "Error: No se puede navegar - imageCan no está inicializado")
-                        Toast.makeText(
-                            requireContext(),
-                            "Error: No se pudo capturar la imagen",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                } catch (e: Exception) {
+                    Log.e("RegisterCanFragment", "Error al navegar: ${e.message}", e)
+                    Toast.makeText(
+                        requireContext(),
+                        "Error al navegar: ${e.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } else {
                 // Si el código no es 201/200, mostrar error
@@ -363,6 +335,32 @@ class RegisterCanFragment : Fragment() {
 
         // Configurar DatePickerDialog para el campo de fecha
         setupDatePicker()
+
+        // Configurar botón "Tomar foto" - muestra el PreviewView y captura foto
+        binding.tomarFotoButton.setOnClickListener {
+            // Si el PreviewView está visible dentro del photoFrameLayout, capturar una foto
+            if (binding.photoFrameLayout.visibility == View.VISIBLE && 
+                binding.cameraPreview.visibility == View.VISIBLE && 
+                ::imageCapture.isInitialized) {
+                capturePhoto()
+            } else {
+                // Si el PreviewView no está visible, mostrarlo dentro del photoFrameLayout
+                binding.photoFrameLayout.visibility = View.VISIBLE
+                binding.galleryImageView.visibility = View.GONE
+                binding.cameraPreview.visibility = View.VISIBLE
+                if (!isCameraReady) {
+                    requestCameraPermission()
+                }
+            }
+        }
+
+        // Configurar botón "Galería" - abre el selector de galería
+        binding.galeriaButton.setOnClickListener {
+            // Ocultar PreviewView y photoFrameLayout, preparar para mostrar galleryImageView
+            binding.photoFrameLayout.visibility = View.GONE
+            binding.cameraPreview.visibility = View.GONE
+            openGallery()
+        }
 
         // Asegurar que el botón esté deshabilitado inicialmente
         binding.confirmAppCompatButton.isEnabled = false
@@ -611,7 +609,7 @@ class RegisterCanFragment : Fragment() {
                     distrito = distrito,
                     modoObtencion = modoObtencion,
                     razonTenencia = razonTenencia,
-                    foto = "imageCan",
+                    foto = imageCan,
                     idUsuario = currentIdUsuario
                 )
             )
@@ -815,12 +813,16 @@ class RegisterCanFragment : Fragment() {
                 .build()
                 .apply {
                     setAnalyzer(cameraExecutor) { imageProxy ->
+                        // Solo hacer reconocimiento en tiempo real, NO capturar foto
                         val bitmap = convertImageProxyToBitmap(imageProxy)
-                        if (bitmap != null) {
-                            getPhotoBitmap(bitmap)
-                            val dogRecognition = classifier.recognizeImage(bitmap).first()
-                            Log.d("RegisterCanFragment", "Reconocimiento: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
-                            enableTakePhotoButton(dogRecognition)
+                        if (bitmap != null && ::classifier.isInitialized) {
+                            try {
+                                val dogRecognition = classifier.recognizeImage(bitmap).first()
+                                Log.d("RegisterCanFragment", "Reconocimiento en tiempo real: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
+                                enableTakePhotoButton(dogRecognition)
+                            } catch (e: Exception) {
+                                Log.e("RegisterCanFragment", "Error en reconocimiento: ${e.message}")
+                            }
                         }
                         imageProxy.close()
                     }
@@ -830,11 +832,12 @@ class RegisterCanFragment : Fragment() {
                 // MUY IMPORTANTE
                 cameraProvider.unbindAll()
 
-                // Solo enlazamos preview + analysis
+                // Enlazamos preview + imageCapture + analysis (solo para reconocimiento)
                 cameraProvider.bindToLifecycle(
                     viewLifecycleOwner,
                     cameraSelector,
                     preview,
+                    imageCapture,
                     imageAnalysis
                 )
 
@@ -889,14 +892,27 @@ class RegisterCanFragment : Fragment() {
         }
     }
     
+    @SuppressLint("SuspiciousIndentation")
     private fun getPhotoBitmap(imageBytes: Bitmap) {
         photo = imageBytes
         val byteArrayOutputStream = ByteArrayOutputStream()
         photo.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
-        // Verificar formulario cuando se capture la imagen
-        checkFormAndEnableButton()
+        
+                // Las modificaciones de UI deben ejecutarse en el hilo principal
+                lifecycleScope.launch(Dispatchers.Main) {
+                    // Mostrar photoFrameLayout con la imagen capturada
+                    binding.photoFrameLayout.visibility = View.VISIBLE
+                    binding.galleryImageView.visibility = View.VISIBLE
+                    binding.cameraPreview.visibility = View.GONE
+                    binding.galleryImageView.load(photo) {
+                        crossfade(true)
+                    }
+            
+            // Verificar formulario cuando se capture la imagen
+            checkFormAndEnableButton()
+        }
     }
 
 
@@ -915,64 +931,6 @@ class RegisterCanFragment : Fragment() {
 //        }
 //    }
 
-    private fun openDetailActivity(dog: Dog) {
-        try {
-            Log.d("RegisterCanFragment", "=== openDetailActivity INICIADO ===")
-            Log.d("RegisterCanFragment", "openDetailActivity llamado con dog: ${dog.name}, id: ${dog.id}")
-            
-            // Verificar que estamos en el hilo principal
-            if (android.os.Looper.myLooper() != android.os.Looper.getMainLooper()) {
-                Log.d("RegisterCanFragment", "No estamos en el hilo principal, usando post")
-                binding.root.post {
-                    openDetailActivity(dog)
-                }
-                return
-            }
-            
-            // Guardar la imagen en SharedPreferences (igual que RegisterHocicoFragment)
-            if (::imageCan.isInitialized) {
-                val sharedPref = activity?.getSharedPreferences("fotoKey", Context.MODE_PRIVATE)
-                val editor: SharedPreferences.Editor = sharedPref!!.edit()
-                editor.putString("foto", imageCan)
-                editor.apply()
-                editor.commit()
-                Log.d("RegisterCanFragment", "Imagen guardada en SharedPreferences - longitud: ${imageCan.length}")
-            } else {
-                Log.e("RegisterCanFragment", "Error: imageCan no está inicializado en openDetailActivity")
-                Toast.makeText(requireContext(), "Error: No se pudo capturar la imagen", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            // Navegar a DogDetailActivity con todos los datos del formulario
-            val intent = Intent(requireContext(), DogDetailActivity::class.java)
-            intent.putExtra(DogDetailActivity.DOG_KEY, dog)
-            intent.putExtra(DogDetailActivity.IS_RECOGNITION_KEY, true)
-            intent.putExtra("nombreMacota", binding.namePetTextInputEditText.text.toString().trim())
-            intent.putExtra("fechaNacimiento", binding.fechaTextInputEditText.text.toString().trim())
-            intent.putExtra("especie", especie)
-            intent.putExtra("genero", genero)
-            intent.putExtra("raza", raza)
-            intent.putExtra("tamano", tamano)
-            intent.putExtra("caracter", caracter)
-            intent.putExtra("color", color)
-            intent.putExtra("pelaje", pelaje)
-            intent.putExtra("esterelizado", esterelizado)
-            intent.putExtra("distrito", distrito)
-            intent.putExtra("modoObtencion", modoObtencion)
-            intent.putExtra("razonTenencia", razonTenencia)
-            
-            Log.d("RegisterCanFragment", "Iniciando DogDetailActivity con Intent")
-            Log.d("RegisterCanFragment", "Datos enviados - nombreMacota: ${binding.namePetTextInputEditText.text.toString().trim()}, raza: $raza")
-            
-            startActivity(intent)
-            Log.d("RegisterCanFragment", "DogDetailActivity iniciado exitosamente")
-            Log.d("RegisterCanFragment", "=== openDetailActivity COMPLETADO ===")
-        } catch (e: Exception) {
-            Log.e("RegisterCanFragment", "Error al abrir DogDetailActivity: ${e.message}", e)
-            e.printStackTrace()
-            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-    }
 
     private fun setupDatePicker() {
         val calendar = Calendar.getInstance()
@@ -1017,5 +975,296 @@ class RegisterCanFragment : Fragment() {
         }
     }
 
+
+    private fun openCameraForPhoto() {
+        // Verificar permiso de cámara
+        val hasPermission = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasPermission) {
+            // Crear URI temporal para la foto
+            val photoFile = File.createTempFile(
+                "IMG_${System.currentTimeMillis()}",
+                ".jpg",
+                requireContext().cacheDir
+            )
+            cameraImageUri = FileProvider.getUriForFile(
+                requireContext(),
+                "${requireContext().packageName}.fileprovider",
+                photoFile
+            )
+            cameraLauncher.launch(cameraImageUri)
+        } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun openGallery() {
+        galleryLauncher.launch("image/*")
+    }
+
+    private fun capturePhoto() {
+        if (!::imageCapture.isInitialized) {
+            Toast.makeText(
+                requireContext(),
+                "La cámara no está lista. Por favor, espera un momento.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        // Crear archivo temporal para guardar la foto
+        val photoFile = File.createTempFile(
+            "IMG_${System.currentTimeMillis()}",
+            ".jpg",
+            requireContext().cacheDir
+        )
+
+        val outputFileOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        imageCapture.takePicture(
+            outputFileOptions,
+            cameraExecutor,
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exception: ImageCaptureException) {
+                    Log.e("RegisterCanFragment", "Error al capturar foto: ${exception.message}", exception)
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Error al capturar la foto: ${exception.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    val photoUri = outputFileResults.savedUri
+                    Log.d("RegisterCanFragment", "Foto capturada exitosamente: $photoUri")
+                    
+                    // Procesar la foto capturada - siempre usar processImageFromUri para manejar orientación EXIF
+                    photoUri?.let { uri ->
+                        processImageFromUri(uri)
+                    } ?: run {
+                        // Si no hay URI, intentar leer el archivo directamente y crear un URI temporal
+                        try {
+                            val fileUri = FileProvider.getUriForFile(
+                                requireContext(),
+                                "${requireContext().packageName}.fileprovider",
+                                photoFile
+                            )
+                            processImageFromUri(fileUri)
+                        } catch (e: Exception) {
+                            Log.e("RegisterCanFragment", "Error al crear URI desde archivo: ${e.message}", e)
+                            // Fallback: leer bitmap directamente (sin corrección de orientación)
+                            val bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+                            bitmap?.let {
+                                processCapturedBitmap(it)
+                            }
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    private fun processCapturedBitmap(bitmap: Bitmap) {
+        try {
+            photo = bitmap
+            fotoBitmap = bitmap
+            
+            // Convertir a Base64
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
+            imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
+            
+            // Las modificaciones de UI deben ejecutarse en el hilo principal
+            lifecycleScope.launch(Dispatchers.Main) {
+                // Mostrar photoFrameLayout y ocultar PreviewView
+                binding.photoFrameLayout.visibility = View.VISIBLE
+                binding.cameraPreview.visibility = View.GONE
+                binding.galleryImageView.visibility = View.VISIBLE
+                binding.galleryImageView.load(bitmap) {
+                    crossfade(true)
+                }
+                
+                // Realizar reconocimiento de perro
+                try {
+                    if (::classifier.isInitialized) {
+                        val dogRecognition = classifier.recognizeImage(bitmap).first()
+                        Log.d("RegisterCanFragment", "Reconocimiento de foto capturada: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
+                        enableTakePhotoButton(dogRecognition)
+                    } else {
+                        checkFormAndEnableButton()
+                    }
+                } catch (e: Exception) {
+                    Log.e("RegisterCanFragment", "Error al reconocer perro: ${e.message}")
+                    checkFormAndEnableButton()
+                }
+            }
+            
+            Log.d("RegisterCanFragment", "Foto procesada - longitud Base64: ${imageCan.length}")
+        } catch (e: Exception) {
+            Log.e("RegisterCanFragment", "Error al procesar foto capturada: ${e.message}", e)
+            lifecycleScope.launch(Dispatchers.Main) {
+                Toast.makeText(
+                    requireContext(),
+                    "Error al procesar la foto: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun processImageFromUri(uri: Uri) {
+        var inputStream: InputStream? = null
+        try {
+            inputStream = requireContext().contentResolver.openInputStream(uri)
+            
+            // Leer la orientación EXIF antes de decodificar
+            val orientation = getImageOrientation(uri)
+            
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            
+            if (bitmap == null) {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error: No se pudo cargar la imagen", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+            
+            // Rotar el bitmap según la orientación EXIF
+            val rotatedBitmap = rotateBitmapIfNeeded(bitmap, orientation)
+            photo = rotatedBitmap
+            fotoBitmap = rotatedBitmap
+            
+            // Convertir a Base64 y actualizar imageCan (usar el bitmap rotado)
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+            val byteArray = byteArrayOutputStream.toByteArray()
+            imageCan = Base64.encodeToString(byteArray, Base64.DEFAULT)
+            
+            // Las modificaciones de UI deben ejecutarse en el hilo principal
+            lifecycleScope.launch(Dispatchers.Main) {
+                // Mostrar photoFrameLayout y ocultar PreviewView
+                binding.photoFrameLayout.visibility = View.VISIBLE
+                binding.cameraPreview.visibility = View.GONE
+                binding.galleryImageView.visibility = View.VISIBLE
+                binding.galleryImageView.load(rotatedBitmap) {
+                    crossfade(true)
+                }
+                
+                // Realizar reconocimiento de perro si es posible (usar el bitmap rotado)
+                try {
+                    if (::classifier.isInitialized) {
+                        val dogRecognition = classifier.recognizeImage(rotatedBitmap).first()
+                        Log.d("RegisterCanFragment", "Reconocimiento desde galería: id=${dogRecognition.id}, confianza=${dogRecognition.confidence}%")
+                        enableTakePhotoButton(dogRecognition)
+                    } else {
+                        Log.w("RegisterCanFragment", "Classifier no inicializado, saltando reconocimiento")
+                        checkFormAndEnableButton()
+                    }
+                } catch (e: Exception) {
+                    Log.e("RegisterCanFragment", "Error al reconocer perro desde galería: ${e.message}")
+                    // Continuar sin reconocimiento
+                    checkFormAndEnableButton()
+                }
+            }
+            
+            Log.d("RegisterCanFragment", "Imagen procesada desde URI - longitud Base64: ${imageCan.length}")
+        } catch (e: Exception) {
+            Log.e("RegisterCanFragment", "Error al procesar imagen desde URI: ${e.message}", e)
+            lifecycleScope.launch(Dispatchers.Main) {
+                Toast.makeText(
+                    requireContext(),
+                    "Error al procesar la imagen: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } finally {
+            try {
+                inputStream?.close()
+            } catch (e: Exception) {
+                Log.e("RegisterCanFragment", "Error al cerrar inputStream: ${e.message}", e)
+            }
+        }
+    }
+    
+    /**
+     * Obtiene la orientación EXIF de una imagen desde su URI
+     */
+    private fun getImageOrientation(uri: Uri): Int {
+        var inputStream: InputStream? = null
+        return try {
+            inputStream = requireContext().contentResolver.openInputStream(uri)
+            if (inputStream != null) {
+                val exif = ExifInterface(inputStream)
+                exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+                )
+            } else {
+                ExifInterface.ORIENTATION_NORMAL
+            }
+        } catch (e: Exception) {
+            Log.e("RegisterCanFragment", "Error al leer orientación EXIF: ${e.message}", e)
+            ExifInterface.ORIENTATION_NORMAL
+        } finally {
+            try {
+                inputStream?.close()
+            } catch (e: Exception) {
+                Log.e("RegisterCanFragment", "Error al cerrar inputStream en getImageOrientation: ${e.message}", e)
+            }
+        }
+    }
+    
+    /**
+     * Rota un bitmap según su orientación EXIF
+     */
+    private fun rotateBitmapIfNeeded(bitmap: Bitmap, orientation: Int): Bitmap {
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateBitmap(bitmap, 90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateBitmap(bitmap, 180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateBitmap(bitmap, 270f)
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> flipBitmap(bitmap, horizontal = true, vertical = false)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> flipBitmap(bitmap, horizontal = false, vertical = true)
+            ExifInterface.ORIENTATION_TRANSPOSE -> {
+                val rotated = rotateBitmap(bitmap, 90f)
+                flipBitmap(rotated, horizontal = true, vertical = false)
+            }
+            ExifInterface.ORIENTATION_TRANSVERSE -> {
+                val rotated = rotateBitmap(bitmap, 270f)
+                flipBitmap(rotated, horizontal = true, vertical = false)
+            }
+            else -> bitmap // ORIENTATION_NORMAL o desconocida
+        }
+    }
+    
+    /**
+     * Rota un bitmap en grados
+     */
+    private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap {
+        val matrix = Matrix().apply {
+            postRotate(degrees)
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+    
+    /**
+     * Voltea un bitmap horizontal o verticalmente
+     */
+    private fun flipBitmap(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap {
+        val matrix = Matrix().apply {
+            if (horizontal) {
+                postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
+            }
+            if (vertical) {
+                postScale(1f, -1f, bitmap.width / 2f, bitmap.height / 2f)
+            }
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
 
 }

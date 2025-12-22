@@ -1,21 +1,48 @@
 package com.durand.dogedex.ui.user_fragment.list_my_can_register
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.durand.dogedex.R
 import com.durand.dogedex.data.response.oficial.ListarCanResponse
 
-class MyCanRegisterAdapter(private val mList: List<ListarCanResponse> = mutableListOf()) :
-    RecyclerView.Adapter<MyCanRegisterAdapter.ViewHolder>() {
+class MyCanRegisterAdapter(
+    private var mList: List<ListarCanResponse> = mutableListOf(),
+    private val onItemClick: (ListarCanResponse) -> Unit = {}
+) : RecyclerView.Adapter<MyCanRegisterAdapter.ViewHolder>() {
+
+    fun updateList(newList: List<ListarCanResponse>) {
+        Log.d("MyCanRegisterAdapter", "=== updateList INICIADO ===")
+        Log.d("MyCanRegisterAdapter", "Lista anterior: ${mList.size} elementos")
+        Log.d("MyCanRegisterAdapter", "Nueva lista: ${newList.size} elementos")
+        
+        if (newList.isEmpty()) {
+            Log.w("MyCanRegisterAdapter", "La nueva lista está vacía")
+        } else {
+            Log.d("MyCanRegisterAdapter", "Primer elemento de nueva lista: ${newList[0].nombre}")
+        }
+        
+        mList = newList
+        Log.d("MyCanRegisterAdapter", "mList actualizado a ${mList.size} elementos")
+        
+        // Siempre notificar cambios
+        notifyDataSetChanged()
+        Log.d("MyCanRegisterAdapter", "notifyDataSetChanged() llamado")
+        Log.d("MyCanRegisterAdapter", "=== updateList COMPLETADO ===")
+    }
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,7 +57,13 @@ class MyCanRegisterAdapter(private val mList: List<ListarCanResponse> = mutableL
     // binds the list items to a view
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.d("MyCanRegisterAdapter", "onBindViewHolder llamado para posición $position, tamaño lista: ${mList.size}")
+        if (position >= mList.size) {
+            Log.e("MyCanRegisterAdapter", "Error: posición $position fuera de rango (tamaño: ${mList.size})")
+            return
+        }
         val model = mList[position]
+        Log.d("MyCanRegisterAdapter", "Binding item: ${model.nombre}, Raza: ${model.raza}")
 
         //NOMBRE
         val nombrePrefix = "Nombre: "
@@ -100,12 +133,41 @@ class MyCanRegisterAdapter(private val mList: List<ListarCanResponse> = mutableL
         )
         holder.fechaNacimientoTextView.text = fechaSpannableString
 
+        // Cargar imagen desde Base64
+        if (model.foto.isNotEmpty()) {
+            try {
+                val imageBytes = Base64.decode(model.foto, Base64.DEFAULT)
+                val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                if (bitmap != null) {
+                    holder.canImageView.load(bitmap) {
+                        crossfade(true)
+                        placeholder(R.drawable.dog_logo) // Imagen por defecto mientras carga
+                        error(R.drawable.dog_logo) // Imagen de error si falla
+                    }
+                } else {
+                    Log.e("MyCanRegisterAdapter", "Error: bitmap es null para ${model.nombre}")
+                    holder.canImageView.setImageResource(R.drawable.dog_logo)
+                }
+            } catch (e: Exception) {
+                Log.e("MyCanRegisterAdapter", "Error al decodificar imagen Base64 para ${model.nombre}: ${e.message}", e)
+                holder.canImageView.setImageResource(R.drawable.dog_logo)
+            }
+        } else {
+            // Si no hay foto, mostrar imagen por defecto
+            holder.canImageView.setImageResource(R.drawable.dog_logo)
+        }
 
+        // Click listener para el item completo
+        holder.itemView.setOnClickListener {
+            onItemClick(model)
+        }
     }
 
     // return the number of the items in the list
     override fun getItemCount(): Int {
-        return mList.size
+        val count = mList.size
+        Log.d("MyCanRegisterAdapter", "getItemCount: $count")
+        return count
     }
 
     // Holds the views for adding it to image and text
@@ -116,5 +178,6 @@ class MyCanRegisterAdapter(private val mList: List<ListarCanResponse> = mutableL
         val generoTextView: TextView = itemView.findViewById(R.id.generoTextView)
         val fechaNacimientoTextView: TextView = itemView.findViewById(R.id.fechaNacimientoTextView)
         val colorTextView: TextView = itemView.findViewById(R.id.colorTextView)
+        val canImageView: ImageView = itemView.findViewById(R.id.canImageView)
     }
 }

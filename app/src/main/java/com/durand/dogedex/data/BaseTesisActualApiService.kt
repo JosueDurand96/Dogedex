@@ -31,6 +31,7 @@ import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 
@@ -83,15 +84,15 @@ interface NewApiOficialService {
         @Header("Content-Type") content_type: String
     ): RegisterCanPerdidoResponse
 
-    @GET("api/v1/Mascota/obtenerMascota/{id}")
+    @GET("api/v1/Can/listarCan")
     suspend fun listarMascota(
         @Header("Content-Type") content_type: String,
-        @Path("id") mascotaId: Int
+        @Query("idUsuario") idUsuario: Long
     ): List<ListarCanResponse>
 
-    @GET("api/v1/Mascota/obtenerMascotaPerdida/{id}")
+    @GET("api/v1/Mascota/obtenerMascotaPerdida")
     suspend fun listarMascotaPerdida(
-        @Header("Content-Type") content_type: String,
+        @Header("Content-Type") content_type: String
     ): List<ListarCanPerdidoResponse>
 
     @POST("api/v1/CodigoVerificacion/registrarCodigo")

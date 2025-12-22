@@ -70,6 +70,8 @@ class LoginFragment : Fragment() {
             val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
             val editor: SharedPreferences.Editor = sharedPref!!.edit()
             editor.putLong("idUsuario", it.id)
+            // Guardar nombre del usuario
+            editor.putString("nombreUsuario", it.nombre)
             // Guardar timestamp del login (en milisegundos)
             editor.putLong("loginTimestamp", System.currentTimeMillis())
             editor.apply()

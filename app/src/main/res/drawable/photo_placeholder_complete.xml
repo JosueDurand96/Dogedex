@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Fondo con bordes redondeados -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F5F5F5" />
+            <corners android:radius="12dp" />
+            <stroke
+                android:width="2dp"
+                android:color="#E0E0E0" />
+        </shape>
+    </item>
+    
+    <!-- Icono de cámara centrado -->
+    <item
+        android:drawable="@drawable/photo_placeholder_icon"
+        android:gravity="center" />
+    
+</layer-list>
+
