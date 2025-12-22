@@ -158,7 +158,7 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
 
             val date: String = obtenerFechaHoraActual()
             
-            // Obtener idUsuario de SharedPreferences
+            // Av. República de Panamá 3055
             val idUsuarioValue = idUsuario ?: -1L
             if (idUsuarioValue == -1L) {
                 Toast.makeText(
@@ -178,6 +178,10 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
                 else -> ""
             }
             
+            // Obtener coordenadas si hay una ubicación seleccionada
+            val latitud = selectedLocation?.latitude
+            val longitud = selectedLocation?.longitude
+            
             // Crear el request con todos los campos
             val request = RegisterCanPerdidoRequest(
                 nombre = binding.nombreTextInputEditText.text.toString().trim(),
@@ -194,7 +198,9 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
                 apellidoUsuario = binding.apellidoUsuarioTextInputEditText.text.toString().trim(),
                 fechaPerdida = date,
                 lugarPerdida = binding.lugarPerdidaTextInputEditText.text.toString().trim(),
-                comentario = binding.comentarioTextInputEditText.text.toString().trim()
+                comentario = binding.comentarioTextInputEditText.text.toString().trim(),
+                latitud = latitud,
+                longitud = longitud
             )
 
             viewModel.listar(request)
