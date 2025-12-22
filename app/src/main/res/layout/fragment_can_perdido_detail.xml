@@ -34,7 +34,7 @@
                         android:scaleType="fitCenter"
                         android:adjustViewBounds="true"
                         android:background="@drawable/photo_placeholder_background"
-                        android:contentDescription="Foto del can registrado" />
+                        android:contentDescription="Foto del can perdido" />
                 </FrameLayout>
 
                 <!-- Mapa de Google Maps -->
@@ -288,6 +288,97 @@
                             android:textColor="@color/text_black"
                             android:textSize="16sp"
                             tools:text="Fecha de nacimiento: 2020-01-15" />
+                    </LinearLayout>
+
+                    <!-- Sección: Datos de la pérdida -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Datos de la pérdida"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Fecha de pérdida con icono -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/baseline_calendar_month_24"
+                            android:contentDescription="Fecha"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:id="@+id/fechaPerdidaTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Fecha de pérdida: 14/12/2025 15:43:15"
+                            android:textColor="@color/text_black"
+                            android:textSize="16sp"
+                            tools:text="Fecha de pérdida: 14/12/2025 15:43:15" />
+                    </LinearLayout>
+
+                    <!-- Lugar de pérdida con icono -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/location"
+                            android:contentDescription="Ubicación"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:id="@+id/lugarPerdidaTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Lugar de pérdida: Av. Principal 123"
+                            android:textColor="@color/text_black"
+                            android:textSize="16sp"
+                            android:maxLines="3"
+                            android:ellipsize="end"
+                            tools:text="Lugar de pérdida: Av. Principal 123" />
+                    </LinearLayout>
+
+                    <!-- Comentarios con icono -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/note"
+                            android:contentDescription="Comentarios"
+                            android:layout_marginEnd="12dp"
+                            android:layout_gravity="top" />
+
+                        <TextView
+                            android:id="@+id/comentarioTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Comentarios: Se perdió en el parque"
+                            android:textColor="@color/text_black"
+                            android:textSize="16sp"
+                            tools:text="Comentarios: Se perdió en el parque" />
                     </LinearLayout>
 
                     <!-- Sección: Datos del propietario -->

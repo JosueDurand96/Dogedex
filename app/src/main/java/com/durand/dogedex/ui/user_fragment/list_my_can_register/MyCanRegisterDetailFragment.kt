@@ -194,3 +194,4 @@ class MyCanRegisterDetailFragment : Fragment(), OnMapReadyCallback {
         _binding = null
     }
 }
+

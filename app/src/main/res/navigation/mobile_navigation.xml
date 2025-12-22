@@ -73,6 +73,24 @@
             tools:layout="@layout/fragment_can_report_lost_detail" />
 
     <fragment
+            android:id="@+id/nav_map_canes_perdidos"
+            android:name="com.durand.dogedex.ui.user_fragment.mapa_canes_perdidos.MapaCanesPerdidosFragment"
+            tools:layout="@layout/fragment_mapa_canes_perdidos">
+        <action
+            android:id="@+id/action_nav_map_canes_perdidos_to_nav_can_perdido_detail"
+            app:destination="@id/nav_can_perdido_detail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_can_perdido_detail"
+            android:name="com.durand.dogedex.ui.user_fragment.mapa_canes_perdidos.CanPerdidoDetailFragment"
+            tools:layout="@layout/fragment_can_perdido_detail" />
+
+    <fragment
             android:id="@+id/nav_close"
             android:name="com.durand.dogedex.ui.CloseFragment"
             tools:layout="@layout/fragment_close" />
