@@ -91,6 +91,19 @@
             tools:layout="@layout/fragment_can_perdido_detail" />
 
     <fragment
+            android:id="@+id/nav_map_canes_agresivos"
+            android:name="com.durand.dogedex.ui.user_fragment.mapa_canes_agresivos.MapaCanesAgresivosFragment"
+            tools:layout="@layout/fragment_mapa_canes_agresivos">
+        <action
+            android:id="@+id/action_nav_map_canes_agresivos_to_nav_my_can_register_detail"
+            app:destination="@id/nav_my_can_register_detail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
             android:id="@+id/nav_close"
             android:name="com.durand.dogedex.ui.CloseFragment"
             tools:layout="@layout/fragment_close" />

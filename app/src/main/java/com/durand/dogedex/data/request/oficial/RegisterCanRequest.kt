@@ -33,4 +33,8 @@ data class RegisterCanRequest(
     var foto: String,
     @SerializedName("idUsuario")
     var idUsuario: Long,
+    @SerializedName("latitud")
+    var latitud: Double? = null,
+    @SerializedName("longitud")
+    var longitud: Double? = null,
 )

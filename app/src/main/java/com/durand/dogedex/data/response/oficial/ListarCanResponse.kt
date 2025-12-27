@@ -40,4 +40,8 @@ data class ListarCanResponse(
     var nombreUsuario: String,
     @SerializedName("apellidoUsuario")
     var apellidoUsuario: String,
+    @SerializedName("latitud")
+    var latitud: Double? = null,
+    @SerializedName("longitud")
+    var longitud: Double? = null,
 ): Serializable

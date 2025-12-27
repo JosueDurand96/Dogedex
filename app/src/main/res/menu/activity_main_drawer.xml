@@ -19,17 +19,22 @@
         <item
                 android:id="@+id/nav_my_can_register"
                 android:icon="@drawable/baseline_dialer_sip_24"
-                android:title="Mis canes registrados" />
+                android:title="Reporte canes agresivos" />
 
         <item
                 android:id="@+id/nav_can_report_lost"
                 android:icon="@drawable/baseline_display_settings_24"
-                android:title="Canes reportados perdidos" />
+                android:title="Reporte canes perdidos" />
 
         <item
                 android:id="@+id/nav_map_canes_perdidos"
                 android:icon="@drawable/baseline_add_location_alt_24"
                 android:title="Mapa canes perdidos" />
+
+        <item
+                android:id="@+id/nav_map_canes_agresivos"
+                android:icon="@drawable/baseline_app_blocking_24"
+                android:title="Mapa canes agresivos" />
 
         <item
                 android:id="@+id/nav_close"

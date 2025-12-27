@@ -108,6 +108,26 @@ class RegisterCanFragment : Fragment() {
             }
         }
 
+    // Launcher para permisos de ubicación
+    private val requestLocationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        
+        if (fineLocationGranted || coarseLocationGranted) {
+            getCurrentLocationAndSendForm()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Permiso de ubicación denegado. El registro continuará sin coordenadas precisas.",
+                Toast.LENGTH_SHORT
+            ).show()
+            // Enviar sin coordenadas si no hay permisos
+            sendFormDataWithLocation(null)
+        }
+    }
+
     // Launcher para seleccionar imagen de la galería
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -578,42 +598,108 @@ class RegisterCanFragment : Fragment() {
                 return
             }
             
-            // Obtener el idUsuario guardado en LoginFragment desde SharedPreferences
-            val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
-            val currentIdUsuario = sharedPref?.getLong("idUsuario", -1) ?: -1
-            
-            if (currentIdUsuario == -1L) {
-                Log.e("RegisterCanFragment", "ERROR: No se pudo obtener idUsuario de SharedPreferences (guardado en LoginFragment)")
-                Toast.makeText(
+            // Verificar permisos de ubicación y obtener coordenadas
+            if (ContextCompat.checkSelfPermission(
                     requireContext(),
-                    "Error: Usuario no autenticado. Por favor, inicia sesión nuevamente.",
-                    Toast.LENGTH_LONG
-                ).show()
-                return
-            }
-            
-            Log.d("RegisterCanFragment", "Enviando formulario - idUsuario (Long): $currentIdUsuario, idUsuario (Int): ${currentIdUsuario.toInt()}")
-            
-            registerCanViewModel.listar(
-                RegisterCanRequest(
-                    nombre = binding.namePetTextInputEditText.text.toString().trim(),
-                    fechaNacimiento = binding.fechaTextInputEditText.text.toString().trim(),
-                    especie = especie,
-                    genero = genero,
-                    raza = raza,
-                    tamanio = tamano,
-                    caracter = caracter,
-                    color = color,
-                    pelaje = pelaje,
-                    esterilizado = esterelizado,
-                    distrito = distrito,
-                    modoObtencion = modoObtencion,
-                    razonTenencia = razonTenencia,
-                    foto = imageCan,
-                    idUsuario = currentIdUsuario
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                // Tiene permisos, obtener ubicación actual
+                getCurrentLocationAndSendForm()
+            } else {
+                // Solicitar permisos
+                requestLocationPermissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
                 )
-            )
+            }
         }
+    }
+
+    private fun getCurrentLocationAndSendForm() {
+        if (fusedLocationClient == null) {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        }
+        
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && 
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // No tiene permisos, enviar sin coordenadas
+            sendFormDataWithLocation(null)
+            return
+        }
+
+        fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                Log.d("RegisterCanFragment", "Ubicación obtenida: lat=${location.latitude}, lng=${location.longitude}")
+                sendFormDataWithLocation(location)
+            } else {
+                Log.w("RegisterCanFragment", "No se pudo obtener ubicación actual")
+                // Intentar obtener ubicación usando requestLocationUpdates como fallback
+                sendFormDataWithLocation(null)
+            }
+        }?.addOnFailureListener { exception ->
+            Log.e("RegisterCanFragment", "Error al obtener ubicación: ${exception.message}")
+            // Enviar sin coordenadas si falla
+            sendFormDataWithLocation(null)
+        }
+    }
+
+    private fun sendFormDataWithLocation(location: Location?) {
+        // Obtener el idUsuario guardado en LoginFragment desde SharedPreferences
+        val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
+        val currentIdUsuario = sharedPref?.getLong("idUsuario", -1) ?: -1
+        
+        if (currentIdUsuario == -1L) {
+            Log.e("RegisterCanFragment", "ERROR: No se pudo obtener idUsuario de SharedPreferences (guardado en LoginFragment)")
+            Toast.makeText(
+                requireContext(),
+                "Error: Usuario no autenticado. Por favor, inicia sesión nuevamente.",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+        
+        Log.d("RegisterCanFragment", "Enviando formulario - idUsuario (Long): $currentIdUsuario")
+        if (location != null) {
+            Log.d("RegisterCanFragment", "Enviando con coordenadas: lat=${location.latitude}, lng=${location.longitude}")
+        } else {
+            Log.d("RegisterCanFragment", "Enviando sin coordenadas")
+        }
+        
+        registerCanViewModel.listar(
+            RegisterCanRequest(
+                nombre = binding.namePetTextInputEditText.text.toString().trim(),
+                fechaNacimiento = binding.fechaTextInputEditText.text.toString().trim(),
+                especie = especie,
+                genero = genero,
+                raza = raza,
+                tamanio = tamano,
+                caracter = caracter,
+                color = color,
+                pelaje = pelaje,
+                esterilizado = esterelizado,
+                distrito = distrito,
+                modoObtencion = modoObtencion,
+                razonTenencia = razonTenencia,
+                foto = imageCan,
+                idUsuario = currentIdUsuario,
+                latitud = location?.latitude,
+                longitud = location?.longitude
+            )
+        )
     }
 
     @SuppressLint("UnsafeOptInUsageError")

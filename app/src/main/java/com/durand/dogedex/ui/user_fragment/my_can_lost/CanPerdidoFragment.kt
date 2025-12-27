@@ -189,9 +189,9 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
                 genero = binding.generoAutoCompleteTextView.text.toString().trim(),
                 raza = binding.razaAutoCompleteTextView.text.toString().trim(),
                 tamanio = tamanio,
-                caracter = binding.caracterTextInputEditText.text.toString().trim(),
+                caracter = binding.caracterAutoCompleteTextView.text.toString().trim(),
                 color = binding.colorAutoCompleteTextView.text.toString().trim(),
-                pelaje = binding.pelajeTextInputEditText.text.toString().trim(),
+                pelaje = binding.pelajeAutoCompleteTextView.text.toString().trim(),
                 foto = fotoBase64,
                 idUsuario = idUsuarioValue.toInt(),
                 nombreUsuario = binding.nombreUsuarioTextInputEditText.text.toString().trim(),
@@ -589,6 +589,24 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
             itemsColor
         )
         binding.colorAutoCompleteTextView.setAdapter(adapterColor)
+        
+        // Adapter para Carácter
+        val itemsCaracter = listOf("Tímido", "Sociable", "Pasivo", "Agresivo", "Independiente")
+        val adapterCaracter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            itemsCaracter
+        )
+        binding.caracterAutoCompleteTextView.setAdapter(adapterCaracter)
+        
+        // Adapter para Pelaje
+        val itemsPelaje = listOf("Duro", "Rizado", "Corto", "Largo")
+        val adapterPelaje = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            itemsPelaje
+        )
+        binding.pelajeAutoCompleteTextView.setAdapter(adapterPelaje)
     }
     
     private fun validateForm(): Boolean {
@@ -598,9 +616,9 @@ class CanPerdidoFragment : Fragment(), OnMapReadyCallback {
                 binding.generoAutoCompleteTextView.text.toString().trim().isNotEmpty() &&
                 binding.razaAutoCompleteTextView.text.toString().trim().isNotEmpty() &&
                 tamanioSelected &&
-                binding.caracterTextInputEditText.text.toString().trim().isNotEmpty() &&
+                binding.caracterAutoCompleteTextView.text.toString().trim().isNotEmpty() &&
                 binding.colorAutoCompleteTextView.text.toString().trim().isNotEmpty() &&
-                binding.pelajeTextInputEditText.text.toString().trim().isNotEmpty() &&
+                binding.pelajeAutoCompleteTextView.text.toString().trim().isNotEmpty() &&
                 binding.nombreUsuarioTextInputEditText.text.toString().trim().isNotEmpty() &&
                 binding.apellidoUsuarioTextInputEditText.text.toString().trim().isNotEmpty() &&
                 binding.lugarPerdidaTextInputEditText.text.toString().trim().isNotEmpty()

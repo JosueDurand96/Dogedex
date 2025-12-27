@@ -248,38 +248,38 @@
                             android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Carácter -->
+                <!-- Carácter (Dropdown) -->
                 <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Carácter"
                         android:layout_marginBottom="16dp"
                         app:boxBackgroundColor="@color/white">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/caracterTextInputEditText"
+                    <AutoCompleteTextView
+                            android:id="@+id/caracterAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text"
+                            android:inputType="none"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Pelaje -->
+                <!-- Pelaje (Dropdown) -->
                 <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Pelaje"
                         android:layout_marginBottom="24dp"
                         app:boxBackgroundColor="@color/white">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/pelajeTextInputEditText"
+                    <AutoCompleteTextView
+                            android:id="@+id/pelajeAutoCompleteTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text"
+                            android:inputType="none"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
