@@ -23,7 +23,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="Lista de mascotas por propietario"
+                android:text="Reporte de canes agresivos"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:textStyle="bold"
