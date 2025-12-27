@@ -52,7 +52,6 @@ class CanPerdidoDetailFragment : Fragment(), OnMapReadyCallback {
             }
 
         setupUI()
-        setupBackButton()
         setupMap()
 
         return root
@@ -140,12 +139,6 @@ class CanPerdidoDetailFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun setupBackButton() {
-        binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
-        }
-    }
-
     private fun setupUI() {
         // Cargar imagen
         loadImage()
@@ -229,4 +222,5 @@ class CanPerdidoDetailFragment : Fragment(), OnMapReadyCallback {
         _binding = null
     }
 }
+
 

@@ -51,16 +51,9 @@ class MyCanRegisterDetailFragment : Fragment(), OnMapReadyCallback {
             }
 
         setupUI()
-        setupBackButton()
         setupMap()
 
         return root
-    }
-
-    private fun setupBackButton() {
-        binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
-        }
     }
 
     private fun setupUI() {
@@ -194,4 +187,5 @@ class MyCanRegisterDetailFragment : Fragment(), OnMapReadyCallback {
         _binding = null
     }
 }
+
 

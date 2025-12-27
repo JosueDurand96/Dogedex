@@ -51,7 +51,6 @@ class CanReportLostDetailFragment : Fragment(), OnMapReadyCallback {
             }
 
         setupUI()
-        setupBackButton()
         setupMap()
 
         return root
@@ -112,12 +111,6 @@ class CanReportLostDetailFragment : Fragment(), OnMapReadyCallback {
                     .title("Ubicación aproximada")
             )
             mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 12f))
-        }
-    }
-
-    private fun setupBackButton() {
-        binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
         }
     }
 
