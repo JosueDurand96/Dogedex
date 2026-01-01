@@ -12,7 +12,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="@color/white"
-            tools:context=".ui.user_fragment.list_my_can_register.MyCanRegisterFragment">
+            tools:context=".ui.user_fragment.list_my_can_register.CanAgresivoReportFragment">
 
             <!-- Título -->
             <TextView
@@ -23,7 +23,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="Reporte de mis canes"
+                android:text="Reporte canes agresivos"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:textStyle="bold"
@@ -53,3 +53,4 @@
     </FrameLayout>
 
 </layout>
+

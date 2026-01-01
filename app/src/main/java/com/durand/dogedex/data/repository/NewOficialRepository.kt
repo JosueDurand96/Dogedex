@@ -39,6 +39,12 @@ class NewOficialRepository {
             newApiOficialService.registrarMascota(registerCanRequest, "application/json")
         }
 
+    suspend fun registerCanAgresivo(registerCanRequest: RegisterCanRequest): ApiResponseStatus<RegisterCanResponse> =
+        makeNetworkCall {
+            Log.d("RegisterCanAgresorFragment", "registerCanAgresivoRequest: $registerCanRequest")
+            newApiOficialService.registrarCanAgresivo(registerCanRequest, "application/json")
+        }
+
     suspend fun registerCanPerdido(registerCanRequest: RegisterCanPerdidoRequest): ApiResponseStatus<RegisterCanPerdidoResponse> =
         makeNetworkCall {
             newApiOficialService.registrarMascotaPerdida(registerCanRequest, "application/json")
@@ -61,6 +67,28 @@ class NewOficialRepository {
                 response
             } catch (e: Exception) {
                 Log.e("NewOficialRepository", "ERROR en listarMascota: ${e.message}", e)
+                e.printStackTrace()
+                throw e
+            }
+        }
+
+    suspend fun listarMascotaAgresiva(idUsuario: Long): ApiResponseStatus<List<ListarCanResponse>> =
+        makeNetworkCall {
+            Log.d("NewOficialRepository", "=== listarMascotaAgresiva INICIADO ===")
+            Log.d("NewOficialRepository", "idUsuario: $idUsuario")
+            try {
+                val response = newApiOficialService.listarMascotaAgresiva(
+                    content_type = "application/json",
+                    idUsuario = idUsuario
+                )
+                Log.d("NewOficialRepository", "Respuesta recibida: ${response.size} elementos")
+                if (response.isNotEmpty()) {
+                    Log.d("NewOficialRepository", "Primer elemento: ${response[0].nombre}, ID: ${response[0].id}")
+                }
+                Log.d("NewOficialRepository", "=== listarMascotaAgresiva EXITOSO ===")
+                response
+            } catch (e: Exception) {
+                Log.e("NewOficialRepository", "ERROR en listarMascotaAgresiva: ${e.message}", e)
                 e.printStackTrace()
                 throw e
             }

@@ -7,7 +7,11 @@
         <item
                 android:id="@+id/nav_register_can"
                 android:icon="@drawable/baseline_app_registration_24"
-                android:title="Registrar Can agresor" />
+                android:title="Registrar Can" />
+        <item
+                android:id="@+id/nav_register_can_agresor"
+                android:icon="@drawable/baseline_app_registration_24"
+                android:title="Registrar can agresor" />
         <item
                 android:id="@+id/nav_register_hocio"
                 android:icon="@drawable/baseline_cruelty_free_24"
@@ -19,6 +23,11 @@
         <item
                 android:id="@+id/nav_my_can_register"
                 android:icon="@drawable/baseline_dialer_sip_24"
+                android:title="Reporte de mis canes" />
+
+        <item
+                android:id="@+id/nav_can_agresivo_report"
+                android:icon="@drawable/baseline_app_blocking_24"
                 android:title="Reporte canes agresivos" />
 
         <item

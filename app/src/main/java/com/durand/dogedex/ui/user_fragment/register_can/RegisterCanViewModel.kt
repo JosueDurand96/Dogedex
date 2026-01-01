@@ -56,6 +56,32 @@ class RegisterCanViewModel(
         }
     }
 
+    fun listarAgresivo(registerCanRequest: RegisterCanRequest) = viewModelScope.launch {
+        _isLoading.postValue(true)
+        try {
+            when (val res: ApiResponseStatus<RegisterCanResponse> = repository.registerCanAgresivo(registerCanRequest)) {
+                is ApiResponseStatus.Error -> {
+                    Log.d("RegisterCanAgresorFragment", "Error al registrar can agresivo")
+                    _isLoading.postValue(false)
+                }
+
+                is ApiResponseStatus.Loading -> {
+                    Log.d("RegisterCanAgresorFragment", "Registrando can agresivo...")
+                    // Ya se setea en true arriba
+                }
+
+                is ApiResponseStatus.Success -> {
+                    Log.d("RegisterCanAgresorFragment", "Can agresivo registrado exitosamente")
+                    _list.postValue(res.data)
+                    _isLoading.postValue(false)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("RegisterCanAgresorFragment", "Exception al registrar can agresivo: ${e.localizedMessage}")
+            _isLoading.postValue(false)
+        }
+    }
+
 }
 
 sealed interface RegisterCanEvent {

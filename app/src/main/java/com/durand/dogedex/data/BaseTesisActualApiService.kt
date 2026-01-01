@@ -78,6 +78,12 @@ interface NewApiOficialService {
         @Header("Content-Type") content_type: String
     ): RegisterCanResponse
 
+    @POST("api/v1/Can/registrarCanAgresivo")
+    suspend fun registrarCanAgresivo(
+        @Body registerCanRequest: RegisterCanRequest,
+        @Header("Content-Type") content_type: String
+    ): RegisterCanResponse
+
     @POST("api/v1/Mascota/registrarMascotaPerdida")
     suspend fun registrarMascotaPerdida(
         @Body registerCanPerdidaRequest: RegisterCanPerdidoRequest,
@@ -86,6 +92,12 @@ interface NewApiOficialService {
 
     @GET("api/v1/Can/listarCan")
     suspend fun listarMascota(
+        @Header("Content-Type") content_type: String,
+        @Query("idUsuario") idUsuario: Long
+    ): List<ListarCanResponse>
+
+    @GET("api/v1/Can/listarCanAgresivo")
+    suspend fun listarMascotaAgresiva(
         @Header("Content-Type") content_type: String,
         @Query("idUsuario") idUsuario: Long
     ): List<ListarCanResponse>

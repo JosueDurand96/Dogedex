@@ -18,6 +18,15 @@
     </fragment>
 
     <fragment
+            android:id="@+id/nav_register_can_agresor"
+            android:name="com.durand.dogedex.ui.user_fragment.register_can.RegisterCanAgresorFragment"
+            tools:layout="@layout/fragment_register_can_agresor" >
+        <action
+            android:id="@+id/action_nav_register_can_agresor_to_nav_can_agresivo_report"
+            app:destination="@id/nav_can_agresivo_report" />
+    </fragment>
+
+    <fragment
         android:id="@+id/nav_register_can_can_raza"
         android:name="com.durand.dogedex.ui.user_fragment.register_can.RegisterCanDangerousFragment"
         tools:layout="@layout/fragment_register_can_dangerous" />
@@ -42,6 +51,19 @@
             tools:layout="@layout/fragment_my_can_register">
         <action
             android:id="@+id/action_nav_my_can_register_to_nav_my_can_register_detail"
+            app:destination="@id/nav_my_can_register_detail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_can_agresivo_report"
+            android:name="com.durand.dogedex.ui.user_fragment.list_my_can_register.CanAgresivoReportFragment"
+            tools:layout="@layout/fragment_can_agresivo_report">
+        <action
+            android:id="@+id/action_nav_can_agresivo_report_to_nav_my_can_register_detail"
             app:destination="@id/nav_my_can_register_detail"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"

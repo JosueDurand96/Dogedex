@@ -29,7 +29,7 @@
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Registrar can"
+                    android:text="Registrar can agresor"
                     android:textColor="@color/black"
                     android:textSize="24sp"
                     android:textStyle="bold"
@@ -383,7 +383,7 @@
                     android:elevation="4dp"
                     android:stateListAnimator="@null"
                     app:cornerRadius="16dp"
-                    android:text="REGISTRAR CAN"
+                    android:text="REGISTRAR CAN AGRESOR"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textAllCaps="true"
@@ -415,3 +415,4 @@
     </FrameLayout>
 
 </layout>
+
