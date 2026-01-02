@@ -11,6 +11,7 @@ import com.durand.dogedex.data.request.oficial.RegisterCanRequest
 import com.durand.dogedex.data.request.oficial.RegisterRequest
 import com.durand.dogedex.data.request.oficial.RegistrarCodigoRequest
 import com.durand.dogedex.data.request.oficial.ValidarCodigoRequest
+import com.durand.dogedex.data.request.oficial.RegisterDeviceTokenRequest
 import com.durand.dogedex.data.response.oficial.ActualizarClaveResponse
 import com.durand.dogedex.data.response.oficial.ListarCanPerdidoResponse
 import com.durand.dogedex.data.response.oficial.ListarCanResponse
@@ -20,6 +21,7 @@ import com.durand.dogedex.data.response.oficial.RegisterCanResponse
 import com.durand.dogedex.data.response.oficial.RegisterResponse
 import com.durand.dogedex.data.response.oficial.RegistrarCodigoResponse
 import com.durand.dogedex.data.response.oficial.ValidarCodigoResponse
+import com.durand.dogedex.data.response.oficial.RegisterDeviceTokenResponse
 
 class NewOficialRepository {
 
@@ -72,28 +74,6 @@ class NewOficialRepository {
             }
         }
 
-    suspend fun listarMascotaAgresiva(idUsuario: Long): ApiResponseStatus<List<ListarCanResponse>> =
-        makeNetworkCall {
-            Log.d("NewOficialRepository", "=== listarMascotaAgresiva INICIADO ===")
-            Log.d("NewOficialRepository", "idUsuario: $idUsuario")
-            try {
-                val response = newApiOficialService.listarMascotaAgresiva(
-                    content_type = "application/json",
-                    idUsuario = idUsuario
-                )
-                Log.d("NewOficialRepository", "Respuesta recibida: ${response.size} elementos")
-                if (response.isNotEmpty()) {
-                    Log.d("NewOficialRepository", "Primer elemento: ${response[0].nombre}, ID: ${response[0].id}")
-                }
-                Log.d("NewOficialRepository", "=== listarMascotaAgresiva EXITOSO ===")
-                response
-            } catch (e: Exception) {
-                Log.e("NewOficialRepository", "ERROR en listarMascotaAgresiva: ${e.message}", e)
-                e.printStackTrace()
-                throw e
-            }
-        }
-
     suspend fun listarMascotaPerdida(): ApiResponseStatus<List<ListarCanPerdidoResponse>> =
         makeNetworkCall {
             newApiOficialService.listarMascotaPerdida(
@@ -114,5 +94,10 @@ class NewOficialRepository {
     suspend fun postActualizarClave(actualizarClaveRequest: ActualizarClaveRequest): ApiResponseStatus<ActualizarClaveResponse> =
         makeNetworkCall {
             newApiOficialService.postActualizarClave(actualizarClaveRequest, "application/json")
+        }
+
+    suspend fun registrarDeviceToken(registerDeviceTokenRequest: RegisterDeviceTokenRequest): ApiResponseStatus<RegisterDeviceTokenResponse> =
+        makeNetworkCall {
+            newApiOficialService.registrarDeviceToken(registerDeviceTokenRequest, "application/json")
         }
 }

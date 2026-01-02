@@ -5,6 +5,7 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-parcelize")
     alias(libs.plugins.navigation.safeargs)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -92,4 +93,8 @@ dependencies {
     implementation(libs.coil.legacy)
     //chucker
     implementation(libs.chucker)
+    
+    // Firebase Cloud Messaging
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 }

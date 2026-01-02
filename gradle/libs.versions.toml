@@ -22,6 +22,8 @@ coreSplashscreen = "1.0.0"
 lottie = "5.2.0"
 playServicesMaps = "18.1.0"
 playServicesLocation = "21.0.1"
+firebaseBom = "32.7.0"
+googleServices = "4.4.0"
 retrofit = "2.9.0"
 converterGson = "2.5.0"
 loggingInterceptor = "4.10.0"
@@ -54,6 +56,8 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 airbnb-lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 google-play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 google-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 squareup-retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 squareup-retrofit2-converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
 squareup-okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
@@ -78,4 +82,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 maps-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "mapsSecrets" }
 navigation-safeargs = { id = "androidx.navigation.safeargs", version.ref = "navigationSafeArgs" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 

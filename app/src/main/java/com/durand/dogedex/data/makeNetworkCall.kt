@@ -14,7 +14,15 @@ suspend fun <T> makeNetworkCall(
     } catch (e: UnknownHostException) {
         ApiResponseStatus.Error(R.string.error_internet)
     } catch (e: HttpException) {
-        val errorMessage = if (e.code() == 401) {
+        val httpCode = e.code()
+        var errorBody: String? = null
+        try {
+            errorBody = e.response()?.errorBody()?.string()
+        } catch (ex: Exception) {
+            // Ignorar errores al leer el body
+        }
+        android.util.Log.e("makeNetworkCall", "HTTP Error: Code=$httpCode, Body=$errorBody", e)
+        val errorMessage = if (httpCode == 401) {
             R.string.password_user_incorrect
         } else {
             R.string.error_know

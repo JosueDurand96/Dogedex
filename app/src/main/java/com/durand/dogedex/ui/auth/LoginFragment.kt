@@ -81,6 +81,10 @@ class LoginFragment : Fragment() {
             Log.d("josue", "apellido: " + it.apellido)
             Log.d("josue", "nombre: " + it.nombre)
             Log.d("josue", "Login timestamp guardado: ${System.currentTimeMillis()}")
+            
+            // Registrar token FCM con el idUsuario después del login exitoso
+            com.durand.dogedex.util.FCMTokenManager.updateTokenWithUserId(requireContext(), it.id)
+            
             val intent = Intent(requireContext(), UserHome::class.java)
             intent.putExtra("id", it.id)
             intent.putExtra("nombre", it.nombre)

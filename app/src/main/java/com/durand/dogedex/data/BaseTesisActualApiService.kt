@@ -11,6 +11,7 @@ import com.durand.dogedex.data.request.oficial.RegisterCanPerdidoRequest
 import com.durand.dogedex.data.request.oficial.RegisterRequest
 import com.durand.dogedex.data.request.oficial.RegistrarCodigoRequest
 import com.durand.dogedex.data.request.oficial.ValidarCodigoRequest
+import com.durand.dogedex.data.request.oficial.RegisterDeviceTokenRequest
 import com.durand.dogedex.data.response.oficial.ActualizarClaveResponse
 import com.durand.dogedex.data.response.oficial.ListarCanPerdidoResponse
 import com.durand.dogedex.data.response.oficial.ListarCanResponse
@@ -20,6 +21,7 @@ import com.durand.dogedex.data.response.oficial.RegisterResponse
 import com.durand.dogedex.data.response.oficial.RegisterCanResponse
 import com.durand.dogedex.data.response.oficial.RegistrarCodigoResponse
 import com.durand.dogedex.data.response.oficial.ValidarCodigoResponse
+import com.durand.dogedex.data.response.oficial.RegisterDeviceTokenResponse
 import com.durand.dogedex.ui.ApiServiceInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -96,12 +98,6 @@ interface NewApiOficialService {
         @Query("idUsuario") idUsuario: Long
     ): List<ListarCanResponse>
 
-    @GET("api/v1/Can/listarCanAgresivo")
-    suspend fun listarMascotaAgresiva(
-        @Header("Content-Type") content_type: String,
-        @Query("idUsuario") idUsuario: Long
-    ): List<ListarCanResponse>
-
     @GET("api/v1/Mascota/obtenerMascotaPerdida")
     suspend fun listarMascotaPerdida(
         @Header("Content-Type") content_type: String
@@ -124,4 +120,10 @@ interface NewApiOficialService {
         @Body actualizarClaveRequest: ActualizarClaveRequest,
         @Header("Content-Type") content_type: String
     ): ActualizarClaveResponse
+
+    @POST("api/v1/DeviceToken/registrarToken")
+    suspend fun registrarDeviceToken(
+        @Body registerDeviceTokenRequest: RegisterDeviceTokenRequest,
+        @Header("Content-Type") content_type: String
+    ): RegisterDeviceTokenResponse
 }
