@@ -292,3 +292,4 @@ Abre el archivo `app/google-services.json` y verifica que tenga estructura simil
 
 ¡Listo! 🎉
 
+

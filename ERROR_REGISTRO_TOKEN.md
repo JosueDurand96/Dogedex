@@ -259,3 +259,4 @@ Content-Type: application/json
 
 Con los logs mejorados, ahora podrás ver exactamente qué error está devolviendo el backend. 🔍
 
+

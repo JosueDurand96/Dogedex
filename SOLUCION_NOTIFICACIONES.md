@@ -181,3 +181,4 @@ async function enviarNotificacion(idUsuario, mensaje) {
 - Las notificaciones requieren conexión a internet
 - Los permisos de notificaciones deben estar habilitados en cada dispositivo
 
+
