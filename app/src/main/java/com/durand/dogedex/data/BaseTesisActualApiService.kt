@@ -98,6 +98,12 @@ interface NewApiOficialService {
         @Query("idUsuario") idUsuario: Long
     ): List<ListarCanResponse>
 
+    @GET("api/v1/Can/listarCanAgresivo")
+    suspend fun listarCanAgresivo(
+        @Header("Content-Type") content_type: String,
+        @Query("idUsuario") idUsuario: Long?
+    ): List<ListarCanResponse>
+
     @GET("api/v1/Mascota/obtenerMascotaPerdida")
     suspend fun listarMascotaPerdida(
         @Header("Content-Type") content_type: String

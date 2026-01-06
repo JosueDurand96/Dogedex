@@ -27,8 +27,8 @@ class CanAgresivoReportViewModel(
         Log.d("CanAgresivoReportViewModel", "=== listar INICIADO ===")
         Log.d("CanAgresivoReportViewModel", "idUsuario: $id")
         try {
-            Log.d("CanAgresivoReportViewModel", "Llamando repository.listarMascota()")
-            val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarMascota(id)
+            Log.d("CanAgresivoReportViewModel", "Llamando repository.listarCanAgresivo()")
+            val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarCanAgresivo(id)
             Log.d("CanAgresivoReportViewModel", "Respuesta recibida del repositorio: ${res.javaClass.simpleName}")
             
             when (res) {

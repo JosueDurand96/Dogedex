@@ -141,3 +141,5 @@ firebase-admin-credentials.json
 
 ¡El archivo `google-services.json` que ya tienes es solo para Android! 🚀
 
+
+

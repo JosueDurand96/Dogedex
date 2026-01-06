@@ -74,6 +74,28 @@ class NewOficialRepository {
             }
         }
 
+    suspend fun listarCanAgresivo(idUsuario: Long?): ApiResponseStatus<List<ListarCanResponse>> =
+        makeNetworkCall {
+            Log.d("NewOficialRepository", "=== listarCanAgresivo INICIADO ===")
+            Log.d("NewOficialRepository", "idUsuario: $idUsuario")
+            try {
+                val response = newApiOficialService.listarCanAgresivo(
+                    content_type = "application/json",
+                    idUsuario = idUsuario
+                )
+                Log.d("NewOficialRepository", "Respuesta recibida: ${response.size} elementos")
+                if (response.isNotEmpty()) {
+                    Log.d("NewOficialRepository", "Primer elemento: ${response[0].nombre}, ID: ${response[0].id}")
+                }
+                Log.d("NewOficialRepository", "=== listarCanAgresivo EXITOSO ===")
+                response
+            } catch (e: Exception) {
+                Log.e("NewOficialRepository", "ERROR en listarCanAgresivo: ${e.message}", e)
+                e.printStackTrace()
+                throw e
+            }
+        }
+
     suspend fun listarMascotaPerdida(): ApiResponseStatus<List<ListarCanPerdidoResponse>> =
         makeNetworkCall {
             newApiOficialService.listarMascotaPerdida(

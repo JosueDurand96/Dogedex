@@ -109,3 +109,5 @@ firebase_admin.initialize_app(cred)
 
 ¡Sigue estos pasos y tendrás las credenciales necesarias para configurar Firebase en tu backend! 🚀
 
+
+

@@ -182,3 +182,5 @@ async function enviarNotificacion(idUsuario, mensaje) {
 - Los permisos de notificaciones deben estar habilitados en cada dispositivo
 
 
+
+
