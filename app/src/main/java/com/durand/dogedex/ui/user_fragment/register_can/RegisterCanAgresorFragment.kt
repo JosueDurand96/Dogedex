@@ -11,6 +11,7 @@ import android.graphics.*
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -54,6 +55,13 @@ import com.durand.dogedex.util.LABEL_PATH
 import com.durand.dogedex.util.MODEL_PATH
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.common.FileUtil
@@ -64,7 +72,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class RegisterCanAgresorFragment : Fragment() {
+class RegisterCanAgresorFragment : Fragment(), OnMapReadyCallback {
 
     private var _binding: FragmentRegisterCanAgresorBinding? = null
     private lateinit var imageCapture: ImageCapture
@@ -165,6 +173,9 @@ class RegisterCanAgresorFragment : Fragment() {
     private val binding get() = _binding!!
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var idUsuario: Long? = 0
+    private lateinit var mMap: GoogleMap
+    private var selectedMarker: Marker? = null
+    private var selectedLocation: LatLng? = null
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreateView(
@@ -488,7 +499,187 @@ class RegisterCanAgresorFragment : Fragment() {
         // Validar formulario cuando cambien los campos
         setupFormValidation()
 
+        // Configurar botones de ubicación
+        binding.btnUsarMiUbicacion.setOnClickListener {
+            getCurrentPosition()
+        }
+        binding.btnMarcarEnMapa.setOnClickListener {
+            // El mapa ya permite hacer clic, solo mostrar instrucciones
+            Toast.makeText(
+                requireContext(),
+                "Toca en el mapa para seleccionar la ubicación",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Configurar el mapa
+        val mapFragment = childFragmentManager.findFragmentById(com.durand.dogedex.R.id.map) as? SupportMapFragment
+        mapFragment?.getMapAsync(this)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        
+        // Habilitar controles de zoom y desplazamiento
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.uiSettings.isZoomGesturesEnabled = true
+        mMap.uiSettings.isScrollGesturesEnabled = true
+        mMap.uiSettings.isRotateGesturesEnabled = true
+        mMap.uiSettings.isTiltGesturesEnabled = true
+        mMap.uiSettings.isMyLocationButtonEnabled = true
+        
+        // Habilitar el botón de ubicación actual
+        try {
+            mMap.isMyLocationEnabled = true
+        } catch (e: SecurityException) {
+            Log.e("RegisterCanAgresorFragment", "Error al habilitar ubicación: ${e.message}")
+        }
+        
+        // Configurar ubicación inicial (Lima, Perú)
+        val defaultLocation = LatLng(-12.0464, -77.0428)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 13f))
+        
+        // Permitir al usuario hacer clic en el mapa para seleccionar ubicación
+        mMap.setOnMapClickListener { latLng ->
+            // Eliminar marcador anterior si existe
+            selectedMarker?.remove()
+            
+            // Agregar nuevo marcador en la ubicación seleccionada
+            selectedMarker = mMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title("Ubicación seleccionada")
+                    .draggable(true) // Permitir arrastrar el marcador
+            )
+            
+            selectedLocation = latLng
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+            
+            // Actualizar el campo de texto con la dirección
+            updateLocationText(latLng)
+        }
+        
+        // Permitir arrastrar el marcador
+        mMap.setOnMarkerDragListener(object : GoogleMap.OnMarkerDragListener {
+            override fun onMarkerDragStart(marker: Marker) {}
+            
+            override fun onMarkerDrag(marker: Marker) {}
+            
+            override fun onMarkerDragEnd(marker: Marker) {
+                selectedLocation = marker.position
+                updateLocationText(marker.position)
+            }
+        })
+        
+        // Obtener ubicación actual si hay permisos
+        checkMapPermissions()
+    }
+
+    private fun checkMapPermissions() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            getCurrentPosition()
+        }
+    }
+
+    private fun getCurrentPosition() {
+        if (fusedLocationClient == null) {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        }
+        
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && 
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Solicitar permisos
+            requestLocationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+            return
+        }
+
+        fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                val currentLatLng = LatLng(location.latitude, location.longitude)
+                
+                // Eliminar marcador anterior si existe
+                selectedMarker?.remove()
+                
+                // Agregar marcador en la ubicación actual
+                selectedMarker = mMap.addMarker(
+                    MarkerOptions()
+                        .position(currentLatLng)
+                        .title("Tu ubicación actual")
+                        .draggable(true) // Permitir arrastrar el marcador
+                )
+                
+                selectedLocation = currentLatLng
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
+                
+                // Actualizar el campo de texto con la dirección
+                updateLocationText(currentLatLng)
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "No se pudo obtener la ubicación actual",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }?.addOnFailureListener { exception ->
+            Log.e("RegisterCanAgresorFragment", "Error al obtener ubicación: ${exception.message}")
+            Toast.makeText(
+                requireContext(),
+                "Error al obtener la ubicación: ${exception.message}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun updateLocationText(latLng: LatLng) {
+        try {
+            if (Geocoder.isPresent()) {
+                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                
+                // Usar getFromLocation de forma asíncrona si es necesario
+                val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+                
+                if (addresses != null && addresses.isNotEmpty()) {
+                    val address = addresses[0]
+                    val addressText = address.getAddressLine(0) ?: "${latLng.latitude}, ${latLng.longitude}"
+                    binding.lugarUbicacionTextInputEditText.setText(addressText)
+                } else {
+                    // Si no se puede obtener la dirección, mostrar coordenadas
+                    binding.lugarUbicacionTextInputEditText.setText("${latLng.latitude}, ${latLng.longitude}")
+                }
+            } else {
+                // Si Geocoder no está disponible, mostrar coordenadas
+                binding.lugarUbicacionTextInputEditText.setText("${latLng.latitude}, ${latLng.longitude}")
+            }
+        } catch (e: Exception) {
+            Log.e("RegisterCanAgresorFragment", "Error al obtener dirección: ${e.message}")
+            // Si hay error, mostrar coordenadas
+            binding.lugarUbicacionTextInputEditText.setText("${latLng.latitude}, ${latLng.longitude}")
+        }
     }
 
     private fun checkFormAndEnableButton() {
@@ -598,26 +789,32 @@ class RegisterCanAgresorFragment : Fragment() {
                 return
             }
             
-            // Verificar permisos de ubicación y obtener coordenadas
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                // Tiene permisos, obtener ubicación actual
-                getCurrentLocationAndSendForm()
+            // Si hay una ubicación seleccionada en el mapa, usarla directamente
+            if (selectedLocation != null) {
+                Log.d("RegisterCanAgresorFragment", "Usando ubicación del mapa: lat=${selectedLocation!!.latitude}, lng=${selectedLocation!!.longitude}")
+                sendFormDataWithLocation(null) // Pasamos null porque usaremos selectedLocation
             } else {
-                // Solicitar permisos
-                requestLocationPermissionLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
+                // Si no hay ubicación en el mapa, intentar obtener la ubicación actual
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(
+                        requireContext(),
                         Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    // Tiene permisos, obtener ubicación actual
+                    getCurrentLocationAndSendForm()
+                } else {
+                    // Solicitar permisos
+                    requestLocationPermissionLauncher.launch(
+                        arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
                     )
-                )
+                }
             }
         }
     }
@@ -673,9 +870,25 @@ class RegisterCanAgresorFragment : Fragment() {
         }
         
         Log.d("RegisterCanAgresorFragment", "Enviando formulario - idUsuario (Long): $currentIdUsuario")
-        if (location != null) {
-            Log.d("RegisterCanAgresorFragment", "Enviando con coordenadas: lat=${location.latitude}, lng=${location.longitude}")
+        
+        // Priorizar la ubicación seleccionada en el mapa sobre la ubicación actual
+        val latitud: Double?
+        val longitud: Double?
+        
+        if (selectedLocation != null) {
+            // Usar ubicación del mapa si está disponible
+            latitud = selectedLocation!!.latitude
+            longitud = selectedLocation!!.longitude
+            Log.d("RegisterCanAgresorFragment", "Enviando con coordenadas del mapa: lat=$latitud, lng=$longitud")
+        } else if (location != null) {
+            // Usar ubicación actual como fallback
+            latitud = location.latitude
+            longitud = location.longitude
+            Log.d("RegisterCanAgresorFragment", "Enviando con coordenadas actuales: lat=$latitud, lng=$longitud")
         } else {
+            // Sin coordenadas
+            latitud = null
+            longitud = null
             Log.d("RegisterCanAgresorFragment", "Enviando sin coordenadas")
         }
         
@@ -696,8 +909,8 @@ class RegisterCanAgresorFragment : Fragment() {
                 razonTenencia = razonTenencia,
                 foto = imageCan,
                 idUsuario = currentIdUsuario,
-                latitud = location?.latitude,
-                longitud = location?.longitude
+                latitud = latitud,
+                longitud = longitud
             )
         )
     }

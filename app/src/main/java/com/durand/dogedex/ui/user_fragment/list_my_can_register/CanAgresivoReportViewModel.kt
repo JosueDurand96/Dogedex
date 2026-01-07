@@ -22,13 +22,14 @@ class CanAgresivoReportViewModel(
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun listar(id: Long) = viewModelScope.launch {
+    fun listar() = viewModelScope.launch {
         _isLoading.postValue(true)
         Log.d("CanAgresivoReportViewModel", "=== listar INICIADO ===")
-        Log.d("CanAgresivoReportViewModel", "idUsuario: $id")
+        Log.d("CanAgresivoReportViewModel", "Cargando TODOS los canes agresivos (todos los usuarios)")
         try {
-            Log.d("CanAgresivoReportViewModel", "Llamando repository.listarCanAgresivo()")
-            val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarCanAgresivo(id)
+            Log.d("CanAgresivoReportViewModel", "Llamando repository.listarCanAgresivo(null)")
+            // Pasar null para obtener todos los canes agresivos de todos los usuarios
+            val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarCanAgresivo(null)
             Log.d("CanAgresivoReportViewModel", "Respuesta recibida del repositorio: ${res.javaClass.simpleName}")
             
             when (res) {
@@ -50,10 +51,10 @@ class CanAgresivoReportViewModel(
                     Log.d("CanAgresivoReportViewModel", "=== SUCCESS ===")
                     Log.d("CanAgresivoReportViewModel", "Lista obtenida exitosamente: ${res.data.size} elementos")
                     if (res.data.isNotEmpty()) {
-                        Log.d("CanAgresivoReportViewModel", "Primer elemento: ${res.data[0].nombre}, ID: ${res.data[0].id}")
+                        Log.d("CanAgresivoReportViewModel", "Primer elemento: ${res.data[0].nombre}, ID: ${res.data[0].id}, Usuario: ${res.data[0].idUsuario}")
                         Log.d("CanAgresivoReportViewModel", "Todos los elementos:")
                         res.data.forEachIndexed { index, item ->
-                            Log.d("CanAgresivoReportViewModel", "  [$index] ${item.nombre} - ${item.raza} - ID: ${item.id}")
+                            Log.d("CanAgresivoReportViewModel", "  [$index] ${item.nombre} - ${item.raza} - ID: ${item.id} - Usuario: ${item.idUsuario}")
                         }
                     } else {
                         Log.w("CanAgresivoReportViewModel", "La lista está vacía")

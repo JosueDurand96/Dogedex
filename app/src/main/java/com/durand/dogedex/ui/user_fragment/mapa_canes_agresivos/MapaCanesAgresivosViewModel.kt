@@ -20,11 +20,12 @@ class MapaCanesAgresivosViewModel(
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun loadAggressiveDogs(idUsuario: Long) = viewModelScope.launch {
+    fun loadAggressiveDogs() = viewModelScope.launch {
         _isLoading.postValue(true)
-        Log.d("MapaCanesAgresivosViewModel", "Iniciando carga de canes agresivos para usuario: $idUsuario")
+        Log.d("MapaCanesAgresivosViewModel", "Iniciando carga de TODOS los canes agresivos (todos los usuarios)")
         try {
-            when (val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarMascota(idUsuario)) {
+            // Pasar null para obtener todos los canes agresivos de todos los usuarios
+            when (val res: ApiResponseStatus<List<ListarCanResponse>> = repository.listarCanAgresivo(null)) {
                 is ApiResponseStatus.Error -> {
                     Log.e("MapaCanesAgresivosViewModel", "Error al listar canes agresivos: ${res.message}")
                     _allAggressiveDogs.postValue(emptyList())
@@ -35,6 +36,10 @@ class MapaCanesAgresivosViewModel(
                 }
                 is ApiResponseStatus.Success -> {
                     Log.d("MapaCanesAgresivosViewModel", "Lista obtenida exitosamente: ${res.data.size} elementos")
+                    // Log de coordenadas para debugging
+                    res.data.forEachIndexed { index, dog ->
+                        Log.d("MapaCanesAgresivosViewModel", "Can $index: ${dog.nombre}, lat=${dog.latitud}, lng=${dog.longitud}, usuario=${dog.idUsuario}")
+                    }
                     _allAggressiveDogs.postValue(res.data)
                     _isLoading.postValue(false)
                 }

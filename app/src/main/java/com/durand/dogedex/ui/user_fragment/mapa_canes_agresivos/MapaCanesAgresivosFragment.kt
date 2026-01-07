@@ -79,11 +79,8 @@ class MapaCanesAgresivosFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnM
             loadAndGeocodeAggressiveDogs(dogs)
         }
 
-        if (idUsuario != -1L) {
-            viewModel.loadAggressiveDogs(idUsuario)
-        } else {
-            Log.e("MapaCanesAgresivosFragment", "Error: idUsuario no válido: $idUsuario")
-        }
+        // Cargar todos los canes agresivos de todos los usuarios
+        viewModel.loadAggressiveDogs()
 
         return binding.root
     }

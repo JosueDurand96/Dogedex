@@ -17,7 +17,6 @@ class CanAgresivoReportFragment : Fragment() {
     private var _binding: FragmentCanAgresivoReportBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: CanAgresivoReportViewModel
-    private var idUsuario: Long? = 0
 
     private lateinit var adapter: MyCanRegisterAdapter
 
@@ -26,8 +25,6 @@ class CanAgresivoReportFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         viewModel = ViewModelProvider(this).get(CanAgresivoReportViewModel::class.java)
-        val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
-        idUsuario = sharedPref?.getLong("idUsuario", -1) // -1 es el valor por defecto si no existe
 
         _binding = FragmentCanAgresivoReportBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -91,14 +88,10 @@ class CanAgresivoReportFragment : Fragment() {
             Log.d("CanAgresivoReportFragment", "RecyclerView invalidado y layout solicitado")
         }
         
-        Log.d("CanAgresivoReportFragment", "onCreateView - idUsuario: $idUsuario")
+        Log.d("CanAgresivoReportFragment", "onCreateView - Cargando todos los canes agresivos")
         
-        // Cargar datos solo si idUsuario es válido
-        if (idUsuario != null && idUsuario != -1L) {
-            viewModel.listar(idUsuario!!)
-        } else {
-            Log.e("CanAgresivoReportFragment", "Error: idUsuario no válido: $idUsuario")
-        }
+        // Cargar todos los canes agresivos de todos los usuarios
+        viewModel.listar()
 
         return root
     }
@@ -110,15 +103,8 @@ class CanAgresivoReportFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // Recargar datos cuando se vuelve a esta pantalla para mostrar canes recién registrados
-        val sharedPref = activity?.getSharedPreferences("idUsuario", Context.MODE_PRIVATE)
-        val currentIdUsuario = sharedPref?.getLong("idUsuario", -1) ?: -1
-        
-        if (currentIdUsuario != -1L) {
-            Log.d("CanAgresivoReportFragment", "onResume - Recargando datos para idUsuario: $currentIdUsuario")
-            viewModel.listar(currentIdUsuario)
-        } else {
-            Log.e("CanAgresivoReportFragment", "onResume - Error: idUsuario no válido: $currentIdUsuario")
-        }
+        Log.d("CanAgresivoReportFragment", "onResume - Recargando todos los canes agresivos")
+        viewModel.listar()
     }
 
 }
